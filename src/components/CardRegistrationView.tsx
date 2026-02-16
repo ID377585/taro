@@ -2,6 +2,10 @@ import { ChangeEvent, FC, useEffect, useMemo, useRef, useState } from 'react'
 import { Card } from '../types'
 import { useCamera } from '../hooks/useCamera'
 import { normalizeLabelValue } from '../services/labelService'
+import {
+  dbService,
+  PersistedCardCaptureRecord,
+} from '../services/dbService'
 import CameraView from './CameraView'
 import './CardRegistrationView.css'
 
@@ -77,6 +81,47 @@ const revokeBucketUrls = (bucket: CardCaptureBucket) => {
   bucket.vertical.forEach(item => URL.revokeObjectURL(item.objectUrl))
   bucket.invertido.forEach(item => URL.revokeObjectURL(item.objectUrl))
 }
+
+const createCaptureItemFromBlob = (blob: Blob, capturedAt = Date.now()): CaptureItem => ({
+  id: crypto.randomUUID(),
+  blob,
+  objectUrl: URL.createObjectURL(blob),
+  capturedAt,
+})
+
+const isBucketEmpty = (bucket: CardCaptureBucket) =>
+  bucket.vertical.length === 0 && bucket.invertido.length === 0
+
+const getBucketFingerprint = (bucket: CardCaptureBucket) =>
+  [
+    `v:${bucket.vertical.length}:${bucket.vertical.map(item => item.capturedAt).join(',')}`,
+    `i:${bucket.invertido.length}:${bucket.invertido.map(item => item.capturedAt).join(',')}`,
+  ].join('|')
+
+const serializeBucket = (
+  cardId: number,
+  bucket: CardCaptureBucket,
+): PersistedCardCaptureRecord => ({
+  cardId,
+  vertical: bucket.vertical.map(item => ({
+    blob: item.blob,
+    capturedAt: item.capturedAt,
+  })),
+  invertido: bucket.invertido.map(item => ({
+    blob: item.blob,
+    capturedAt: item.capturedAt,
+  })),
+  updatedAt: Date.now(),
+})
+
+const hydrateBucket = (record: PersistedCardCaptureRecord): CardCaptureBucket => ({
+  vertical: record.vertical
+    .map(item => createCaptureItemFromBlob(item.blob, item.capturedAt))
+    .sort((a, b) => a.capturedAt - b.capturedAt),
+  invertido: record.invertido
+    .map(item => createCaptureItemFromBlob(item.blob, item.capturedAt))
+    .sort((a, b) => a.capturedAt - b.capturedAt),
+})
 
 const captureFromVideo = async (video: HTMLVideoElement) => {
   const sourceWidth = video.videoWidth
@@ -158,6 +203,7 @@ const waitForVideoReady = async (video: HTMLVideoElement, timeoutMs = 1500) => {
 const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) => {
   const videoRef = useRef<HTMLVideoElement>(null)
   const capturesRef = useRef<Record<number, CardCaptureBucket>>({})
+  const persistedSnapshotRef = useRef<Map<number, string>>(new Map())
 
   const [selectedCardId, setSelectedCardId] = useState<string>('')
   const [orientation, setOrientation] = useState<Orientation>('vertical')
@@ -167,6 +213,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
   const [feedback, setFeedback] = useState<string>('')
   const [isExporting, setIsExporting] = useState(false)
   const [isImporting, setIsImporting] = useState(false)
+  const [isHydratingCaptures, setIsHydratingCaptures] = useState(true)
   const [isPanelExpanded, setIsPanelExpanded] = useState(false)
   const importInputRef = useRef<HTMLInputElement>(null)
 
@@ -215,6 +262,96 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
   }, [capturesByCard])
 
   useEffect(() => {
+    let isMounted = true
+
+    const loadPersistedCaptures = async () => {
+      setIsHydratingCaptures(true)
+      try {
+        await dbService.init()
+        const records = await dbService.getAllCardCaptures()
+        if (!isMounted) return
+
+        const hydrated: Record<number, CardCaptureBucket> = {}
+        const nextSnapshot = new Map<number, string>()
+
+        records.forEach(record => {
+          const bucket = hydrateBucket(record)
+          if (isBucketEmpty(bucket)) return
+          hydrated[record.cardId] = bucket
+          nextSnapshot.set(record.cardId, getBucketFingerprint(bucket))
+        })
+
+        setCapturesByCard(hydrated)
+        persistedSnapshotRef.current = nextSnapshot
+      } catch (err) {
+        console.error('Erro ao carregar capturas salvas:', err)
+        if (isMounted) {
+          setFeedback('Não foi possível carregar as capturas salvas no dispositivo.')
+        }
+      } finally {
+        if (isMounted) {
+          setIsHydratingCaptures(false)
+        }
+      }
+    }
+
+    void loadPersistedCaptures()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  useEffect(() => {
+    if (isHydratingCaptures) return
+
+    const timerId = window.setTimeout(() => {
+      void (async () => {
+        try {
+          await dbService.init()
+          const nextSnapshot = new Map<number, string>()
+          const currentSnapshot = persistedSnapshotRef.current
+          const activeCardIds = new Set<number>()
+
+          for (const [cardIdKey, bucket] of Object.entries(capturesByCard)) {
+            const cardId = Number(cardIdKey)
+            if (!Number.isFinite(cardId)) continue
+
+            activeCardIds.add(cardId)
+            if (isBucketEmpty(bucket)) {
+              if (currentSnapshot.has(cardId)) {
+                await dbService.deleteCardCapture(cardId)
+              }
+              continue
+            }
+
+            const fingerprint = getBucketFingerprint(bucket)
+            nextSnapshot.set(cardId, fingerprint)
+
+            if (currentSnapshot.get(cardId) !== fingerprint) {
+              await dbService.saveCardCapture(serializeBucket(cardId, bucket))
+            }
+          }
+
+          for (const previousCardId of currentSnapshot.keys()) {
+            if (!activeCardIds.has(previousCardId)) {
+              await dbService.deleteCardCapture(previousCardId)
+            }
+          }
+
+          persistedSnapshotRef.current = nextSnapshot
+        } catch (err) {
+          console.error('Erro ao sincronizar capturas no IndexedDB:', err)
+        }
+      })()
+    }, 250)
+
+    return () => {
+      window.clearTimeout(timerId)
+    }
+  }, [capturesByCard, isHydratingCaptures])
+
+  useEffect(() => {
     if (!selectedCardId && cards.length > 0) {
       setSelectedCardId(String(cards[0].id))
     }
@@ -245,13 +382,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
         return prev
       }
 
-      const objectUrl = URL.createObjectURL(blob)
-      const nextItem: CaptureItem = {
-        id: crypto.randomUUID(),
-        blob,
-        objectUrl,
-        capturedAt: Date.now(),
-      }
+      const nextItem: CaptureItem = createCaptureItemFromBlob(blob)
 
       return {
         ...prev,
@@ -273,10 +404,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
       if (remaining <= 0) return prev
 
       const toAdd = blobs.slice(0, remaining).map(blob => ({
-        id: crypto.randomUUID(),
-        blob,
-        objectUrl: URL.createObjectURL(blob),
-        capturedAt: Date.now(),
+        ...createCaptureItemFromBlob(blob),
       }))
 
       addedCount = toAdd.length
@@ -397,12 +525,20 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
       const lastCapture = orientationCaptures[orientationCaptures.length - 1]
       URL.revokeObjectURL(lastCapture.objectUrl)
 
+      const nextBucket: CardCaptureBucket = {
+        ...current,
+        [orientation]: orientationCaptures.slice(0, -1),
+      }
+
+      if (isBucketEmpty(nextBucket)) {
+        const next = { ...prev }
+        delete next[selectedCard.id]
+        return next
+      }
+
       return {
         ...prev,
-        [selectedCard.id]: {
-          ...current,
-          [orientation]: orientationCaptures.slice(0, -1),
-        },
+        [selectedCard.id]: nextBucket,
       }
     })
   }
@@ -647,6 +783,12 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
               Formatos aceitos: HEIF/HEIC/HEVC/PNG/JPEG (convertidos para JPEG quando
               necessário).
             </p>
+
+            {isHydratingCaptures && (
+              <p className="registration-supported">
+                Carregando capturas salvas localmente...
+              </p>
+            )}
 
             {feedback && <p className="registration-feedback">{feedback}</p>}
 

@@ -214,7 +214,10 @@ export const useCardRecognition = ({
       const video = videoRef.current
       if (!video) return
 
-      const handleResult = (result: RecognitionResult | null) => {
+      const handleResult = (
+        result: RecognitionResult | null,
+        requiredVotes: number,
+      ) => {
         if (!result?.card) return
 
         const voteKey = `${result.card.id}:${result.isReversed ? 'r' : 'v'}`
@@ -225,7 +228,7 @@ export const useCardRecognition = ({
         }
 
         votesRef.current = { key: voteKey, count: currentVote.count + 1 }
-        if (votesRef.current.count < minVotes) return
+        if (votesRef.current.count < requiredVotes) return
 
         if (lastConfirmedKeyRef.current === voteKey) return
         lastConfirmedKeyRef.current = voteKey
@@ -263,7 +266,7 @@ export const useCardRecognition = ({
               isReversed,
               confidence: prediction.confidence,
               label: prediction.label,
-            })
+            }, minVotes)
           })
           .finally(() => {
             isPredictingRef.current = false
@@ -275,21 +278,22 @@ export const useCardRecognition = ({
         try {
           const prediction = localMatcherRef.current.predict(video)
           if (!prediction) return
-          const localThreshold = Math.min(
-            confidenceThreshold,
-            localStats.candidates <= 2 ? 0.2 : 0.34,
-          )
+          const verySmallLocalBase = localStats.cards <= 2
+          const localThreshold = verySmallLocalBase
+            ? 0.08
+            : Math.min(confidenceThreshold, 0.34)
           if (prediction.confidence < localThreshold) return
 
           const card = cardLookup.get(`${prediction.cardId}`) || null
           if (!card) return
 
+          const localVotes = verySmallLocalBase ? 1 : Math.max(2, minVotes - 1)
           handleResult({
             card,
             isReversed: prediction.isReversed,
             confidence: prediction.confidence,
             label: prediction.label,
-          })
+          }, localVotes)
         } finally {
           isPredictingRef.current = false
         }
@@ -312,6 +316,7 @@ export const useCardRecognition = ({
     minVotes,
     onConfirmed,
     labelMappings.byNormalizedLabel,
+    localStats.cards,
     localStats.candidates,
   ])
 

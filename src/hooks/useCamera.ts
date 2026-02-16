@@ -60,15 +60,23 @@ export const useCamera = (
       const videoDevices = devs.filter(
         (d): d is MediaDeviceInfo & { kind: 'videoinput' } => d.kind === 'videoinput',
       )
-      setDevices(
-        videoDevices.map((d, idx) => ({
-          deviceId: d.deviceId,
-          label: d.label || `Camera ${idx + 1}`,
-          kind: 'videoinput',
-        })),
-      )
+      const mappedDevices = videoDevices.map((d, idx) => ({
+        deviceId: d.deviceId,
+        label: d.label || `Camera ${idx + 1}`,
+        kind: 'videoinput' as const,
+      }))
+
+      setDevices(mappedDevices)
       if (videoDevices[0]) {
-        setCurrentDeviceId(prev => prev || videoDevices[0].deviceId)
+        const preferred =
+          mappedDevices.find(device => inferFacingModeFromLabel(device.label) === 'environment')
+            ?.deviceId || videoDevices[0].deviceId
+
+        setCurrentDeviceId(prev => {
+          if (!prev) return preferred
+          const stillExists = mappedDevices.some(device => device.deviceId === prev)
+          return stillExists ? prev : preferred
+        })
       }
     } catch (err) {
       setError('Erro ao listar câmeras')

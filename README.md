@@ -31,6 +31,7 @@ npm run build
 - Seleção de tiragens (inclui simples e avançadas).
 - Teleprompter com câmera, troca de dispositivo, fullscreen e wake lock.
 - Registro guiado de cartas (vertical e invertida), com contador 10/10 e exportação ZIP por carta.
+- Importação de fotos no registro de cartas: HEIF/HEIC/HEVC/PNG/JPEG (com conversão para JPEG no app).
 - Reconhecimento com TensorFlow.js + votação de estabilidade.
 - Mapeamento automático dos labels do Teachable Machine para cartas reais do deck.
 - Teleprompter avançado com:

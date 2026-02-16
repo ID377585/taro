@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, FC, useEffect, useMemo, useRef, useState } from 'react'
 import { Card } from '../types'
 import { useCamera } from '../hooks/useCamera'
 import { normalizeLabelValue } from '../services/labelService'
@@ -25,11 +25,53 @@ interface CardRegistrationViewProps {
 }
 
 const TARGET_PER_ORIENTATION = 10
+const ACCEPTED_IMAGE_EXTENSIONS = ['.heic', '.heif', '.hevc', '.jpg', '.jpeg', '.png']
 
 const createEmptyBucket = (): CardCaptureBucket => ({
   vertical: [],
   invertido: [],
 })
+
+const isHeifLike = (file: File) => {
+  const lowerName = file.name.toLowerCase()
+  const mime = file.type.toLowerCase()
+  return (
+    lowerName.endsWith('.heic') ||
+    lowerName.endsWith('.heif') ||
+    lowerName.endsWith('.hevc') ||
+    mime.includes('heic') ||
+    mime.includes('heif') ||
+    mime.includes('hevc')
+  )
+}
+
+const convertImageBlobToJpeg = async (blob: Blob) => {
+  const bitmap = await createImageBitmap(blob)
+  const canvas = document.createElement('canvas')
+  canvas.width = bitmap.width
+  canvas.height = bitmap.height
+  const context = canvas.getContext('2d')
+  if (!context) {
+    bitmap.close()
+    throw new Error('Falha ao converter imagem para JPEG.')
+  }
+  context.drawImage(bitmap, 0, 0)
+  bitmap.close()
+
+  return new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob(
+      result => {
+        if (!result) {
+          reject(new Error('Falha ao gerar JPEG da imagem importada.'))
+          return
+        }
+        resolve(result)
+      },
+      'image/jpeg',
+      0.92,
+    )
+  })
+}
 
 const revokeBucketUrls = (bucket: CardCaptureBucket) => {
   bucket.vertical.forEach(item => URL.revokeObjectURL(item.objectUrl))
@@ -95,6 +137,8 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
   )
   const [feedback, setFeedback] = useState<string>('')
   const [isExporting, setIsExporting] = useState(false)
+  const [isImporting, setIsImporting] = useState(false)
+  const importInputRef = useRef<HTMLInputElement>(null)
 
   const {
     devices,
@@ -174,6 +218,36 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
     })
   }
 
+  const appendCaptures = (blobs: Blob[]) => {
+    if (!selectedCard) return 0
+    let addedCount = 0
+
+    setCapturesByCard(prev => {
+      const current = prev[selectedCard.id] ?? createEmptyBucket()
+      const remaining = TARGET_PER_ORIENTATION - current[orientation].length
+      if (remaining <= 0) return prev
+
+      const toAdd = blobs.slice(0, remaining).map(blob => ({
+        id: crypto.randomUUID(),
+        blob,
+        objectUrl: URL.createObjectURL(blob),
+        capturedAt: Date.now(),
+      }))
+
+      addedCount = toAdd.length
+
+      return {
+        ...prev,
+        [selectedCard.id]: {
+          ...current,
+          [orientation]: [...current[orientation], ...toAdd],
+        },
+      }
+    })
+
+    return addedCount
+  }
+
   const handleCapture = async () => {
     if (!videoRef.current) {
       setFeedback('A câmera não está pronta.')
@@ -188,6 +262,68 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
       console.error(err)
       setFeedback(err instanceof Error ? err.message : 'Falha ao capturar foto.')
     }
+  }
+
+  const normalizeImportedFile = async (file: File) => {
+    if (isHeifLike(file)) {
+      const heic2anyModule = await import('heic2any')
+      const converted = await heic2anyModule.default({
+        blob: file,
+        toType: 'image/jpeg',
+        quality: 0.92,
+      })
+      const firstBlob = Array.isArray(converted)
+        ? (converted[0] as Blob)
+        : (converted as Blob)
+      return firstBlob.type === 'image/jpeg'
+        ? firstBlob
+        : convertImageBlobToJpeg(firstBlob)
+    }
+
+    if (file.type === 'image/jpeg' || file.type === 'image/jpg') {
+      return file
+    }
+
+    return convertImageBlobToJpeg(file)
+  }
+
+  const handleImportFiles = async (event: ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || [])
+    event.target.value = ''
+    if (!files.length) return
+    if (!selectedCard) {
+      setFeedback('Selecione uma carta antes de importar.')
+      return
+    }
+
+    setIsImporting(true)
+    setFeedback('')
+
+    let failed = 0
+    const normalizedBlobs: Blob[] = []
+
+    for (const file of files) {
+      try {
+        const blob = await normalizeImportedFile(file)
+        normalizedBlobs.push(blob)
+      } catch (err) {
+        failed += 1
+        console.error('Falha ao importar arquivo:', file.name, err)
+      }
+    }
+
+    const addedCount = appendCaptures(normalizedBlobs)
+    const ignoredCount = Math.max(0, normalizedBlobs.length - addedCount)
+
+    const parts = [`Importadas ${addedCount} foto(s)`]
+    if (ignoredCount > 0) {
+      parts.push(`${ignoredCount} excederam o limite da orientação atual`)
+    }
+    if (failed > 0) {
+      parts.push(`${failed} com erro de conversão`)
+    }
+    setFeedback(parts.join(' | '))
+    setIsImporting(false)
   }
 
   const removeLastCapture = () => {
@@ -389,6 +525,13 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
 
         <div className="capture-actions">
           <button onClick={handleCapture}>Capturar foto</button>
+          <button
+            className="secondary"
+            onClick={() => importInputRef.current?.click()}
+            disabled={isImporting}
+          >
+            {isImporting ? 'Importando...' : 'Importar fotos'}
+          </button>
           <button className="secondary" onClick={removeLastCapture}>
             Desfazer última
           </button>
@@ -402,6 +545,11 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
             {isExporting ? 'Exportando...' : 'Exportar carta (ZIP)'}
           </button>
         </div>
+
+        <p className="registration-supported">
+          Formatos aceitos: HEIF/HEIC/HEVC/PNG/JPEG (convertidos para JPEG quando
+          necessário).
+        </p>
 
         {feedback && <p className="registration-feedback">{feedback}</p>}
 
@@ -424,6 +572,15 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
           </div>
         </div>
       </div>
+
+      <input
+        ref={importInputRef}
+        type="file"
+        accept={ACCEPTED_IMAGE_EXTENSIONS.join(',')}
+        multiple
+        onChange={handleImportFiles}
+        hidden
+      />
     </div>
   )
 }

@@ -14,12 +14,17 @@ interface CardRecognizerProps {
     mappedLabels: number
     unmappedLabels: string[]
   }
+  localDiagnostics: {
+    cards: number
+    candidates: number
+  }
 }
 
 const statusLabels: Record<RecognitionStatus, string> = {
   idle: 'Parado',
   loading: 'Carregando modelo',
   running: 'Reconhecendo cartas',
+  'running-local': 'Reconhecimento local (capturas salvas)',
   'no-model': 'Modelo não encontrado',
   error: 'Erro no reconhecimento',
 }
@@ -31,6 +36,7 @@ const CardRecognizer: FC<CardRecognizerProps> = ({
   onToggle,
   lastResult,
   labelDiagnostics,
+  localDiagnostics,
 }) => {
   return (
     <div className="recognizer-panel">
@@ -47,6 +53,12 @@ const CardRecognizer: FC<CardRecognizerProps> = ({
         <p className="recognizer-mapping">
           Labels mapeadas: {labelDiagnostics.mappedLabels}/
           {labelDiagnostics.totalLabels}
+        </p>
+      )}
+      {status === 'running-local' && (
+        <p className="recognizer-mapping">
+          Base local: {localDiagnostics.cards} carta(s), {localDiagnostics.candidates}{' '}
+          variação(ões) de orientação.
         </p>
       )}
       {labelDiagnostics.unmappedLabels.length > 0 && (

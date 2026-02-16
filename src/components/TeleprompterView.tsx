@@ -391,6 +391,9 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
       source: DrawnCard['source'],
       confidence?: number,
     ) => {
+      let blockedReason = ''
+      let shouldAdvance = false
+
       const drawn: DrawnCard = {
         position: currentPositionNumber,
         cardId: card.id,
@@ -400,13 +403,57 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
         confidence,
       }
 
-      setDrawnByPosition(prev => ({ ...prev, [currentPositionNumber]: drawn }))
+      setDrawnByPosition(prev => {
+        const current = prev[currentPositionNumber]
+        if (
+          source === 'camera' &&
+          current &&
+          current.cardId === card.id &&
+          current.isReversed === isReversed
+        ) {
+          blockedReason = 'Carta já registrada nesta posição. Mostre uma nova carta.'
+          return prev
+        }
 
-      if (autoAdvance && currentPositionIndex < spread.positions.length - 1) {
+        const previousPositionIndex = spread.positions[currentPositionIndex - 1]?.index
+        const previous = previousPositionIndex ? prev[previousPositionIndex] : undefined
+
+        if (
+          source === 'camera' &&
+          !current &&
+          previous &&
+          previous.cardId === card.id &&
+          previous.isReversed === isReversed
+        ) {
+          blockedReason =
+            'Carta repetida detectada. Troque a carta para preencher a próxima posição.'
+          return prev
+        }
+
+        shouldAdvance = true
+        return { ...prev, [currentPositionNumber]: drawn }
+      })
+
+      if (blockedReason) {
+        setControlFeedback(blockedReason)
+        return
+      }
+
+      if (
+        shouldAdvance &&
+        autoAdvance &&
+        currentPositionIndex < spread.positions.length - 1
+      ) {
         setCurrentPositionIndex(prev => prev + 1)
       }
     },
-    [autoAdvance, currentPositionIndex, currentPositionNumber, spread.positions.length],
+    [
+      autoAdvance,
+      currentPositionIndex,
+      currentPositionNumber,
+      spread.positions,
+      spread.positions.length,
+    ],
   )
 
   const {
@@ -415,6 +462,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
     lastResult,
     resetLastConfirmation,
     labelDiagnostics,
+    localDiagnostics,
   } = useCardRecognition({
     videoRef,
     cards,
@@ -1260,6 +1308,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
               onToggle={() => setRecognitionEnabled(prev => !prev)}
               lastResult={lastResult}
               labelDiagnostics={labelDiagnostics}
+              localDiagnostics={localDiagnostics}
             />
 
             <div className="controls">

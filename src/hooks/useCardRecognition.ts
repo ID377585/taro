@@ -2,6 +2,10 @@ import { RefObject, useEffect, useMemo, useRef, useState } from 'react'
 import { Card, RecognitionResult } from '../types'
 import { CardRecognizerModel } from '../services/modelService'
 import {
+  LocalCaptureMatcher,
+  LocalCaptureMatcherStats,
+} from '../services/localCaptureMatcher'
+import {
   createCardLookup,
   matchCardFromModelLabel,
   normalizeLabelValue,
@@ -29,6 +33,7 @@ export type RecognitionStatus =
   | 'idle'
   | 'loading'
   | 'running'
+  | 'running-local'
   | 'no-model'
   | 'error'
 
@@ -52,9 +57,15 @@ export const useCardRecognition = ({
   const [error, setError] = useState<string | null>(null)
   const [lastResult, setLastResult] = useState<RecognitionResult | null>(null)
   const [modelLabels, setModelLabels] = useState<string[]>([])
+  const [localStats, setLocalStats] = useState<LocalCaptureMatcherStats>({
+    cards: 0,
+    candidates: 0,
+  })
   const recognizerRef = useRef<CardRecognizerModel | null>(null)
+  const localMatcherRef = useRef<LocalCaptureMatcher | null>(null)
   const votesRef = useRef<VoteState | null>(null)
   const lastConfirmedKeyRef = useRef<string>('')
+  const isPredictingRef = useRef(false)
 
   const cardLookup = useMemo(() => createCardLookup(cards), [cards])
 
@@ -95,14 +106,35 @@ export const useCardRecognition = ({
     const loadModel = async () => {
       if (!enabled) {
         setStatus('idle')
+        setError(null)
+        setLocalStats({ cards: 0, candidates: 0 })
+        localMatcherRef.current = null
         return
       }
 
       setStatus('loading')
       setError(null)
+      setLocalStats({ cards: 0, candidates: 0 })
+      localMatcherRef.current = null
 
       if (!recognizerRef.current) {
         recognizerRef.current = new CardRecognizerModel()
+      }
+
+      const fallbackToLocalMatcher = async () => {
+        const matcher = new LocalCaptureMatcher()
+        const stats = await matcher.load()
+        if (stats.candidates > 0) {
+          localMatcherRef.current = matcher
+          if (isMounted) {
+            setLocalStats(stats)
+            setModelLabels([])
+            setStatus('running-local')
+            setError(null)
+          }
+          return true
+        }
+        return false
       }
 
       try {
@@ -110,17 +142,32 @@ export const useCardRecognition = ({
         if (isMounted) {
           setModelLabels(recognizerRef.current.getLabels())
           setStatus('running')
+          setError(null)
         }
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err)
-        if (message.toLowerCase().includes('404')) {
-          if (isMounted) {
-            setStatus('no-model')
-            setError('Modelo não encontrado em /public/model.')
+        try {
+          const hasLocalFallback = await fallbackToLocalMatcher()
+          if (!hasLocalFallback && isMounted) {
+            if (message.toLowerCase().includes('404')) {
+              setStatus('no-model')
+              setError(
+                'Modelo não encontrado e nenhuma captura local disponível para reconhecimento.',
+              )
+            } else {
+              setStatus('error')
+              setError(message)
+            }
           }
-        } else if (isMounted) {
-          setStatus('error')
-          setError(message)
+        } catch (localError) {
+          const fallbackMessage =
+            localError instanceof Error ? localError.message : String(localError)
+          if (isMounted) {
+            setStatus('error')
+            setError(
+              `${message}. Além disso, falhou ao carregar capturas locais: ${fallbackMessage}`,
+            )
+          }
         }
       }
     }
@@ -133,32 +180,18 @@ export const useCardRecognition = ({
   }, [enabled, metadataUrl, modelUrl])
 
   useEffect(() => {
-    if (!enabled || status !== 'running') return
+    if (!enabled || (status !== 'running' && status !== 'running-local')) return
 
     const timer = window.setInterval(() => {
+      if (isPredictingRef.current) return
+
       const video = videoRef.current
-      if (!video || !recognizerRef.current) return
+      if (!video) return
 
-      void recognizerRef.current.predict(video).then(prediction => {
-        if (!prediction) return
-        if (prediction.confidence < confidenceThreshold) return
+      const handleResult = (result: RecognitionResult | null) => {
+        if (!result?.card) return
 
-        const normalizedLabel = normalizeLabelValue(prediction.label)
-
-        const mappedByLabel = labelMappings.byNormalizedLabel.get(normalizedLabel)
-        const matched = matchCardFromModelLabel(prediction.label, cardLookup)
-        const card =
-          mappedByLabel?.card ||
-          matched.card ||
-          cardLookup.get(`${prediction.index}`) ||
-          null
-
-        const isReversed =
-          mappedByLabel?.isReversed ?? matched.orientation === 'invertido'
-
-        if (!card) return
-
-        const voteKey = `${card.id}:${isReversed ? 'r' : 'v'}`
+        const voteKey = `${result.card.id}:${result.isReversed ? 'r' : 'v'}`
         const currentVote = votesRef.current
         if (!currentVote || currentVote.key !== voteKey) {
           votesRef.current = { key: voteKey, count: 1 }
@@ -171,16 +204,70 @@ export const useCardRecognition = ({
         if (lastConfirmedKeyRef.current === voteKey) return
         lastConfirmedKeyRef.current = voteKey
 
-        const result: RecognitionResult = {
-          card,
-          isReversed,
-          confidence: prediction.confidence,
-          label: prediction.label,
-        }
-
         setLastResult(result)
         onConfirmed?.(result)
-      })
+      }
+
+      isPredictingRef.current = true
+
+      if (status === 'running' && recognizerRef.current) {
+        void recognizerRef.current
+          .predict(video)
+          .then(prediction => {
+            if (!prediction) return
+            if (prediction.confidence < confidenceThreshold) return
+
+            const normalizedLabel = normalizeLabelValue(prediction.label)
+
+            const mappedByLabel = labelMappings.byNormalizedLabel.get(normalizedLabel)
+            const matched = matchCardFromModelLabel(prediction.label, cardLookup)
+            const card =
+              mappedByLabel?.card ||
+              matched.card ||
+              cardLookup.get(`${prediction.index}`) ||
+              null
+
+            const isReversed =
+              mappedByLabel?.isReversed ?? matched.orientation === 'invertido'
+
+            if (!card) return
+
+            handleResult({
+              card,
+              isReversed,
+              confidence: prediction.confidence,
+              label: prediction.label,
+            })
+          })
+          .finally(() => {
+            isPredictingRef.current = false
+          })
+        return
+      }
+
+      if (status === 'running-local' && localMatcherRef.current) {
+        try {
+          const prediction = localMatcherRef.current.predict(video)
+          if (!prediction) return
+          const localThreshold = Math.min(confidenceThreshold, 0.46)
+          if (prediction.confidence < localThreshold) return
+
+          const card = cardLookup.get(`${prediction.cardId}`) || null
+          if (!card) return
+
+          handleResult({
+            card,
+            isReversed: prediction.isReversed,
+            confidence: prediction.confidence,
+            label: prediction.label,
+          })
+        } finally {
+          isPredictingRef.current = false
+        }
+        return
+      }
+
+      isPredictingRef.current = false
     }, intervalMs)
 
     return () => {
@@ -210,5 +297,6 @@ export const useCardRecognition = ({
     lastResult,
     resetLastConfirmation,
     labelDiagnostics: labelMappings.diagnostics,
+    localDiagnostics: localStats,
   }
 }

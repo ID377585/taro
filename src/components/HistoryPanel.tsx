@@ -4,15 +4,21 @@ import './HistoryPanel.css'
 
 interface HistoryPanelProps {
   sessions: SpreadingSession[]
+  onOpenAll: () => void
 }
 
 const formatDate = (timestamp: number) =>
   new Date(timestamp).toLocaleString('pt-BR')
 
-const HistoryPanel: FC<HistoryPanelProps> = ({ sessions }) => {
+const HistoryPanel: FC<HistoryPanelProps> = ({ sessions, onOpenAll }) => {
   return (
     <div className="history-panel">
-      <h3>Histórico Local</h3>
+      <div className="history-panel-head">
+        <h3>Histórico Local</h3>
+        <button className="secondary" onClick={onOpenAll}>
+          Ver todos os registros
+        </button>
+      </div>
       {sessions.length === 0 && <p>Nenhuma sessão salva ainda.</p>}
 
       <ul>

@@ -3,6 +3,7 @@ import './App.css'
 import SpreadSelector from './components/SpreadSelector'
 import TeleprompterView from './components/TeleprompterView'
 import HistoryPanel from './components/HistoryPanel'
+import HistoryRecordsView from './components/HistoryRecordsView'
 import CardRegistrationView from './components/CardRegistrationView'
 import ConsultationIntakeForm from './components/ConsultationIntakeForm'
 import {
@@ -26,6 +27,7 @@ function App() {
   const [selectedSpread, setSelectedSpread] = useState<Spread | null>(null)
   const [showSpreadSelector, setShowSpreadSelector] = useState(false)
   const [showIntakeForm, setShowIntakeForm] = useState(false)
+  const [showHistoryRecords, setShowHistoryRecords] = useState(false)
   const [isRegisteringCards, setIsRegisteringCards] = useState(false)
   const [consultationIntake, setConsultationIntake] =
     useState<ConsultationIntake | null>(null)
@@ -106,7 +108,8 @@ function App() {
           !selectedSpread &&
           !isRegisteringCards &&
           !showSpreadSelector &&
-          !showIntakeForm && (
+          !showIntakeForm &&
+          !showHistoryRecords && (
           <>
             <div className="home-menu">
               <h1>Tarô Teleprompter</h1>
@@ -120,6 +123,7 @@ function App() {
                     setIsRegisteringCards(false)
                     setShowSpreadSelector(false)
                     setShowIntakeForm(true)
+                    setShowHistoryRecords(false)
                   }}
                 >
                   Iniciar Tiragem
@@ -130,14 +134,32 @@ function App() {
                     setShowIntakeForm(false)
                     setShowSpreadSelector(false)
                     setIsRegisteringCards(true)
+                    setShowHistoryRecords(false)
                   }}
                 >
                   Registrar Cartas
                 </button>
               </div>
             </div>
-            <HistoryPanel sessions={sessions} />
+            <HistoryPanel
+              sessions={sessions}
+              onOpenAll={() => {
+                setShowIntakeForm(false)
+                setShowSpreadSelector(false)
+                setIsRegisteringCards(false)
+                setShowHistoryRecords(true)
+              }}
+            />
           </>
+        )}
+
+        {!loading && !loadError && !selectedSpread && showHistoryRecords && (
+          <HistoryRecordsView
+            sessions={sessions}
+            cards={cards}
+            spreads={spreads}
+            onBack={() => setShowHistoryRecords(false)}
+          />
         )}
 
         {!loading && !loadError && !selectedSpread && showIntakeForm && (

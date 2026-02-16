@@ -28,6 +28,8 @@ interface CardRegistrationViewProps {
   onBack: () => void
 }
 
+type LocalSyncState = 'idle' | 'saving' | 'saved' | 'error'
+
 const TARGET_PER_ORIENTATION = 10
 const ACCEPTED_IMAGE_EXTENSIONS = ['.heic', '.heif', '.hevc', '.jpg', '.jpeg', '.png']
 
@@ -214,6 +216,8 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
   const [isExporting, setIsExporting] = useState(false)
   const [isImporting, setIsImporting] = useState(false)
   const [isHydratingCaptures, setIsHydratingCaptures] = useState(true)
+  const [localSyncState, setLocalSyncState] = useState<LocalSyncState>('idle')
+  const [lastLocalSyncAt, setLastLocalSyncAt] = useState<number | null>(null)
   const [isPanelExpanded, setIsPanelExpanded] = useState(false)
   const importInputRef = useRef<HTMLInputElement>(null)
 
@@ -287,6 +291,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
         console.error('Erro ao carregar capturas salvas:', err)
         if (isMounted) {
           setFeedback('Não foi possível carregar as capturas salvas no dispositivo.')
+          setLocalSyncState('error')
         }
       } finally {
         if (isMounted) {
@@ -312,6 +317,13 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
           const nextSnapshot = new Map<number, string>()
           const currentSnapshot = persistedSnapshotRef.current
           const activeCardIds = new Set<number>()
+          let hasChangesToPersist = false
+
+          const markSyncStarted = () => {
+            if (hasChangesToPersist) return
+            hasChangesToPersist = true
+            setLocalSyncState('saving')
+          }
 
           for (const [cardIdKey, bucket] of Object.entries(capturesByCard)) {
             const cardId = Number(cardIdKey)
@@ -320,6 +332,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
             activeCardIds.add(cardId)
             if (isBucketEmpty(bucket)) {
               if (currentSnapshot.has(cardId)) {
+                markSyncStarted()
                 await dbService.deleteCardCapture(cardId)
               }
               continue
@@ -329,19 +342,27 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
             nextSnapshot.set(cardId, fingerprint)
 
             if (currentSnapshot.get(cardId) !== fingerprint) {
+              markSyncStarted()
               await dbService.saveCardCapture(serializeBucket(cardId, bucket))
             }
           }
 
           for (const previousCardId of currentSnapshot.keys()) {
             if (!activeCardIds.has(previousCardId)) {
+              markSyncStarted()
               await dbService.deleteCardCapture(previousCardId)
             }
           }
 
           persistedSnapshotRef.current = nextSnapshot
+
+          if (hasChangesToPersist) {
+            setLocalSyncState('saved')
+            setLastLocalSyncAt(Date.now())
+          }
         } catch (err) {
           console.error('Erro ao sincronizar capturas no IndexedDB:', err)
+          setLocalSyncState('error')
         }
       })()
     }, 250)
@@ -640,6 +661,23 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
     setOrientation('vertical')
   }
 
+  const localSyncMessage = useMemo(() => {
+    if (localSyncState === 'saving') return 'Sincronizando no armazenamento local...'
+    if (localSyncState === 'saved') {
+      if (!lastLocalSyncAt) return 'Salvo localmente.'
+      const formattedTime = new Date(lastLocalSyncAt).toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      })
+      return `Salvo localmente às ${formattedTime}.`
+    }
+    if (localSyncState === 'error') {
+      return 'Falha ao salvar localmente. Tente novamente.'
+    }
+    return ''
+  }, [lastLocalSyncAt, localSyncState])
+
   return (
     <div className="card-registration-view">
       <CameraView
@@ -787,6 +825,12 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
             {isHydratingCaptures && (
               <p className="registration-supported">
                 Carregando capturas salvas localmente...
+              </p>
+            )}
+
+            {!isHydratingCaptures && localSyncMessage && (
+              <p className={`registration-local-sync ${localSyncState}`}>
+                {localSyncMessage}
               </p>
             )}
 

@@ -223,6 +223,24 @@
   font-size: 0.8rem;
 }
 
+.registration-local-sync {
+  margin: 0.65rem 0 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.registration-local-sync.saving {
+  color: #facc15;
+}
+
+.registration-local-sync.saved {
+  color: #86efac;
+}
+
+.registration-local-sync.error {
+  color: #fca5a5;
+}
+
 .preview-grid {
   margin-top: 1rem;
   display: grid;

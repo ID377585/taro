@@ -10,7 +10,24 @@
           "nome": "Mensagem",
           "descricao": "O que você precisa saber agora"
         }
-      ]
+      ],
+      "ruleConfig": {
+        "tempo": {
+          "usarFaseLua": true,
+          "usarEstacao": true,
+          "hemisferio": "sul"
+        },
+        "sinais": {
+          "habilitar": true,
+          "incluir": [
+            "energia-obsessiva",
+            "manipulacao",
+            "encerramento-karmico",
+            "prosperidade-bloqueada",
+            "inveja-externa"
+          ]
+        }
+      }
     },
     {
       "id": "tres-cartas-ppf",
@@ -32,7 +49,24 @@
           "nome": "Futuro",
           "descricao": "Tendência provável"
         }
-      ]
+      ],
+      "ruleConfig": {
+        "tempo": {
+          "usarFaseLua": true,
+          "usarEstacao": true,
+          "hemisferio": "sul"
+        },
+        "sinais": {
+          "habilitar": true,
+          "incluir": [
+            "energia-obsessiva",
+            "manipulacao",
+            "encerramento-karmico",
+            "prosperidade-bloqueada",
+            "inveja-externa"
+          ]
+        }
+      }
     },
     {
       "id": "tres-cartas-relacionamento",
@@ -54,7 +88,28 @@
           "nome": "Relacionamento",
           "descricao": "A dinâmica entre vocês"
         }
-      ]
+      ],
+      "ruleConfig": {
+        "tempo": {
+          "usarFaseLua": true,
+          "usarEstacao": true,
+          "hemisferio": "sul"
+        },
+        "sinais": {
+          "habilitar": true,
+          "incluir": [
+            "traicao",
+            "reconciliacao-real",
+            "reconciliacao-ilusao",
+            "ainda-ama",
+            "vai-voltar",
+            "manipulacao",
+            "energia-obsessiva",
+            "encerramento-karmico",
+            "inveja-externa"
+          ]
+        }
+      }
     },
     {
       "id": "tres-cartas-expectativas",
@@ -76,7 +131,28 @@
           "nome": "Futuro do relacionamento",
           "descricao": "Tendência provável para o vínculo"
         }
-      ]
+      ],
+      "ruleConfig": {
+        "tempo": {
+          "usarFaseLua": true,
+          "usarEstacao": true,
+          "hemisferio": "sul"
+        },
+        "sinais": {
+          "habilitar": true,
+          "incluir": [
+            "traicao",
+            "reconciliacao-real",
+            "reconciliacao-ilusao",
+            "ainda-ama",
+            "vai-voltar",
+            "manipulacao",
+            "energia-obsessiva",
+            "encerramento-karmico",
+            "inveja-externa"
+          ]
+        }
+      }
     },
     {
       "id": "situacao-obstaculo-conselho",
@@ -98,7 +174,24 @@
           "nome": "Conselho",
           "descricao": "Direção recomendada para avançar"
         }
-      ]
+      ],
+      "ruleConfig": {
+        "tempo": {
+          "usarFaseLua": true,
+          "usarEstacao": true,
+          "hemisferio": "sul"
+        },
+        "sinais": {
+          "habilitar": true,
+          "incluir": [
+            "energia-obsessiva",
+            "manipulacao",
+            "encerramento-karmico",
+            "prosperidade-bloqueada",
+            "inveja-externa"
+          ]
+        }
+      }
     },
     {
       "id": "cruz-celta",
@@ -155,7 +248,29 @@
           "nome": "Resultado Final",
           "descricao": "A provável conclusão"
         }
-      ]
+      ],
+      "ruleConfig": {
+        "tempo": {
+          "usarFaseLua": true,
+          "usarEstacao": true,
+          "hemisferio": "sul"
+        },
+        "sinais": {
+          "habilitar": true,
+          "incluir": [
+            "traicao",
+            "reconciliacao-real",
+            "reconciliacao-ilusao",
+            "ainda-ama",
+            "vai-voltar",
+            "manipulacao",
+            "energia-obsessiva",
+            "encerramento-karmico",
+            "inveja-externa",
+            "prosperidade-bloqueada"
+          ]
+        }
+      }
     },
     {
       "id": "mandala-astrologica",
@@ -222,7 +337,24 @@
           "nome": "Casa 12 (Peixes)",
           "descricao": "Inconsciente, encerramentos e espiritualidade"
         }
-      ]
+      ],
+      "ruleConfig": {
+        "tempo": {
+          "usarFaseLua": true,
+          "usarEstacao": true,
+          "hemisferio": "sul"
+        },
+        "sinais": {
+          "habilitar": true,
+          "incluir": [
+            "energia-obsessiva",
+            "manipulacao",
+            "encerramento-karmico",
+            "prosperidade-bloqueada",
+            "inveja-externa"
+          ]
+        }
+      }
     },
     {
       "id": "peladan",
@@ -249,7 +381,24 @@
           "nome": "Resultado",
           "descricao": "Tendência final da decisão"
         }
-      ]
+      ],
+      "ruleConfig": {
+        "tempo": {
+          "usarFaseLua": true,
+          "usarEstacao": true,
+          "hemisferio": "sul"
+        },
+        "sinais": {
+          "habilitar": true,
+          "incluir": [
+            "energia-obsessiva",
+            "manipulacao",
+            "encerramento-karmico",
+            "prosperidade-bloqueada",
+            "inveja-externa"
+          ]
+        }
+      }
     },
     {
       "id": "diamante",
@@ -281,7 +430,24 @@
           "nome": "Direção",
           "descricao": "Caminho mais alinhado"
         }
-      ]
+      ],
+      "ruleConfig": {
+        "tempo": {
+          "usarFaseLua": true,
+          "usarEstacao": true,
+          "hemisferio": "sul"
+        },
+        "sinais": {
+          "habilitar": true,
+          "incluir": [
+            "energia-obsessiva",
+            "manipulacao",
+            "encerramento-karmico",
+            "prosperidade-bloqueada",
+            "inveja-externa"
+          ]
+        }
+      }
     },
     {
       "id": "cruz-5",
@@ -313,7 +479,24 @@
           "nome": "Direção geral",
           "descricao": "Tendência principal"
         }
-      ]
+      ],
+      "ruleConfig": {
+        "tempo": {
+          "usarFaseLua": true,
+          "usarEstacao": true,
+          "hemisferio": "sul"
+        },
+        "sinais": {
+          "habilitar": true,
+          "incluir": [
+            "energia-obsessiva",
+            "manipulacao",
+            "encerramento-karmico",
+            "prosperidade-bloqueada",
+            "inveja-externa"
+          ]
+        }
+      }
     }
   ]
 }

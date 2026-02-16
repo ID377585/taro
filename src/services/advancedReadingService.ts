@@ -5,6 +5,9 @@ import {
   ConsultationIntake,
   ConsultationPerson,
   PersonSex,
+  SpreadRuleConfig,
+  SensitiveSignalKey,
+  Hemisphere,
 } from '../types'
 
 interface PositionedCard {
@@ -25,6 +28,23 @@ interface SpreadProfile {
   estrutura: string
   decisao: string
   cautela: string
+}
+
+interface RuntimeRuleConfig {
+  tempo: {
+    usarFaseLua: boolean
+    usarEstacao: boolean
+    hemisferio: Hemisphere
+  }
+  sinais: {
+    habilitar: boolean
+    incluir: SensitiveSignalKey[]
+  }
+}
+
+interface SensitiveSignalResult {
+  details: string[]
+  matchedCount: number
 }
 
 const PSYCHOLOGICAL_THEMES = [
@@ -87,6 +107,189 @@ const ELEMENT_ACTION_MAP: Record<string, string> = {
   Agua: 'regular emoções antes de decisões definitivas',
   Ar: 'organizar comunicação, limites e estratégia mental',
   Terra: 'priorizar constância, rotina e execução prática',
+}
+
+const DEFAULT_SENSITIVE_SIGNALS: SensitiveSignalKey[] = [
+  'energia-obsessiva',
+  'manipulacao',
+  'encerramento-karmico',
+  'prosperidade-bloqueada',
+  'inveja-externa',
+]
+
+const DEFAULT_RULE_CONFIG: RuntimeRuleConfig = {
+  tempo: {
+    usarFaseLua: true,
+    usarEstacao: true,
+    hemisferio: 'sul',
+  },
+  sinais: {
+    habilitar: true,
+    incluir: DEFAULT_SENSITIVE_SIGNALS,
+  },
+}
+
+type SensitivePattern = {
+  all: string[]
+  message: string
+}
+
+type SensitiveSignalRule = {
+  label: string
+  patterns: SensitivePattern[]
+}
+
+const SENSITIVE_SIGNAL_RULES: Record<SensitiveSignalKey, SensitiveSignalRule> = {
+  traicao: {
+    label: 'Traição / deslealdade',
+    patterns: [
+      {
+        all: ['7 de Espadas', '3 de Copas'],
+        message:
+          'combinação de desvio de confiança e interferência afetiva; validar contexto relacional e coerência dos fatos.',
+      },
+      {
+        all: ['O Diabo', '7 de Espadas'],
+        message:
+          'combinação de apego tóxico com estratégia oculta; observar manipulação e limites quebrados.',
+      },
+    ],
+  },
+  'energia-obsessiva': {
+    label: 'Energia obsessiva',
+    patterns: [
+      {
+        all: ['O Diabo', 'A Lua', '9 de Espadas'],
+        message:
+          'combinação clássica de aprisionamento mental-espiritual; priorizar proteção energética e higiene emocional.',
+      },
+      {
+        all: ['O Diabo', 'A Lua'],
+        message:
+          'combinação de magnetismo denso e confusão; reduzir gatilhos e reforçar práticas de aterramento.',
+      },
+    ],
+  },
+  'reconciliacao-real': {
+    label: 'Reconciliação com base real',
+    patterns: [
+      {
+        all: ['2 de Copas', 'A Temperança'],
+        message:
+          'combinação de união com moderação; reconciliação tende a ser viável com maturidade e ajustes concretos.',
+      },
+      {
+        all: ['2 de Copas', 'O Sol'],
+        message:
+          'combinação de vínculo e clareza; há espaço para retomada transparente e acordos objetivos.',
+      },
+    ],
+  },
+  'reconciliacao-ilusao': {
+    label: 'Reconciliação ilusória',
+    patterns: [
+      {
+        all: ['2 de Copas', '7 de Copas', 'A Lua'],
+        message:
+          'combinação de idealização afetiva e incerteza; risco de retorno sem sustentação prática.',
+      },
+      {
+        all: ['7 de Copas', 'A Lua'],
+        message:
+          'combinação de fantasia e ruído emocional; alinhar expectativa com realidade antes de reaproximação.',
+      },
+    ],
+  },
+  'ainda-ama': {
+    label: 'Afeto ainda presente',
+    patterns: [
+      {
+        all: ['2 de Copas', 'Rainha de Copas'],
+        message:
+          'combinação de vínculo e sensibilidade emocional; há afeto ativo, porém requer reciprocidade e maturidade.',
+      },
+      {
+        all: ['2 de Copas', 'Rei de Copas'],
+        message:
+          'combinação de vínculo com maturidade emocional; tendência de sentimento estável quando há diálogo claro.',
+      },
+    ],
+  },
+  'vai-voltar': {
+    label: 'Possibilidade de retorno',
+    patterns: [
+      {
+        all: ['6 de Copas', 'O Julgamento'],
+        message:
+          'combinação de passado e chamado de revisão; existe chance de retorno para fechamento de ciclo.',
+      },
+      {
+        all: ['6 de Copas', '2 de Copas', 'O Julgamento'],
+        message:
+          'combinação forte de reencontro; retorno possível, desde que acompanhado de nova postura prática.',
+      },
+    ],
+  },
+  manipulacao: {
+    label: 'Manipulação',
+    patterns: [
+      {
+        all: ['O Mago', '7 de Espadas'],
+        message:
+          'combinação de habilidade estratégica e ocultação; sinal de discurso persuasivo sem transparência total.',
+      },
+      {
+        all: ['A Lua', '7 de Espadas'],
+        message:
+          'combinação de ambiguidade e ocultação; recomenda-se confirmar fatos antes de confiar.',
+      },
+    ],
+  },
+  'encerramento-karmico': {
+    label: 'Encerramento kármico',
+    patterns: [
+      {
+        all: ['A Morte', 'O Julgamento'],
+        message:
+          'combinação de corte e renascimento; padrão de encerramento kármico e reposicionamento de propósito.',
+      },
+      {
+        all: ['A Morte', 'O Mundo'],
+        message:
+          'combinação de transformação com conclusão; ciclo tende a fechar para liberar nova fase.',
+      },
+    ],
+  },
+  'prosperidade-bloqueada': {
+    label: 'Prosperidade bloqueada',
+    patterns: [
+      {
+        all: ['5 de Ouros', '4 de Ouros'],
+        message:
+          'combinação de escassez com apego defensivo; bloqueio financeiro pede reestruturação e abertura para apoio.',
+      },
+      {
+        all: ['5 de Ouros', '10 de Paus'],
+        message:
+          'combinação de sobrecarga e dificuldade material; redistribuir esforço e revisar estratégia de recursos.',
+      },
+    ],
+  },
+  'inveja-externa': {
+    label: 'Inveja / interferência externa',
+    patterns: [
+      {
+        all: ['5 de Paus', '7 de Espadas'],
+        message:
+          'combinação de disputa e sabotagem silenciosa; proteger planos e reduzir exposição prematura.',
+      },
+      {
+        all: ['O Diabo', '5 de Paus'],
+        message:
+          'combinação de competição tóxica; reforçar limites energéticos e comunicação estratégica.',
+      },
+    ],
+  },
 }
 
 const SPREAD_PROFILES: Record<string, SpreadProfile> = {
@@ -160,6 +363,128 @@ const normalize = (value: string) =>
 
 const includesNormalized = (value: string, pattern: string) =>
   normalize(value).includes(normalize(pattern))
+
+const sanitizeSensitiveSignalList = (
+  values?: SensitiveSignalKey[],
+): SensitiveSignalKey[] => {
+  if (!values?.length) return DEFAULT_SENSITIVE_SIGNALS
+  return values.filter(
+    (value): value is SensitiveSignalKey =>
+      value in SENSITIVE_SIGNAL_RULES,
+  )
+}
+
+const toRuntimeRuleConfig = (
+  config?: SpreadRuleConfig,
+): RuntimeRuleConfig => {
+  const hemisferio = config?.tempo?.hemisferio || DEFAULT_RULE_CONFIG.tempo.hemisferio
+  const usarFaseLua =
+    config?.tempo?.usarFaseLua ?? DEFAULT_RULE_CONFIG.tempo.usarFaseLua
+  const usarEstacao =
+    config?.tempo?.usarEstacao ?? DEFAULT_RULE_CONFIG.tempo.usarEstacao
+
+  return {
+    tempo: {
+      usarFaseLua,
+      usarEstacao,
+      hemisferio,
+    },
+    sinais: {
+      habilitar:
+        config?.sinais?.habilitar ?? DEFAULT_RULE_CONFIG.sinais.habilitar,
+      incluir: sanitizeSensitiveSignalList(config?.sinais?.incluir),
+    },
+  }
+}
+
+const getRuntimeRuleConfig = (spread: Spread) =>
+  toRuntimeRuleConfig(spread.ruleConfig)
+
+const getMoonPhase = (date: Date) => {
+  const synodicMonth = 29.53058867
+  const referenceNewMoon = Date.UTC(2000, 0, 6, 18, 14, 0)
+  const daysSinceReference = (date.getTime() - referenceNewMoon) / 86400000
+  const moonAge =
+    ((daysSinceReference % synodicMonth) + synodicMonth) % synodicMonth
+
+  if (moonAge < 1.84566) return { nome: 'Lua Nova', idade: moonAge }
+  if (moonAge < 5.53699) return { nome: 'Lua Crescente', idade: moonAge }
+  if (moonAge < 9.22831) return { nome: 'Quarto Crescente', idade: moonAge }
+  if (moonAge < 12.91963)
+    return { nome: 'Lua Gibosa Crescente', idade: moonAge }
+  if (moonAge < 16.61096) return { nome: 'Lua Cheia', idade: moonAge }
+  if (moonAge < 20.30228)
+    return { nome: 'Lua Gibosa Minguante', idade: moonAge }
+  if (moonAge < 23.99361) return { nome: 'Quarto Minguante', idade: moonAge }
+  if (moonAge < 27.68493) return { nome: 'Lua Minguante', idade: moonAge }
+  return { nome: 'Lua Balsâmica', idade: moonAge }
+}
+
+const getSeason = (date: Date, hemisphere: Hemisphere) => {
+  const month = date.getMonth() + 1
+  const day = date.getDate()
+
+  const isAfterOrEqual = (targetMonth: number, targetDay: number) =>
+    month > targetMonth || (month === targetMonth && day >= targetDay)
+
+  if (hemisphere === 'sul') {
+    if (isAfterOrEqual(12, 21) || !isAfterOrEqual(3, 20)) return 'Verão'
+    if (isAfterOrEqual(3, 20) && !isAfterOrEqual(6, 21)) return 'Outono'
+    if (isAfterOrEqual(6, 21) && !isAfterOrEqual(9, 23)) return 'Inverno'
+    return 'Primavera'
+  }
+
+  if (isAfterOrEqual(12, 21) || !isAfterOrEqual(3, 20)) return 'Inverno'
+  if (isAfterOrEqual(3, 20) && !isAfterOrEqual(6, 21)) return 'Primavera'
+  if (isAfterOrEqual(6, 21) && !isAfterOrEqual(9, 23)) return 'Verão'
+  return 'Outono'
+}
+
+const getSeasonEnergy = (season: string) => {
+  const map: Record<string, string> = {
+    verao: 'expansão, exposição e movimento de alta energia',
+    outono: 'colheita, revisão de estratégia e ajuste de prioridades',
+    inverno: 'recolhimento, estrutura e consolidação de base',
+    primavera: 'renovação, iniciativa e abertura de ciclo',
+  }
+
+  return map[normalize(season)] || 'ritmo sazonal neutro'
+}
+
+const getMoonElementHint = (phaseName: string, element: string | null) => {
+  if (!element) return null
+  const phase = normalize(phaseName)
+
+  if (element === 'Fogo') {
+    if (phase.includes('crescente') || phase.includes('nova')) {
+      return 'Lua em ciclo de expansão favorece ação e lançamento de projetos.'
+    }
+    return 'Com Fogo dominante fora de ciclo expansivo, agir com estratégia evita impulsividade.'
+  }
+
+  if (element === 'Agua') {
+    if (phase.includes('cheia') || phase.includes('minguante')) {
+      return 'Lua com carga emocional alta favorece cura, escuta e liberação afetiva.'
+    }
+    return 'Com Água dominante em fase inicial, priorize clareza emocional antes de decidir.'
+  }
+
+  if (element === 'Ar') {
+    if (phase.includes('quarto')) {
+      return 'Quartos lunares favorecem decisões, acordos e reposicionamento mental.'
+    }
+    return 'Com Ar dominante, organizar comunicação e fatos reduz ruído na leitura.'
+  }
+
+  if (element === 'Terra') {
+    if (phase.includes('minguante') || phase.includes('balsamica')) {
+      return 'Fase de depuração favorece Terra: cortar excessos e fortalecer estrutura material.'
+    }
+    return 'Com Terra dominante em fase de expansão, manter constância garante materialização.'
+  }
+
+  return null
+}
 
 const applyGender = (
   sex: PersonSex,
@@ -486,11 +811,12 @@ const getRelationshipLayer = (cards: PositionedCard[], spread: Spread) => {
   return lines
 }
 
-const getTimingLayer = (cards: PositionedCard[]) => {
+const getTimingLayer = (cards: PositionedCard[], spread: Spread) => {
   const lines: string[] = []
   const dominantElement = getDominantElement(cards)
   const majorCount = cards.filter(item => item.card.arcano === 'maior').length
   const repeatedNumerology = getRepeatedNumerology(cards)
+  const runtimeConfig = getRuntimeRuleConfig(spread)
 
   if (dominantElement) {
     lines.push(
@@ -512,6 +838,28 @@ const getTimingLayer = (cards: PositionedCard[]) => {
   if (strongestNumber) {
     lines.push(
       `Repetição numerológica ${strongestNumber[0]} (${strongestNumber[1]}x) acelera o tema desse número no tempo da leitura.`,
+    )
+  }
+
+  const now = new Date()
+  if (runtimeConfig.tempo.usarFaseLua) {
+    const moon = getMoonPhase(now)
+    lines.push(
+      `Fase da Lua atual: ${moon.nome} (${moon.idade.toFixed(
+        1,
+      )} dias de ciclo lunar).`,
+    )
+
+    const moonHint = getMoonElementHint(moon.nome, dominantElement)
+    if (moonHint) lines.push(moonHint)
+  }
+
+  if (runtimeConfig.tempo.usarEstacao) {
+    const season = getSeason(now, runtimeConfig.tempo.hemisferio)
+    lines.push(
+      `Estação atual (${runtimeConfig.tempo.hemisferio}): ${season} - ${getSeasonEnergy(
+        season,
+      )}.`,
     )
   }
 
@@ -576,6 +924,52 @@ const getPatternLayer = (cards: PositionedCard[]) => {
   }
 
   return lines
+}
+
+const getSensitiveSignalLayer = (
+  cards: PositionedCard[],
+  spread: Spread,
+): SensitiveSignalResult => {
+  const runtimeConfig = getRuntimeRuleConfig(spread)
+  if (!runtimeConfig.sinais.habilitar) {
+    return {
+      matchedCount: 0,
+      details: ['Regras sensíveis estão desativadas para esta tiragem.'],
+    }
+  }
+
+  const names = new Set(cards.map(item => item.card.nome))
+  const found: string[] = []
+
+  runtimeConfig.sinais.incluir.forEach(signalKey => {
+    const rule = SENSITIVE_SIGNAL_RULES[signalKey]
+    if (!rule) return
+
+    const match = rule.patterns.find(pattern =>
+      pattern.all.every(cardName => names.has(cardName)),
+    )
+
+    if (!match) return
+    found.push(`Sinal de ${rule.label}: ${match.message}`)
+  })
+
+  if (!found.length) {
+    return {
+      matchedCount: 0,
+      details: [
+        'Nenhum sinal sensível configurado foi confirmado por padrão combinatório nesta tiragem.',
+        'Leitura segue com foco nos eixos psicológico, prático e espiritual já mapeados.',
+      ],
+    }
+  }
+
+  return {
+    matchedCount: found.length,
+    details: [
+      ...found,
+      'Aviso profissional: sinais sensíveis são indicativos de padrão energético por combinação; não são sentença isolada.',
+    ],
+  }
 }
 
 const getBodyLayer = (cards: PositionedCard[]) => {
@@ -701,9 +1095,11 @@ export const generateAdvancedSpreadSynthesis = ({
   }
 
   const spreadProfile = getSpreadProfile(spread)
+  const runtimeConfig = getRuntimeRuleConfig(spread)
   const majorCount = positioned.filter(item => item.card.arcano === 'maior').length
   const minorCount = positioned.length - majorCount
   const dominantElement = getDominantElement(positioned)
+  const sensitiveSignals = getSensitiveSignalLayer(positioned, spread)
 
   const layers = [
     { title: '1) Energia Psicológica', details: getPsychologicalLayer(positioned) },
@@ -711,7 +1107,7 @@ export const generateAdvancedSpreadSynthesis = ({
     { title: '3) Tendências Futuras', details: getFutureLayer(positioned) },
     { title: '4) Arquétipos em Ação', details: getArchetypeLayer(positioned) },
     { title: '5) Dinâmica de Relacionamentos', details: getRelationshipLayer(positioned, spread) },
-    { title: '6) Tempo', details: getTimingLayer(positioned) },
+    { title: '6) Tempo', details: getTimingLayer(positioned, spread) },
     { title: '7) Elementos Dominantes', details: getElementLayer(positioned) },
     { title: '8) Padrões Repetitivos', details: getPatternLayer(positioned) },
     { title: '9) Leitura Energética do Corpo', details: getBodyLayer(positioned) },
@@ -727,6 +1123,11 @@ export const generateAdvancedSpreadSynthesis = ({
     dominantElement
       ? `Elemento dominante da sessão: ${dominantElement}.`
       : 'Sem domínio elemental único, indicando campo multifatorial.',
+    runtimeConfig.sinais.habilitar
+      ? sensitiveSignals.matchedCount > 0
+        ? `Regras extras da tiragem confirmaram ${sensitiveSignals.matchedCount} sinal(is) sensível(is) por combinação de cartas.`
+        : 'Regras extras da tiragem não confirmaram sinal sensível dominante nesta rodada.'
+      : 'Regras extras da tiragem estão desativadas.',
     buildPersonalizedIntegratedLine(consultation, spreadProfile),
   ]
     .filter((line): line is string => Boolean(line))
@@ -744,12 +1145,17 @@ export const generateAdvancedSpreadSynthesis = ({
     `- Foco: ${spreadProfile.foco}`,
     `- Estrutura: ${spreadProfile.estrutura}`,
     `- Decisão-chave: ${spreadProfile.decisao}`,
+    `- Tempo configurado: Lua (${runtimeConfig.tempo.usarFaseLua ? 'ON' : 'OFF'}) | Estação (${runtimeConfig.tempo.usarEstacao ? 'ON' : 'OFF'}) | Hemisfério (${runtimeConfig.tempo.hemisferio})`,
+    `- Regras sensíveis: ${runtimeConfig.sinais.habilitar ? `ON (${runtimeConfig.sinais.incluir.length} regra(s))` : 'OFF'}`,
     '',
     'Base posição a posição:',
     ...buildPositionDigest(positioned).map(line => `- ${line}`),
     '',
     'Leitura estruturada em 10 camadas:',
     ...layers.flatMap(layer => ['', layer.title, ...layer.details.map(detail => `- ${detail}`)]),
+    '',
+    'Regras extras por tiragem (configuráveis):',
+    ...sensitiveSignals.details.map(detail => `- ${detail}`),
     '',
     integratedSummary,
     '',

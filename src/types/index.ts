@@ -49,11 +49,38 @@ export interface Position {
   descricao: string
 }
 
+export type Hemisphere = 'norte' | 'sul'
+
+export type SensitiveSignalKey =
+  | 'traicao'
+  | 'energia-obsessiva'
+  | 'reconciliacao-real'
+  | 'reconciliacao-ilusao'
+  | 'ainda-ama'
+  | 'vai-voltar'
+  | 'manipulacao'
+  | 'encerramento-karmico'
+  | 'prosperidade-bloqueada'
+  | 'inveja-externa'
+
+export interface SpreadRuleConfig {
+  tempo?: {
+    usarFaseLua?: boolean
+    usarEstacao?: boolean
+    hemisferio?: Hemisphere
+  }
+  sinais?: {
+    habilitar?: boolean
+    incluir?: SensitiveSignalKey[]
+  }
+}
+
 export interface Spread {
   id: string
   nome: string
   descricao: string
   positions: Position[]
+  ruleConfig?: SpreadRuleConfig
 }
 
 export type ConsultationType = 'pessoal' | 'sobre-outra-pessoa'

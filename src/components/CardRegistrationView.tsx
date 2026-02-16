@@ -144,6 +144,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
     devices,
     currentDeviceId,
     isActive,
+    isStarting,
     error: cameraError,
     startCamera,
     switchCamera,
@@ -176,10 +177,10 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
   }, [cards, selectedCardId])
 
   useEffect(() => {
-    if (!isActive && devices.length > 0) {
+    if (!isActive && !isStarting && devices.length > 0) {
       void startCamera(currentDeviceId || devices[0].deviceId)
     }
-  }, [currentDeviceId, devices, isActive, startCamera])
+  }, [currentDeviceId, devices, isActive, isStarting, startCamera])
 
   useEffect(() => {
     return () => {
@@ -451,6 +452,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
         devices={devices}
         currentDeviceId={currentDeviceId}
         isActive={isActive}
+        isStarting={isStarting}
         error={cameraError}
         onStart={() => startCamera(currentDeviceId || devices[0]?.deviceId)}
         onSwitch={switchCamera}

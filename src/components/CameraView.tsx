@@ -11,6 +11,7 @@ interface CameraViewProps {
   devices: CameraDevice[]
   currentDeviceId: string
   isActive: boolean
+  isStarting?: boolean
   error: string | null
   onStart: () => void
   onSwitch: (deviceId: string) => void
@@ -22,6 +23,7 @@ const CameraView: FC<CameraViewProps> = ({
   devices,
   currentDeviceId,
   isActive,
+  isStarting = false,
   error,
   onStart,
   onSwitch,
@@ -43,6 +45,7 @@ const CameraView: FC<CameraViewProps> = ({
           <select
             className="camera-select"
             value={currentDeviceId}
+            disabled={isStarting}
             onChange={event => onSwitch(event.target.value)}
           >
             {devices.map(device => (

@@ -247,6 +247,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
     devices,
     currentDeviceId,
     isActive,
+    isStarting,
     error: cameraError,
     startCamera,
     switchCamera,
@@ -367,21 +368,22 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
   })
 
   useEffect(() => {
-    if (!isActive && devices.length > 0) {
+    if (!isActive && !isStarting && devices.length > 0) {
       void startCamera(currentDeviceId || devices[0].deviceId, selectedResolution)
     }
-  }, [currentDeviceId, devices, isActive, selectedResolution, startCamera])
+  }, [currentDeviceId, devices, isActive, isStarting, selectedResolution, startCamera])
 
   useEffect(() => {
     if (previousResolutionPresetRef.current === settings.resolutionPreset) return
     previousResolutionPresetRef.current = settings.resolutionPreset
 
-    if (devices.length > 0) {
+    if (devices.length > 0 && !isStarting) {
       void startCamera(currentDeviceId || devices[0].deviceId, selectedResolution)
     }
   }, [
     currentDeviceId,
     devices,
+    isStarting,
     selectedResolution,
     settings.resolutionPreset,
     startCamera,
@@ -918,6 +920,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
         devices={devices}
         currentDeviceId={currentDeviceId}
         isActive={isActive}
+        isStarting={isStarting}
         error={cameraError}
         onStart={() =>
           startCamera(currentDeviceId || devices[0]?.deviceId, selectedResolution)

@@ -11,9 +11,36 @@ export interface CameraResolution {
   height: number
 }
 
+type FacingMode = 'user' | 'environment'
+
 const DEFAULT_RESOLUTION: CameraResolution = {
   width: 1280,
   height: 720,
+}
+
+const isIOSDevice = () =>
+  /iPad|iPhone|iPod/i.test(navigator.userAgent) ||
+  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+
+const inferFacingModeFromLabel = (label: string): FacingMode | undefined => {
+  const normalized = label.toLowerCase()
+  if (
+    normalized.includes('frontal') ||
+    normalized.includes('front') ||
+    normalized.includes('user')
+  ) {
+    return 'user'
+  }
+  if (
+    normalized.includes('traseira') ||
+    normalized.includes('traseiro') ||
+    normalized.includes('rear') ||
+    normalized.includes('back') ||
+    normalized.includes('environment')
+  ) {
+    return 'environment'
+  }
+  return undefined
 }
 
 export const useCamera = (
@@ -22,8 +49,32 @@ export const useCamera = (
   const [devices, setDevices] = useState<MediaDevice[]>([])
   const [currentDeviceId, setCurrentDeviceId] = useState<string>('')
   const [isActive, setIsActive] = useState(false)
+  const [isStarting, setIsStarting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
+  const startRequestRef = useRef(0)
+
+  const listDevices = useCallback(async () => {
+    try {
+      const devs = await navigator.mediaDevices.enumerateDevices()
+      const videoDevices = devs.filter(
+        (d): d is MediaDeviceInfo & { kind: 'videoinput' } => d.kind === 'videoinput',
+      )
+      setDevices(
+        videoDevices.map((d, idx) => ({
+          deviceId: d.deviceId,
+          label: d.label || `Camera ${idx + 1}`,
+          kind: 'videoinput',
+        })),
+      )
+      if (videoDevices[0]) {
+        setCurrentDeviceId(prev => prev || videoDevices[0].deviceId)
+      }
+    } catch (err) {
+      setError('Erro ao listar câmeras')
+      console.error(err)
+    }
+  }, [])
 
   const stopCamera = useCallback(() => {
     if (streamRef.current) {
@@ -37,65 +88,121 @@ export const useCamera = (
   }, [videoRef])
 
   useEffect(() => {
-    const listDevices = async () => {
-      try {
-        const devs = await navigator.mediaDevices.enumerateDevices()
-        const videoDevices = devs.filter(
-          (d): d is MediaDeviceInfo & { kind: 'videoinput' } =>
-            d.kind === 'videoinput',
-        )
-        setDevices(
-          videoDevices.map((d, idx) => ({
-            deviceId: d.deviceId,
-            label: d.label || `Camera ${idx + 1}`,
-            kind: 'videoinput',
-          })),
-        )
-        if (!currentDeviceId && videoDevices[0]) {
-          setCurrentDeviceId(videoDevices[0].deviceId)
-        }
-      } catch (err) {
-        setError('Erro ao listar câmeras')
-        console.error(err)
-      }
+    void listDevices()
+
+    const handleDeviceChange = () => {
+      void listDevices()
     }
 
-    void listDevices()
-  }, [currentDeviceId])
+    navigator.mediaDevices.addEventListener?.('devicechange', handleDeviceChange)
 
-  const startCamera = useCallback(
-    async (
-      selectedDeviceId?: string,
-      resolution: CameraResolution = DEFAULT_RESOLUTION,
-    ) => {
+    return () => {
+      navigator.mediaDevices.removeEventListener?.('devicechange', handleDeviceChange)
+    }
+  }, [listDevices])
+
+  const buildVideoConstraints = useCallback(
+    (selectedDeviceId: string | undefined, resolution: CameraResolution) => {
+      const selectedDevice = devices.find(device => device.deviceId === selectedDeviceId)
+      const facingMode = selectedDevice
+        ? inferFacingModeFromLabel(selectedDevice.label)
+        : undefined
+
+      const constraints: MediaTrackConstraints = {
+        width: { ideal: resolution.width },
+        height: { ideal: resolution.height },
+      }
+
+      if (selectedDeviceId) {
+        constraints.deviceId = { exact: selectedDeviceId }
+      }
+
+      if (facingMode) {
+        constraints.facingMode = { ideal: facingMode }
+      }
+
+      if (isIOSDevice() && facingMode) {
+        delete constraints.deviceId
+      }
+
+      return constraints
+    },
+    [devices],
+  )
+
+  const getStream = useCallback(
+    async (selectedDeviceId: string | undefined, resolution: CameraResolution) => {
+      const primaryConstraints: MediaStreamConstraints = {
+        video: buildVideoConstraints(selectedDeviceId, resolution),
+        audio: false,
+      }
+
       try {
-        setError(null)
-        stopCamera()
+        return await navigator.mediaDevices.getUserMedia(primaryConstraints)
+      } catch (primaryError) {
+        const selectedDevice = devices.find(device => device.deviceId === selectedDeviceId)
+        const fallbackFacingMode = selectedDevice
+          ? inferFacingModeFromLabel(selectedDevice.label)
+          : undefined
 
-        const constraints: MediaStreamConstraints = {
+        if (!fallbackFacingMode) {
+          throw primaryError
+        }
+
+        const fallbackConstraints: MediaStreamConstraints = {
           video: {
-            deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined,
+            facingMode: { ideal: fallbackFacingMode },
             width: { ideal: resolution.width },
             height: { ideal: resolution.height },
           },
           audio: false,
         }
 
-        const stream = await navigator.mediaDevices.getUserMedia(constraints)
+        return navigator.mediaDevices.getUserMedia(fallbackConstraints)
+      }
+    },
+    [buildVideoConstraints, devices],
+  )
+
+  const startCamera = useCallback(
+    async (
+      selectedDeviceId?: string,
+      resolution: CameraResolution = DEFAULT_RESOLUTION,
+    ) => {
+      const requestId = startRequestRef.current + 1
+      startRequestRef.current = requestId
+
+      try {
+        setIsStarting(true)
+        setError(null)
+        stopCamera()
+
+        const stream = await getStream(selectedDeviceId, resolution)
+        if (requestId !== startRequestRef.current) {
+          stream.getTracks().forEach(track => track.stop())
+          return
+        }
+
         streamRef.current = stream
         if (videoRef.current) {
           videoRef.current.srcObject = stream
+          await videoRef.current.play().catch(() => undefined)
           setIsActive(true)
         }
         if (selectedDeviceId) {
           setCurrentDeviceId(selectedDeviceId)
         }
+        await listDevices()
       } catch (err) {
         setError('Erro ao acessar câmera: ' + (err as Error).message)
         console.error('Camera error:', err)
+      } finally {
+        if (requestId === startRequestRef.current) {
+          setIsStarting(false)
+        }
       }
     },
-    [stopCamera, videoRef],
+    [getStream, listDevices, stopCamera, videoRef],
   )
 
   useEffect(() => {
@@ -116,6 +223,7 @@ export const useCamera = (
     currentDeviceId,
     setCurrentDeviceId,
     isActive,
+    isStarting,
     error,
     startCamera,
     stopCamera,

@@ -294,6 +294,9 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
       `Representação: ${currentCard.representacao || 'Não informada.'}`,
       `Elemento: ${currentCard.elemento ? `${currentCard.elemento.nome} - ${currentCard.elemento.descricao}` : 'Não aplicável para esta carta.'}`,
       `Numerologia: ${currentCard.numerologia ? `${currentCard.numerologia.valor} (${currentCard.numerologia.titulo}) - ${currentCard.numerologia.descricao}` : 'Sem dados numerológicos.'}`,
+      `Luz: ${currentCard.polaridades?.luz || currentCard.significado.vertical.curto}`,
+      `Sombra: ${currentCard.polaridades?.sombra || currentCard.significado.invertido.curto}`,
+      `${currentCard.corte ? `Carta da corte: ${currentCard.corte.titulo} - ${currentCard.corte.descricao}` : ''}`,
       coreMeaning,
       `Carreira: ${currentCard.areas.carreira}`,
       `Relacionamentos: ${currentCard.areas.relacionamentos}`,
@@ -938,6 +941,8 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
             `Arcano e elemento: ${formatArcanoLabel(card)}${card.elemento ? ` | ${card.elemento.nome}` : ''}.`,
             `Representação: ${card.representacao || 'Não informada.'}`,
             `Numerologia: ${card.numerologia ? `${card.numerologia.valor} (${card.numerologia.titulo}) - ${card.numerologia.descricao}` : 'Sem dados numerológicos.'}`,
+            `Luz/Sombra: ${card.polaridades?.luz || card.significado.vertical.curto} | ${card.polaridades?.sombra || card.significado.invertido.curto}.`,
+            `${card.corte ? `Carta da corte: ${card.corte.titulo} - ${card.corte.descricao}` : ''}`,
             `Áreas de apoio: Carreira - ${card.areas.carreira} | Relacionamentos - ${card.areas.relacionamentos} | Espiritual - ${card.areas.espiritual}.`,
           ].join('\n'),
         )
@@ -1102,6 +1107,21 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
                       <strong>Numerologia:</strong> {currentCard.numerologia.valor} (
                       {currentCard.numerologia.titulo}) -{' '}
                       {currentCard.numerologia.descricao}
+                    </p>
+                  )}
+                  {(currentCard.polaridades?.luz || currentCard.polaridades?.sombra) && (
+                    <p>
+                      <strong>Luz/Sombra:</strong>{' '}
+                      {currentCard.polaridades?.luz || currentCard.significado.vertical.curto}
+                      {' | '}
+                      {currentCard.polaridades?.sombra ||
+                        currentCard.significado.invertido.curto}
+                    </p>
+                  )}
+                  {currentCard.corte && (
+                    <p>
+                      <strong>Corte:</strong> {currentCard.corte.titulo} -{' '}
+                      {currentCard.corte.descricao}
                     </p>
                   )}
                 </div>

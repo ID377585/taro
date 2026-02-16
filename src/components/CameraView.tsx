@@ -15,6 +15,7 @@ interface CameraViewProps {
   error: string | null
   onStart: () => void
   onSwitch: (deviceId: string) => void
+  toolbarActions?: ReactNode
   children?: ReactNode
 }
 
@@ -27,6 +28,7 @@ const CameraView: FC<CameraViewProps> = ({
   error,
   onStart,
   onSwitch,
+  toolbarActions,
   children,
 }) => {
   return (
@@ -35,26 +37,31 @@ const CameraView: FC<CameraViewProps> = ({
       <div className="camera-overlay" />
 
       <div className="camera-toolbar">
-        {!isActive && (
-          <button className="camera-btn" onClick={onStart}>
-            Ativar câmera
-          </button>
-        )}
+        <div className="camera-toolbar-left">
+          {!isActive && (
+            <button className="camera-btn" onClick={onStart}>
+              Ativar câmera
+            </button>
+          )}
+        </div>
 
-        {devices.length > 0 && (
-          <select
-            className="camera-select"
-            value={currentDeviceId}
-            disabled={isStarting}
-            onChange={event => onSwitch(event.target.value)}
-          >
-            {devices.map(device => (
-              <option key={device.deviceId} value={device.deviceId}>
-                {device.label || 'Câmera'}
-              </option>
-            ))}
-          </select>
-        )}
+        <div className="camera-toolbar-right">
+          {devices.length > 0 && (
+            <select
+              className="camera-select"
+              value={currentDeviceId}
+              disabled={isStarting}
+              onChange={event => onSwitch(event.target.value)}
+            >
+              {devices.map(device => (
+                <option key={device.deviceId} value={device.deviceId}>
+                  {device.label || 'Câmera'}
+                </option>
+              ))}
+            </select>
+          )}
+          {toolbarActions}
+        </div>
       </div>
 
       {error && <p className="camera-error">{error}</p>}

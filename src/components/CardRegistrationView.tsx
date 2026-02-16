@@ -126,6 +126,35 @@ const captureFromVideo = async (video: HTMLVideoElement) => {
   })
 }
 
+const waitForVideoReady = async (video: HTMLVideoElement, timeoutMs = 1500) => {
+  if (video.videoWidth > 0 && video.videoHeight > 0) return
+
+  await new Promise<void>((resolve, reject) => {
+    const timeoutId = window.setTimeout(() => {
+      cleanup()
+      reject(new Error('A câmera ainda não está pronta para captura.'))
+    }, timeoutMs)
+
+    const onReady = () => {
+      if (!video.videoWidth || !video.videoHeight) return
+      cleanup()
+      resolve()
+    }
+
+    const cleanup = () => {
+      window.clearTimeout(timeoutId)
+      video.removeEventListener('loadedmetadata', onReady)
+      video.removeEventListener('canplay', onReady)
+      video.removeEventListener('playing', onReady)
+    }
+
+    video.addEventListener('loadedmetadata', onReady)
+    video.addEventListener('canplay', onReady)
+    video.addEventListener('playing', onReady)
+    onReady()
+  })
+}
+
 const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) => {
   const videoRef = useRef<HTMLVideoElement>(null)
   const capturesRef = useRef<Record<number, CardCaptureBucket>>({})
@@ -166,6 +195,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
   const isCardReady =
     currentVerticalCount >= TARGET_PER_ORIENTATION &&
     currentInvertedCount >= TARGET_PER_ORIENTATION
+  const orientationLabel = orientation === 'vertical' ? 'vertical' : 'horizontal'
 
   useEffect(() => {
     capturesRef.current = capturesByCard
@@ -197,7 +227,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
       const currentCount = current[orientation].length
       if (currentCount >= TARGET_PER_ORIENTATION) {
         setFeedback(
-          `A orientação ${orientation} já atingiu ${TARGET_PER_ORIENTATION} fotos.`,
+          `A orientação ${orientationLabel} já atingiu ${TARGET_PER_ORIENTATION} fotos.`,
         )
         return prev
       }
@@ -251,12 +281,18 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
   }
 
   const handleCapture = async () => {
+    if (!selectedCard) {
+      setFeedback('Selecione uma carta para começar a captura.')
+      return
+    }
+
     if (!videoRef.current) {
       setFeedback('A câmera não está pronta.')
       return
     }
 
     try {
+      await waitForVideoReady(videoRef.current)
       const blob = await captureFromVideo(videoRef.current)
       saveCapture(blob)
       setFeedback('Foto capturada com sucesso.')
@@ -457,6 +493,17 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
         error={cameraError}
         onStart={() => startCamera(currentDeviceId || devices[0]?.deviceId)}
         onSwitch={switchCamera}
+        toolbarActions={
+          <button
+            className="camera-capture-btn"
+            onClick={() => void handleCapture()}
+            disabled={!isActive || isStarting || !selectedCard}
+            title="Capturar foto da carta"
+            aria-label="Capturar foto da carta"
+          >
+            Capturar
+          </button>
+        }
       >
         <div
           className={`capture-guidance ${
@@ -521,7 +568,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
                     className={orientation === 'invertido' ? 'secondary active' : 'secondary'}
                     onClick={() => setOrientation('invertido')}
                   >
-                    Invertida
+                    Horizontal
                   </button>
                 </div>
               </div>
@@ -535,7 +582,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
                 </strong>
               </div>
               <div>
-                <small>Invertida</small>
+                <small>Horizontal</small>
                 <strong>
                   {currentInvertedCount}/{TARGET_PER_ORIENTATION}
                 </strong>
@@ -586,10 +633,10 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
                 </div>
               </div>
               <div>
-                <h3>Prévias invertidas</h3>
+                <h3>Prévias horizontais</h3>
                 <div className="thumb-list">
                   {currentBucket.invertido.map(item => (
-                    <img key={item.id} src={item.objectUrl} alt="Invertida" />
+                    <img key={item.id} src={item.objectUrl} alt="Horizontal" />
                   ))}
                 </div>
               </div>

@@ -58,8 +58,10 @@ export const useCardRecognition = ({
   const [lastResult, setLastResult] = useState<RecognitionResult | null>(null)
   const [modelLabels, setModelLabels] = useState<string[]>([])
   const [localStats, setLocalStats] = useState<LocalCaptureMatcherStats>({
+    records: 0,
     cards: 0,
     candidates: 0,
+    failedSamples: 0,
   })
   const recognizerRef = useRef<CardRecognizerModel | null>(null)
   const localMatcherRef = useRef<LocalCaptureMatcher | null>(null)
@@ -107,14 +109,14 @@ export const useCardRecognition = ({
       if (!enabled) {
         setStatus('idle')
         setError(null)
-        setLocalStats({ cards: 0, candidates: 0 })
+        setLocalStats({ records: 0, cards: 0, candidates: 0, failedSamples: 0 })
         localMatcherRef.current = null
         return
       }
 
       setStatus('loading')
       setError(null)
-      setLocalStats({ cards: 0, candidates: 0 })
+      setLocalStats({ records: 0, cards: 0, candidates: 0, failedSamples: 0 })
       localMatcherRef.current = null
 
       if (!recognizerRef.current) {
@@ -124,17 +126,40 @@ export const useCardRecognition = ({
       const fallbackToLocalMatcher = async () => {
         const matcher = new LocalCaptureMatcher()
         const stats = await matcher.load()
+        if (isMounted) {
+          setLocalStats(stats)
+        }
+
         if (stats.candidates > 0) {
           localMatcherRef.current = matcher
           if (isMounted) {
-            setLocalStats(stats)
             setModelLabels([])
             setStatus('running-local')
             setError(null)
           }
-          return true
+          return {
+            enabled: true,
+            reason: '',
+          }
         }
-        return false
+
+        if (stats.records > 0 && stats.failedSamples > 0) {
+          return {
+            enabled: false,
+            reason: `Capturas locais encontradas (${stats.records} carta(s)), mas falharam na leitura de ${stats.failedSamples} amostra(s).`,
+          }
+        }
+        if (stats.records > 0) {
+          return {
+            enabled: false,
+            reason: `Capturas locais encontradas (${stats.records} carta(s)), porém sem variações utilizáveis para reconhecimento.`,
+          }
+        }
+
+        return {
+          enabled: false,
+          reason: '',
+        }
       }
 
       try {
@@ -147,16 +172,17 @@ export const useCardRecognition = ({
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err)
         try {
-          const hasLocalFallback = await fallbackToLocalMatcher()
-          if (!hasLocalFallback && isMounted) {
+          const localFallback = await fallbackToLocalMatcher()
+          if (!localFallback.enabled && isMounted) {
             if (message.toLowerCase().includes('404')) {
               setStatus('no-model')
               setError(
-                'Modelo não encontrado e nenhuma captura local disponível para reconhecimento.',
+                localFallback.reason ||
+                  'Modelo não encontrado e nenhuma captura local disponível para reconhecimento.',
               )
             } else {
               setStatus('error')
-              setError(message)
+              setError(localFallback.reason || message)
             }
           }
         } catch (localError) {
@@ -249,7 +275,10 @@ export const useCardRecognition = ({
         try {
           const prediction = localMatcherRef.current.predict(video)
           if (!prediction) return
-          const localThreshold = Math.min(confidenceThreshold, 0.46)
+          const localThreshold = Math.min(
+            confidenceThreshold,
+            localStats.candidates <= 2 ? 0.2 : 0.34,
+          )
           if (prediction.confidence < localThreshold) return
 
           const card = cardLookup.get(`${prediction.cardId}`) || null
@@ -283,6 +312,7 @@ export const useCardRecognition = ({
     minVotes,
     onConfirmed,
     labelMappings.byNormalizedLabel,
+    localStats.candidates,
   ])
 
   const resetLastConfirmation = () => {

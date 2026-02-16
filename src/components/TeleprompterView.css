@@ -148,6 +148,12 @@
   font-size: 0.9rem;
 }
 
+.card-info .recognition-hint {
+  margin: 0.35rem 0 0;
+  color: #fde68a;
+  font-size: 0.8rem;
+}
+
 .card-meta {
   margin-top: 0.55rem;
   display: grid;

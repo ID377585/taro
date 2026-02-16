@@ -3,17 +3,20 @@ import { dbService } from './dbService'
 const SIGNATURE_WIDTH = 24
 const SIGNATURE_HEIGHT = 36
 const TARGET_RATIO = 2 / 3
+const CAMERA_ROI_WIDTH_FACTOR = 0.68
 
 interface LocalCaptureCandidate {
   cardId: number
   isReversed: boolean
-  signature: Float32Array
+  signatures: Float32Array[]
   samples: number
 }
 
 export interface LocalCaptureMatcherStats {
+  records: number
   cards: number
   candidates: number
+  failedSamples: number
 }
 
 export interface LocalCapturePrediction {
@@ -25,23 +28,6 @@ export interface LocalCapturePrediction {
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value))
-
-const computeMeanSignature = (signatures: Float32Array[]) => {
-  const base = signatures[0]
-  const mean = new Float32Array(base.length)
-
-  signatures.forEach(signature => {
-    for (let i = 0; i < signature.length; i += 1) {
-      mean[i] += signature[i]
-    }
-  })
-
-  for (let i = 0; i < mean.length; i += 1) {
-    mean[i] /= signatures.length
-  }
-
-  return mean
-}
 
 const meanAbsoluteDistance = (a: Float32Array, b: Float32Array) => {
   const size = Math.min(a.length, b.length)
@@ -118,6 +104,26 @@ const drawCoverCrop = (
   draw(sx, sy, sw, sh)
 }
 
+const drawCenteredRoi = (
+  sourceWidth: number,
+  sourceHeight: number,
+  draw: (sx: number, sy: number, sw: number, sh: number) => void,
+) => {
+  if (!sourceWidth || !sourceHeight) return
+
+  let sw = Math.floor(sourceWidth * CAMERA_ROI_WIDTH_FACTOR)
+  let sh = Math.floor(sw / TARGET_RATIO)
+
+  if (sh > sourceHeight) {
+    sh = sourceHeight
+    sw = Math.floor(sh * TARGET_RATIO)
+  }
+
+  const sx = Math.max(0, Math.floor((sourceWidth - sw) / 2))
+  const sy = Math.max(0, Math.floor((sourceHeight - sh) / 2))
+  draw(sx, sy, sw, sh)
+}
+
 const createWorkingCanvas = () => {
   const canvas = document.createElement('canvas')
   canvas.width = SIGNATURE_WIDTH
@@ -128,6 +134,53 @@ const createWorkingCanvas = () => {
   }
 
   return { canvas, context }
+}
+
+const drawBlobOnCanvas = async (
+  blob: Blob,
+  context: CanvasRenderingContext2D,
+  canvas: HTMLCanvasElement,
+) => {
+  if (typeof createImageBitmap === 'function') {
+    try {
+      const bitmap = await createImageBitmap(blob)
+      drawCoverCrop(bitmap.width, bitmap.height, (sx, sy, sw, sh) => {
+        context.drawImage(bitmap, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height)
+      })
+      bitmap.close()
+      return
+    } catch (error) {
+      console.warn(
+        'Falha no createImageBitmap; usando fallback com HTMLImageElement.',
+        error,
+      )
+    }
+  }
+
+  await new Promise<void>((resolve, reject) => {
+    const image = new Image()
+    const objectUrl = URL.createObjectURL(blob)
+
+    image.onload = () => {
+      try {
+        drawCoverCrop(image.naturalWidth, image.naturalHeight, (sx, sy, sw, sh) => {
+          context.drawImage(image, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height)
+        })
+        resolve()
+      } catch (error) {
+        reject(error)
+      } finally {
+        URL.revokeObjectURL(objectUrl)
+      }
+    }
+
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl)
+      reject(new Error('Não foi possível decodificar imagem local para reconhecimento.'))
+    }
+
+    image.src = objectUrl
+  })
 }
 
 export class LocalCaptureMatcher {
@@ -150,15 +203,9 @@ export class LocalCaptureMatcher {
   }
 
   private async signatureFromBlob(blob: Blob) {
-    const bitmap = await createImageBitmap(blob)
     const { canvas, context } = this.getCanvas()
     context.clearRect(0, 0, canvas.width, canvas.height)
-
-    drawCoverCrop(bitmap.width, bitmap.height, (sx, sy, sw, sh) => {
-      context.drawImage(bitmap, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height)
-    })
-
-    bitmap.close()
+    await drawBlobOnCanvas(blob, context, canvas)
     const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
     return computeSignatureFromImageData(imageData)
   }
@@ -169,7 +216,7 @@ export class LocalCaptureMatcher {
     const { canvas, context } = this.getCanvas()
     context.clearRect(0, 0, canvas.width, canvas.height)
 
-    drawCoverCrop(video.videoWidth, video.videoHeight, (sx, sy, sw, sh) => {
+    drawCenteredRoi(video.videoWidth, video.videoHeight, (sx, sy, sw, sh) => {
       context.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height)
     })
 
@@ -181,6 +228,7 @@ export class LocalCaptureMatcher {
     cardId: number,
     blobs: Blob[],
     isReversed: boolean,
+    onSampleError: () => void,
   ) {
     if (!blobs.length) return null
 
@@ -190,6 +238,7 @@ export class LocalCaptureMatcher {
         const signature = await this.signatureFromBlob(blob)
         signatures.push(signature)
       } catch (error) {
+        onSampleError()
         console.error('Falha ao processar captura local:', error)
       }
     }
@@ -199,7 +248,7 @@ export class LocalCaptureMatcher {
     return {
       cardId,
       isReversed,
-      signature: computeMeanSignature(signatures),
+      signatures,
       samples: signatures.length,
     } satisfies LocalCaptureCandidate
   }
@@ -209,17 +258,24 @@ export class LocalCaptureMatcher {
     const records = await dbService.getAllCardCaptures()
     const nextCandidates: LocalCaptureCandidate[] = []
     let cardsWithCaptures = 0
+    let failedSamples = 0
 
     for (const record of records) {
       const verticalCandidate = await this.loadOrientationCandidate(
         record.cardId,
         record.vertical.map(item => item.blob),
         false,
+        () => {
+          failedSamples += 1
+        },
       )
       const reversedCandidate = await this.loadOrientationCandidate(
         record.cardId,
         record.invertido.map(item => item.blob),
         true,
+        () => {
+          failedSamples += 1
+        },
       )
 
       if (verticalCandidate || reversedCandidate) {
@@ -237,8 +293,10 @@ export class LocalCaptureMatcher {
     this.candidates = nextCandidates
 
     return {
+      records: records.length,
       cards: cardsWithCaptures,
       candidates: nextCandidates.length,
+      failedSamples,
     }
   }
 
@@ -249,8 +307,10 @@ export class LocalCaptureMatcher {
   getStats(): LocalCaptureMatcherStats {
     const uniqueCards = new Set(this.candidates.map(candidate => candidate.cardId))
     return {
+      records: uniqueCards.size,
       cards: uniqueCards.size,
       candidates: this.candidates.length,
+      failedSamples: 0,
     }
   }
 
@@ -263,7 +323,10 @@ export class LocalCaptureMatcher {
     const ranked = this.candidates
       .map(candidate => ({
         candidate,
-        distance: meanAbsoluteDistance(frameSignature, candidate.signature),
+        distance: candidate.signatures.reduce((bestDistance, signature) => {
+          const distance = meanAbsoluteDistance(frameSignature, signature)
+          return Math.min(bestDistance, distance)
+        }, Number.POSITIVE_INFINITY),
       }))
       .sort((a, b) => a.distance - b.distance)
 
@@ -271,9 +334,9 @@ export class LocalCaptureMatcher {
     if (!best) return null
 
     const second = ranked[1]
-    const similarity = clamp(1 - best.distance / 1.5, 0, 1)
+    const similarity = clamp(1 - best.distance / 2.2, 0, 1)
     const margin = second
-      ? clamp((second.distance - best.distance) / 0.5, 0, 1)
+      ? clamp((second.distance - best.distance) / 1, 0, 1)
       : 0.5
     const confidence = clamp(similarity * 0.72 + margin * 0.28, 0, 1)
 

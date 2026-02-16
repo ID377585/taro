@@ -15,8 +15,10 @@ interface CardRecognizerProps {
     unmappedLabels: string[]
   }
   localDiagnostics: {
+    records: number
     cards: number
     candidates: number
+    failedSamples: number
   }
 }
 
@@ -57,8 +59,14 @@ const CardRecognizer: FC<CardRecognizerProps> = ({
       )}
       {status === 'running-local' && (
         <p className="recognizer-mapping">
-          Base local: {localDiagnostics.cards} carta(s), {localDiagnostics.candidates}{' '}
-          variação(ões) de orientação.
+          Base local: {localDiagnostics.cards} carta(s) utilizáveis,{' '}
+          {localDiagnostics.candidates} variação(ões) de orientação.
+        </p>
+      )}
+      {localDiagnostics.records > 0 && localDiagnostics.failedSamples > 0 && (
+        <p className="recognizer-unmapped">
+          Aviso: {localDiagnostics.failedSamples} captura(s) local(is) não puderam ser
+          processadas.
         </p>
       )}
       {labelDiagnostics.unmappedLabels.length > 0 && (

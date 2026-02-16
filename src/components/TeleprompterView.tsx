@@ -226,6 +226,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
   const voiceRecognitionRef = useRef<SpeechRecognitionLike | null>(null)
   const voiceEnabledRef = useRef(false)
   const previousResolutionPresetRef = useRef<ResolutionPreset>('high')
+  const autoSynthesisKeyRef = useRef('')
 
   const [settings, setSettings] = useState<TeleprompterSettings>(DEFAULT_SETTINGS)
   const [shortcuts, setShortcuts] = useState<ShortcutConfig>(DEFAULT_SHORTCUTS)
@@ -474,6 +475,31 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
       registerCard(result.card, result.isReversed, 'camera', result.confidence)
     },
   })
+
+  const recognitionHint = useMemo(() => {
+    if (!recognitionEnabled) return 'Reconhecimento pausado manualmente.'
+    if (status === 'loading') return 'Carregando motor de reconhecimento...'
+    if (status === 'running') return 'Reconhecimento por modelo ativo.'
+    if (status === 'running-local') {
+      return `Reconhecimento local ativo com ${localDiagnostics.cards} carta(s) utilizáveis.`
+    }
+    if (status === 'no-model') {
+      if (localDiagnostics.records > 0 && localDiagnostics.cards === 0) {
+        return 'Capturas locais existem, mas não foram convertidas para reconhecimento. Reimporte as capturas dessa carta via ZIP.'
+      }
+      return 'Sem modelo e sem base local suficiente para reconhecer. Cadastre cartas ou envie o modelo.'
+    }
+    if (status === 'error') {
+      return recognitionError || 'Falha no reconhecimento.'
+    }
+    return 'Aguardando câmera e reconhecimento.'
+  }, [
+    localDiagnostics.cards,
+    localDiagnostics.records,
+    recognitionEnabled,
+    recognitionError,
+    status,
+  ])
 
   useEffect(() => {
     if (!isActive && !isStarting && devices.length > 0) {
@@ -1019,10 +1045,30 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
     [cardById, consultation, spread],
   )
 
+  const getOrderedDrawnCards = useCallback(
+    () =>
+      spread.positions
+        .map(position => drawnByPosition[position.index])
+        .filter((drawn): drawn is DrawnCard => Boolean(drawn)),
+    [drawnByPosition, spread.positions],
+  )
+
+  useEffect(() => {
+    const ordered = getOrderedDrawnCards()
+    if (ordered.length !== totalPositions || totalPositions === 0) return
+
+    const signature = ordered
+      .map(item => `${item.position}:${item.cardId}:${item.isReversed ? 'r' : 'v'}`)
+      .join('|')
+    if (!signature || autoSynthesisKeyRef.current === signature) return
+
+    autoSynthesisKeyRef.current = signature
+    setSynthesisText(buildSpreadSynthesis(ordered))
+    setControlFeedback('Tiragem completa. Síntese final gerada automaticamente.')
+  }, [buildSpreadSynthesis, getOrderedDrawnCards, totalPositions])
+
   const handleGenerateSynthesis = () => {
-    const ordered = spread.positions
-      .map(position => drawnByPosition[position.index])
-      .filter((drawn): drawn is DrawnCard => Boolean(drawn))
+    const ordered = getOrderedDrawnCards()
 
     if (!ordered.length) {
       setControlFeedback('Registre pelo menos uma carta para gerar a síntese.')
@@ -1124,6 +1170,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
                   ? `Orientação ${currentDrawn.isReversed ? 'Invertida' : 'Vertical'}`
                   : 'Nenhuma carta registrada nesta posição'}
               </p>
+              <p className="recognition-hint">{recognitionHint}</p>
               {currentCard && (
                 <div className="card-meta">
                   <p>

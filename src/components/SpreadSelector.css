@@ -47,6 +47,43 @@
   font-size: 0.9rem;
 }
 
+@media (max-width: 768px) {
+  .spread-selector {
+    max-width: 100%;
+    padding: 1rem 0.9rem;
+  }
+
+  .spread-selector h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .spread-selector-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem;
+  }
+
+  .spread-button {
+    padding: 0.8rem;
+    border-radius: 10px;
+  }
+
+  .spread-button h3 {
+    font-size: 1rem;
+    margin-bottom: 0.4rem;
+    line-height: 1.2;
+  }
+
+  .spread-button small {
+    font-size: 0.78rem;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

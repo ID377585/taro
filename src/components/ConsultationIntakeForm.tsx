@@ -1,4 +1,4 @@
-import { FC, FormEvent, useMemo, useState } from 'react'
+import { FC, FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ConsultationIntake,
   ConsultationType,
@@ -28,6 +28,15 @@ interface FormErrors {
   situacaoPrincipal?: string
 }
 
+interface IntakeDraftState {
+  tipo: ConsultationType
+  pessoa1: PersonFormState
+  pessoa2: PersonFormState
+  situacaoPrincipal: string
+}
+
+const INTAKE_DRAFT_STORAGE_KEY = 'taro.intake.draft.v1'
+
 const getPersonState = (
   source?: ConsultationIntake['pessoa1'] | ConsultationIntake['pessoa2'] | null,
 ): PersonFormState => ({
@@ -48,11 +57,67 @@ const ConsultationIntakeForm: FC<ConsultationIntakeFormProps> = ({
     initialValue?.situacaoPrincipal || '',
   )
   const [errors, setErrors] = useState<FormErrors>({})
+  const draftSaveTimerRef = useRef<number | null>(null)
+  const lastDraftRef = useRef('')
 
   const title = useMemo(
     () => (tipo === 'pessoal' ? 'Roteiro Inicial - Pessoal' : 'Roteiro Inicial - Sobre Outra Pessoa'),
     [tipo],
   )
+
+  useEffect(() => {
+    if (initialValue) {
+      setTipo(initialValue.tipo)
+      setPessoa1(getPersonState(initialValue.pessoa1))
+      setPessoa2(getPersonState(initialValue.pessoa2))
+      setSituacaoPrincipal(initialValue.situacaoPrincipal || '')
+      return
+    }
+
+    try {
+      const raw = localStorage.getItem(INTAKE_DRAFT_STORAGE_KEY)
+      if (!raw) return
+      const draft = JSON.parse(raw) as IntakeDraftState
+
+      setTipo(draft.tipo || 'pessoal')
+      setPessoa1(draft.pessoa1 || getPersonState())
+      setPessoa2(draft.pessoa2 || getPersonState())
+      setSituacaoPrincipal(draft.situacaoPrincipal || '')
+    } catch (error) {
+      console.error('Falha ao restaurar rascunho do formulário:', error)
+    }
+  }, [initialValue])
+
+  useEffect(() => {
+    if (draftSaveTimerRef.current) {
+      window.clearTimeout(draftSaveTimerRef.current)
+    }
+
+    const draft: IntakeDraftState = {
+      tipo,
+      pessoa1,
+      pessoa2,
+      situacaoPrincipal,
+    }
+
+    const serialized = JSON.stringify(draft)
+    if (serialized === lastDraftRef.current) return
+    lastDraftRef.current = serialized
+
+    draftSaveTimerRef.current = window.setTimeout(() => {
+      try {
+        localStorage.setItem(INTAKE_DRAFT_STORAGE_KEY, serialized)
+      } catch (error) {
+        console.error('Falha ao salvar rascunho do formulário:', error)
+      }
+    }, 280)
+
+    return () => {
+      if (draftSaveTimerRef.current) {
+        window.clearTimeout(draftSaveTimerRef.current)
+      }
+    }
+  }, [pessoa1, pessoa2, situacaoPrincipal, tipo])
 
   const validate = () => {
     const nextErrors: FormErrors = {}
@@ -107,6 +172,8 @@ const ConsultationIntakeForm: FC<ConsultationIntakeFormProps> = ({
       createdAt: initialValue?.createdAt || Date.now(),
     }
 
+    localStorage.removeItem(INTAKE_DRAFT_STORAGE_KEY)
+    lastDraftRef.current = ''
     onSubmit(intake)
   }
 

@@ -1,7 +1,7 @@
 import type { VitePWAOptions } from 'vite-plugin-pwa'
 
 const pwaOptions: Partial<VitePWAOptions> = {
-  registerType: 'autoUpdate',
+  registerType: 'prompt',
   includeAssets: ['vite.svg', 'cards/*.jpg'],
   manifest: {
     id: '/',

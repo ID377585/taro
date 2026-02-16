@@ -58,6 +58,12 @@ body {
   background-color: #1a1a1a;
 }
 
+html,
+body,
+#root {
+  overscroll-behavior-y: none;
+}
+
 #root {
   width: 100%;
   margin: 0 auto;

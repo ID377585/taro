@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import './App.css'
 import SpreadSelector from './components/SpreadSelector'
 import TeleprompterView from './components/TeleprompterView'
@@ -23,6 +23,22 @@ interface SpreadsDataResponse {
   spreads: Spread[]
 }
 
+type FlowStep =
+  | 'home'
+  | 'intake'
+  | 'spread-selector'
+  | 'history'
+  | 'register-cards'
+  | 'reading'
+
+interface PersistedFlowState {
+  step: FlowStep
+  consultationIntake: ConsultationIntake | null
+  selectedSpreadId: string | null
+}
+
+const FLOW_STORAGE_KEY = 'taro.flow.state.v1'
+
 function App() {
   const [selectedSpread, setSelectedSpread] = useState<Spread | null>(null)
   const [showSpreadSelector, setShowSpreadSelector] = useState(false)
@@ -36,6 +52,7 @@ function App() {
   const [sessions, setSessions] = useState<SpreadingSession[]>([])
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
+  const hasRestoredFlowRef = useRef(false)
 
   const { isReady, saveSession, getAllSessions } = useIndexedDB()
 
@@ -75,6 +92,96 @@ function App() {
   useEffect(() => {
     void refreshSessions()
   }, [refreshSessions])
+
+  useEffect(() => {
+    if (loading || hasRestoredFlowRef.current) return
+
+    hasRestoredFlowRef.current = true
+    try {
+      const raw = localStorage.getItem(FLOW_STORAGE_KEY)
+      if (!raw) return
+
+      const parsed = JSON.parse(raw) as PersistedFlowState
+      const hasIntake = Boolean(parsed.consultationIntake)
+
+      if (parsed.consultationIntake) {
+        setConsultationIntake(parsed.consultationIntake)
+      }
+
+      if (parsed.step === 'reading') {
+        if (!hasIntake) {
+          setShowIntakeForm(true)
+          return
+        }
+        if (parsed.selectedSpreadId) {
+          const spread = spreads.find(item => item.id === parsed.selectedSpreadId)
+          if (spread) {
+            setSelectedSpread(spread)
+            return
+          }
+        }
+        setShowSpreadSelector(true)
+        return
+      }
+
+      if (parsed.step === 'spread-selector') {
+        if (hasIntake) {
+          setShowSpreadSelector(true)
+        } else {
+          setShowIntakeForm(true)
+        }
+        return
+      }
+
+      if (parsed.step === 'intake') {
+        setShowIntakeForm(true)
+        return
+      }
+
+      if (parsed.step === 'register-cards') {
+        setIsRegisteringCards(true)
+        return
+      }
+
+      if (parsed.step === 'history') {
+        setShowHistoryRecords(true)
+      }
+    } catch (error) {
+      console.error('Falha ao restaurar fluxo:', error)
+    }
+  }, [loading, spreads])
+
+  useEffect(() => {
+    if (loading || !hasRestoredFlowRef.current) return
+
+    const step: FlowStep = selectedSpread
+      ? 'reading'
+      : isRegisteringCards
+        ? 'register-cards'
+        : showHistoryRecords
+          ? 'history'
+          : showSpreadSelector
+            ? 'spread-selector'
+            : showIntakeForm
+              ? 'intake'
+              : 'home'
+
+    const state: PersistedFlowState = {
+      step,
+      consultationIntake,
+      selectedSpreadId: selectedSpread?.id || null,
+    }
+
+    localStorage.setItem(FLOW_STORAGE_KEY, JSON.stringify(state))
+  }, [
+    consultationIntake,
+    isRegisteringCards,
+    loading,
+    selectedSpread,
+    showHistoryRecords,
+    showIntakeForm,
+    showSpreadSelector,
+  ])
 
   const handleSaveSession = async (drawnCards: DrawnCard[]) => {
     if (!selectedSpread) return

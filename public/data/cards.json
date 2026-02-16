@@ -1,0 +1,28 @@
+{
+  "cards": [
+    {
+      "id": 0,
+      "nome": "O Louco",
+      "arcano": "maior",
+      "numero": 0,
+      "naipe": null,
+      "imagemUrl": "/cards/00_fool.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Novo começo, liberdade, espontaneidade",
+          "longo": "O Louco representa um novo começo repleto de possibilidades infinitas. Ele simboliza a liberdade, a espontaneidade e a disposição para embarcar em uma jornada desconhecida."
+        },
+        "invertido": {
+          "curto": "Impulsividade, inconsideração, falta de direção",
+          "longo": "Quando invertido, O Louco pode indicar impulsividade excessiva, falta de direção e necessidade de mais cautela."
+        }
+      },
+      "areas": {
+        "carreira": "Mudança de rumo profissional, novo projeto arrojado",
+        "relacionamentos": "Novo romance, abertura para experiências",
+        "espiritual": "Despertar espiritual, jornada de autodescoberta"
+      },
+      "tags": ["novo", "liberdade", "começo", "espontaneidade"]
+    }
+  ]
+}

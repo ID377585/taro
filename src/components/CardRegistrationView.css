@@ -1,0 +1,176 @@
+.card-registration-view {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #111111;
+}
+
+.capture-guidance {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 1rem;
+  width: min(90%, 520px);
+  text-align: center;
+  background: rgba(17, 17, 17, 0.72);
+  border: 1px solid rgba(124, 58, 237, 0.7);
+  border-radius: 8px;
+  padding: 0.55rem 0.8rem;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.capture-guidance strong {
+  color: #ddd6fe;
+  font-size: 0.88rem;
+}
+
+.capture-guidance span {
+  color: #d1d5db;
+  font-size: 0.78rem;
+}
+
+.registration-panel {
+  border-top: 2px solid #2a2a2a;
+  background: linear-gradient(180deg, rgba(26, 26, 26, 0.96), #111111);
+  padding: 1rem;
+  max-height: 52vh;
+  overflow-y: auto;
+}
+
+.registration-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.registration-topline h2 {
+  margin: 0;
+  color: #c4b5fd;
+}
+
+.registration-controls {
+  margin-top: 0.85rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.control-group {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.control-group label {
+  font-size: 0.83rem;
+  color: #d1d5db;
+}
+
+.control-group select {
+  background-color: #1f1f1f;
+  color: #ffffff;
+  border: 1px solid #374151;
+  border-radius: 7px;
+  padding: 0.55rem 0.6rem;
+}
+
+.orientation-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.counter-grid {
+  margin-top: 0.85rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.6rem;
+}
+
+.counter-grid > div {
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 0.6rem;
+  background-color: rgba(26, 26, 26, 0.7);
+  display: grid;
+  gap: 0.1rem;
+}
+
+.counter-grid small {
+  color: #9ca3af;
+  font-size: 0.78rem;
+}
+
+.counter-grid strong {
+  color: #f3f4f6;
+}
+
+.capture-actions {
+  margin-top: 0.85rem;
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.capture-actions button,
+.registration-topline button,
+.orientation-buttons button {
+  background-color: #7c3aed;
+  border: none;
+  color: #ffffff;
+  border-radius: 7px;
+  padding: 0.65rem 0.95rem;
+  font-weight: 600;
+}
+
+.capture-actions button.secondary,
+.registration-topline button.secondary,
+.orientation-buttons button.secondary {
+  background-color: transparent;
+  border: 2px solid #7c3aed;
+  color: #c4b5fd;
+}
+
+.orientation-buttons button.secondary.active {
+  background-color: rgba(124, 58, 237, 0.22);
+}
+
+.registration-feedback {
+  margin: 0.8rem 0 0;
+  color: #86efac;
+  font-size: 0.88rem;
+}
+
+.preview-grid {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.8rem;
+}
+
+.preview-grid h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  color: #ddd6fe;
+}
+
+.thumb-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 0.35rem;
+}
+
+.thumb-list img {
+  width: 100%;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  border-radius: 5px;
+  border: 1px solid #374151;
+}
+
+@media (max-width: 768px) {
+  .registration-panel {
+    max-height: 58vh;
+  }
+}

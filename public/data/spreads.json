@@ -1,0 +1,319 @@
+{
+  "spreads": [
+    {
+      "id": "uma-carta",
+      "nome": "Uma Carta",
+      "descricao": "Orientação rápida para uma questão específica",
+      "positions": [
+        {
+          "index": 1,
+          "nome": "Mensagem",
+          "descricao": "O que você precisa saber agora"
+        }
+      ]
+    },
+    {
+      "id": "tres-cartas-ppf",
+      "nome": "Três Cartas (Passado, Presente e Futuro)",
+      "descricao": "Analisa como o passado afeta o presente e tendência futura",
+      "positions": [
+        {
+          "index": 1,
+          "nome": "Passado",
+          "descricao": "Influências que moldaram a situação"
+        },
+        {
+          "index": 2,
+          "nome": "Presente",
+          "descricao": "A situação atual"
+        },
+        {
+          "index": 3,
+          "nome": "Futuro",
+          "descricao": "Tendência provável"
+        }
+      ]
+    },
+    {
+      "id": "tres-cartas-relacionamento",
+      "nome": "Três Cartas (Você, Outra Pessoa, Relacionamento)",
+      "descricao": "Foco em dinâmica de relacionamento",
+      "positions": [
+        {
+          "index": 1,
+          "nome": "Você",
+          "descricao": "Sua energia e perspectiva"
+        },
+        {
+          "index": 2,
+          "nome": "Outra Pessoa",
+          "descricao": "A energia e perspectiva da outra pessoa"
+        },
+        {
+          "index": 3,
+          "nome": "Relacionamento",
+          "descricao": "A dinâmica entre vocês"
+        }
+      ]
+    },
+    {
+      "id": "tres-cartas-expectativas",
+      "nome": "Três Cartas (Expectativas Amorosas)",
+      "descricao": "Compara expectativas e tendência do vínculo",
+      "positions": [
+        {
+          "index": 1,
+          "nome": "O que você espera",
+          "descricao": "Seu desejo ou expectativa principal"
+        },
+        {
+          "index": 2,
+          "nome": "O que a outra pessoa espera",
+          "descricao": "A expectativa da outra pessoa"
+        },
+        {
+          "index": 3,
+          "nome": "Futuro do relacionamento",
+          "descricao": "Tendência provável para o vínculo"
+        }
+      ]
+    },
+    {
+      "id": "situacao-obstaculo-conselho",
+      "nome": "Situação, Obstáculo e Conselho",
+      "descricao": "Leitura direta para resolução de problemas",
+      "positions": [
+        {
+          "index": 1,
+          "nome": "Situação",
+          "descricao": "Contexto atual da questão"
+        },
+        {
+          "index": 2,
+          "nome": "Obstáculo",
+          "descricao": "Bloqueio ou desafio principal"
+        },
+        {
+          "index": 3,
+          "nome": "Conselho",
+          "descricao": "Direção recomendada para avançar"
+        }
+      ]
+    },
+    {
+      "id": "cruz-celta",
+      "nome": "Cruz Celta",
+      "descricao": "Análise profunda em 10 posições",
+      "positions": [
+        {
+          "index": 1,
+          "nome": "Situação",
+          "descricao": "O coração da questão"
+        },
+        {
+          "index": 2,
+          "nome": "Desafio",
+          "descricao": "O obstáculo ou suporte"
+        },
+        {
+          "index": 3,
+          "nome": "Base",
+          "descricao": "As raízes da situação"
+        },
+        {
+          "index": 4,
+          "nome": "Passado Recente",
+          "descricao": "Influências saindo de cena"
+        },
+        {
+          "index": 5,
+          "nome": "Coroa",
+          "descricao": "O que o consulente busca ou aspira"
+        },
+        {
+          "index": 6,
+          "nome": "Futuro Próximo",
+          "descricao": "O que está se desenvolvendo"
+        },
+        {
+          "index": 7,
+          "nome": "Atitude",
+          "descricao": "Como a pessoa se sente"
+        },
+        {
+          "index": 8,
+          "nome": "Influências Externas",
+          "descricao": "Fatores externos que afetam"
+        },
+        {
+          "index": 9,
+          "nome": "Esperanças e Medos",
+          "descricao": "Ansiedades ou desejos profundos"
+        },
+        {
+          "index": 10,
+          "nome": "Resultado Final",
+          "descricao": "A provável conclusão"
+        }
+      ]
+    },
+    {
+      "id": "mandala-astrologica",
+      "nome": "Mandala Astrológica (12 casas)",
+      "descricao": "Leitura por áreas de vida no ciclo astrológico",
+      "positions": [
+        {
+          "index": 1,
+          "nome": "Casa 1 (Áries)",
+          "descricao": "Identidade, iniciativa e autoimagem"
+        },
+        {
+          "index": 2,
+          "nome": "Casa 2 (Touro)",
+          "descricao": "Recursos, valores e finanças"
+        },
+        {
+          "index": 3,
+          "nome": "Casa 3 (Gêmeos)",
+          "descricao": "Comunicação, estudos e entorno"
+        },
+        {
+          "index": 4,
+          "nome": "Casa 4 (Câncer)",
+          "descricao": "Lar, família e base emocional"
+        },
+        {
+          "index": 5,
+          "nome": "Casa 5 (Leão)",
+          "descricao": "Criatividade, prazer e romances"
+        },
+        {
+          "index": 6,
+          "nome": "Casa 6 (Virgem)",
+          "descricao": "Rotina, saúde e trabalho"
+        },
+        {
+          "index": 7,
+          "nome": "Casa 7 (Libra)",
+          "descricao": "Parcerias e acordos"
+        },
+        {
+          "index": 8,
+          "nome": "Casa 8 (Escorpião)",
+          "descricao": "Transformações e vínculos profundos"
+        },
+        {
+          "index": 9,
+          "nome": "Casa 9 (Sagitário)",
+          "descricao": "Expansão, fé e visão de mundo"
+        },
+        {
+          "index": 10,
+          "nome": "Casa 10 (Capricórnio)",
+          "descricao": "Carreira, status e propósito social"
+        },
+        {
+          "index": 11,
+          "nome": "Casa 11 (Aquário)",
+          "descricao": "Projetos, amizades e coletividade"
+        },
+        {
+          "index": 12,
+          "nome": "Casa 12 (Peixes)",
+          "descricao": "Inconsciente, encerramentos e espiritualidade"
+        }
+      ]
+    },
+    {
+      "id": "peladan",
+      "nome": "Tiragem Péladan",
+      "descricao": "Prós, contras, síntese e resultado",
+      "positions": [
+        {
+          "index": 1,
+          "nome": "Prós",
+          "descricao": "Fatores que favorecem a decisão"
+        },
+        {
+          "index": 2,
+          "nome": "Contras",
+          "descricao": "Fatores que dificultam a decisão"
+        },
+        {
+          "index": 3,
+          "nome": "Síntese",
+          "descricao": "Integração dos fatores em jogo"
+        },
+        {
+          "index": 4,
+          "nome": "Resultado",
+          "descricao": "Tendência final da decisão"
+        }
+      ]
+    },
+    {
+      "id": "diamante",
+      "nome": "Tiragem Diamante",
+      "descricao": "Clareza sobre caminhos e escolhas",
+      "positions": [
+        {
+          "index": 1,
+          "nome": "Situação atual",
+          "descricao": "Panorama presente"
+        },
+        {
+          "index": 2,
+          "nome": "Potencial",
+          "descricao": "Força que impulsiona"
+        },
+        {
+          "index": 3,
+          "nome": "Desafio",
+          "descricao": "Bloqueio principal"
+        },
+        {
+          "index": 4,
+          "nome": "Conselho",
+          "descricao": "Ajuste recomendado"
+        },
+        {
+          "index": 5,
+          "nome": "Direção",
+          "descricao": "Caminho mais alinhado"
+        }
+      ]
+    },
+    {
+      "id": "cruz-5",
+      "nome": "Tiragem em Cruz (5 cartas)",
+      "descricao": "Visão geral com apoio, desafio, conselho e direção",
+      "positions": [
+        {
+          "index": 1,
+          "nome": "Situação",
+          "descricao": "O tema central"
+        },
+        {
+          "index": 2,
+          "nome": "O que favorece",
+          "descricao": "Energia de apoio"
+        },
+        {
+          "index": 3,
+          "nome": "O que atrapalha",
+          "descricao": "Energia de bloqueio"
+        },
+        {
+          "index": 4,
+          "nome": "Conselho",
+          "descricao": "A ação mais adequada"
+        },
+        {
+          "index": 5,
+          "nome": "Direção geral",
+          "descricao": "Tendência principal"
+        }
+      ]
+    }
+  ]
+}

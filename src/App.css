@@ -1,0 +1,76 @@
+.app {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+}
+
+.app-container {
+  width: 100%;
+  max-width: 1200px;
+  padding: 2rem;
+}
+
+.app-container--teleprompter {
+  max-width: none;
+  padding: 0;
+  height: 100vh;
+}
+
+.home-menu {
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 1.2rem;
+  margin-bottom: 1.25rem;
+  background: rgba(17, 17, 17, 0.65);
+}
+
+.home-menu h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #ddd6fe;
+}
+
+.home-menu p {
+  margin: 0.55rem 0 0;
+  color: #d1d5db;
+}
+
+.home-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.home-actions button {
+  background-color: #7c3aed;
+  border: none;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  font-weight: 600;
+}
+
+.home-actions button.secondary {
+  background-color: transparent;
+  border: 2px solid #7c3aed;
+  color: #c4b5fd;
+}
+
+.home-actions--compact {
+  justify-content: center;
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 2rem;
+}
+
+.error {
+  color: #fca5a5;
+}

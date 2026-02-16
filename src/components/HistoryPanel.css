@@ -1,0 +1,50 @@
+.history-panel {
+  margin-top: 1.5rem;
+  border-top: 1px solid #2a2a2a;
+  padding-top: 1.2rem;
+}
+
+.history-panel h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  color: #c4b5fd;
+}
+
+.history-panel p {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.history-panel ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.history-panel li {
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 0.7rem 0.8rem;
+  background-color: rgba(26, 26, 26, 0.7);
+  display: grid;
+  gap: 0.2rem;
+}
+
+.history-panel strong {
+  color: #f3f4f6;
+  font-size: 0.95rem;
+}
+
+.history-panel small {
+  color: #9ca3af;
+  font-size: 0.8rem;
+}
+
+.history-panel span {
+  color: #d1d5db;
+  font-size: 0.85rem;
+}

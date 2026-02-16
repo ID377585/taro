@@ -1,0 +1,59 @@
+.spread-selector {
+  width: 100%;
+  max-width: 600px;
+  padding: 2rem;
+  text-align: center;
+  animation: fadeIn 0.5s ease-in;
+}
+
+.spread-selector h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #7c3aed;
+}
+
+.spread-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.spread-button {
+  padding: 1.5rem;
+  border: 2px solid #2a2a2a;
+  border-radius: 12px;
+  background-color: #242424;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.spread-button:hover {
+  border-color: #7c3aed;
+  background-color: rgba(124, 58, 237, 0.1);
+  transform: translateY(-2px);
+}
+
+.spread-button h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  color: #7c3aed;
+}
+
+.spread-button small {
+  color: #a0a0a0;
+  display: block;
+  font-size: 0.9rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

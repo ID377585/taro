@@ -11,6 +11,7 @@ import {
 import { Card, DrawnCard, Spread } from '../types'
 import { CameraResolution, useCamera } from '../hooks/useCamera'
 import { useCardRecognition } from '../hooks/useCardRecognition'
+import { generateAdvancedSpreadSynthesis } from '../services/advancedReadingService'
 import CameraView from './CameraView'
 import CardRecognizer from './CardRecognizer'
 import './TeleprompterView.css'
@@ -919,70 +920,13 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
   }
 
   const buildSpreadSynthesis = useCallback(
-    (orderedDrawn: DrawnCard[]) => {
-      const positionsByIndex = new Map(spread.positions.map(position => [position.index, position]))
-      const registeredDetails: string[] = []
-
-      orderedDrawn.forEach(drawn => {
-        const position = positionsByIndex.get(drawn.position)
-        const card = cardById.get(drawn.cardId)
-        if (!position || !card) return
-
-        const orientationLabel = drawn.isReversed ? 'Invertida' : 'Vertical'
-        const mainMeaning = drawn.isReversed
-          ? card.significado.invertido.longo
-          : card.significado.vertical.longo
-
-        registeredDetails.push(
-          [
-            `${position.index}. ${position.nome}: ${card.nome} (${orientationLabel})`,
-            `Contexto da posição: ${position.descricao}.`,
-            `Significado principal: ${mainMeaning}`,
-            `Arcano e elemento: ${formatArcanoLabel(card)}${card.elemento ? ` | ${card.elemento.nome}` : ''}.`,
-            `Representação: ${card.representacao || 'Não informada.'}`,
-            `Numerologia: ${card.numerologia ? `${card.numerologia.valor} (${card.numerologia.titulo}) - ${card.numerologia.descricao}` : 'Sem dados numerológicos.'}`,
-            `Luz/Sombra: ${card.polaridades?.luz || card.significado.vertical.curto} | ${card.polaridades?.sombra || card.significado.invertido.curto}.`,
-            `${card.corte ? `Carta da corte: ${card.corte.titulo} - ${card.corte.descricao}` : ''}`,
-            `Áreas de apoio: Carreira - ${card.areas.carreira} | Relacionamentos - ${card.areas.relacionamentos} | Espiritual - ${card.areas.espiritual}.`,
-          ].join('\n'),
-        )
-      })
-
-      const reversedCount = orderedDrawn.filter(card => card.isReversed).length
-      const uprightCount = orderedDrawn.length - reversedCount
-      const majorCount = orderedDrawn.filter(card => cardById.get(card.cardId)?.arcano === 'maior').length
-      const minorCount = orderedDrawn.length - majorCount
-      const hasFullSpread = orderedDrawn.length === spread.positions.length
-
-      const integratedSummary = [
-        `Na tiragem "${spread.nome}", as cartas apontam ${reversedCount > uprightCount ? 'um ciclo de revisão, ajustes e reposicionamento interno' : 'um movimento de avanço, consolidação e resposta prática à questão'}.`,
-        majorCount > minorCount
-          ? 'Há predominância de Arcanos Maiores, sugerindo decisões estruturantes e mudanças de maior impacto.'
-          : 'Há predominância de Arcanos Menores, indicando foco em ajustes concretos, rotina e execução passo a passo.',
-        hasFullSpread
-          ? 'Todas as posições foram preenchidas, então a leitura já está completa para fechamento desta sessão.'
-          : `Foram preenchidas ${orderedDrawn.length} de ${spread.positions.length} posições; a síntese já orienta a leitura, mas ganha precisão ao completar a tiragem.`,
-      ].join(' ')
-
-      const finalAdvice =
-        reversedCount > uprightCount
-          ? 'Conselho final: desacelere decisões impulsivas, revise prioridades e avance após validar os próximos passos.'
-          : 'Conselho final: mantenha consistência nas ações que já estão funcionando e siga a direção indicada pelas posições centrais.'
-
-      return [
-        `Síntese Final da Tiragem: ${spread.nome}`,
-        `Data: ${new Date().toLocaleString('pt-BR')}`,
-        `Progresso: ${orderedDrawn.length}/${spread.positions.length} posições preenchidas.`,
-        '',
-        'Leitura posição a posição:',
-        registeredDetails.join('\n\n'),
-        '',
-        'Síntese integrada:',
-        integratedSummary,
-        finalAdvice,
-      ].join('\n')
-    },
-    [cardById, spread.nome, spread.positions],
+    (orderedDrawn: DrawnCard[]) =>
+      generateAdvancedSpreadSynthesis({
+        spread,
+        orderedDrawn,
+        cardById,
+      }),
+    [cardById, spread],
   )
 
   const handleGenerateSynthesis = () => {

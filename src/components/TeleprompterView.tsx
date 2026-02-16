@@ -453,7 +453,6 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
       currentPositionIndex,
       currentPositionNumber,
       spread.positions,
-      spread.positions.length,
     ],
   )
 
@@ -554,7 +553,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
     }
   }, [currentPositionNumber, drawnByPosition, resetLastConfirmation])
 
-  const requestWakeLock = async () => {
+  const requestWakeLock = useCallback(async () => {
     const wakeLockNavigator = navigator as Navigator & {
       wakeLock?: { request: (type: 'screen') => Promise<WakeLockSentinelLike> }
     }
@@ -564,9 +563,9 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
     } catch {
       wakeLockRef.current = null
     }
-  }
+  }, [])
 
-  const enterFullscreen = async () => {
+  const enterFullscreen = useCallback(async () => {
     if (!document.fullscreenElement) {
       try {
         await document.documentElement.requestFullscreen()
@@ -575,9 +574,9 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
         // no-op
       }
     }
-  }
+  }, [requestWakeLock])
 
-  const exitFullscreen = async () => {
+  const exitFullscreen = useCallback(async () => {
     if (document.fullscreenElement) {
       await document.exitFullscreen()
     }
@@ -585,7 +584,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
       await wakeLockRef.current.release()
       wakeLockRef.current = null
     }
-  }
+  }, [])
 
   const goNext = useCallback(() => {
     setCurrentPositionIndex(prev => Math.min(prev + 1, spread.positions.length - 1))
@@ -860,7 +859,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
         syncToActiveParagraph()
       }
     },
-    [adjustWpm, goNext, goPrevious, syncToActiveParagraph],
+    [adjustWpm, enterFullscreen, exitFullscreen, goNext, goPrevious, syncToActiveParagraph],
   )
 
   useEffect(() => {

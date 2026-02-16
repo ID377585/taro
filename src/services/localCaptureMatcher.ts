@@ -1,3 +1,4 @@
+import { Card } from '../types'
 import { dbService } from './dbService'
 
 const SIGNATURE_WIDTH = 36
@@ -62,6 +63,21 @@ const normalizeSignature = (values: Float32Array) => {
   }
 
   return normalized
+}
+
+const rotateSignature180 = (values: Float32Array) => {
+  const rotated = new Float32Array(values.length)
+
+  for (let y = 0; y < SIGNATURE_HEIGHT; y += 1) {
+    for (let x = 0; x < SIGNATURE_WIDTH; x += 1) {
+      const sourceIndex = y * SIGNATURE_WIDTH + x
+      const targetIndex =
+        (SIGNATURE_HEIGHT - 1 - y) * SIGNATURE_WIDTH + (SIGNATURE_WIDTH - 1 - x)
+      rotated[targetIndex] = values[sourceIndex]
+    }
+  }
+
+  return rotated
 }
 
 const computeSignatureFromImageData = (imageData: ImageData) => {
@@ -241,7 +257,51 @@ export class LocalCaptureMatcher {
     } satisfies LocalCaptureCandidate
   }
 
-  async load(): Promise<LocalCaptureMatcherStats> {
+  private async loadCatalogCandidates(
+    cards: Card[],
+    onSampleError: () => void,
+  ) {
+    const candidates: LocalCaptureCandidate[] = []
+    const loadedCards = new Set<number>()
+
+    for (const card of cards) {
+      if (!card.imagemUrl) continue
+
+      try {
+        const response = await fetch(card.imagemUrl)
+        if (!response.ok) continue
+
+        const blob = await response.blob()
+        const signature = await this.signatureFromBlob(blob)
+        const reversedSignature = rotateSignature180(signature)
+
+        candidates.push({
+          cardId: card.id,
+          isReversed: false,
+          signatures: [signature],
+          samples: 1,
+        })
+        candidates.push({
+          cardId: card.id,
+          isReversed: true,
+          signatures: [reversedSignature],
+          samples: 1,
+        })
+
+        loadedCards.add(card.id)
+      } catch (error) {
+        onSampleError()
+        console.error('Falha ao processar asset da carta para fallback local:', error)
+      }
+    }
+
+    return {
+      cards: loadedCards.size,
+      candidates,
+    }
+  }
+
+  async load(cards: Card[] = []): Promise<LocalCaptureMatcherStats> {
     await dbService.init()
     const records = await dbService.getAllCardCaptures()
     const nextCandidates: LocalCaptureCandidate[] = []
@@ -275,6 +335,17 @@ export class LocalCaptureMatcher {
       }
       if (reversedCandidate) {
         nextCandidates.push(reversedCandidate)
+      }
+    }
+
+    if (!nextCandidates.length && cards.length) {
+      const catalog = await this.loadCatalogCandidates(cards, () => {
+        failedSamples += 1
+      })
+
+      if (catalog.candidates.length) {
+        nextCandidates.push(...catalog.candidates)
+        cardsWithCaptures = catalog.cards
       }
     }
 

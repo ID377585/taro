@@ -42,6 +42,10 @@ interface VoteState {
   count: number
 }
 
+interface PlaceholderMetadata {
+  placeholder?: boolean
+}
+
 export const useCardRecognition = ({
   videoRef,
   cards,
@@ -125,7 +129,7 @@ export const useCardRecognition = ({
 
       const fallbackToLocalMatcher = async () => {
         const matcher = new LocalCaptureMatcher()
-        const stats = await matcher.load()
+        const stats = await matcher.load(cards)
         if (isMounted) {
           setLocalStats(stats)
         }
@@ -162,7 +166,30 @@ export const useCardRecognition = ({
         }
       }
 
+      const isPlaceholderModel = async () => {
+        try {
+          const response = await fetch(metadataUrl)
+          if (!response.ok) return false
+          const metadata = (await response.json()) as PlaceholderMetadata
+          return Boolean(metadata.placeholder)
+        } catch {
+          return false
+        }
+      }
+
       try {
+        if (await isPlaceholderModel()) {
+          const localFallback = await fallbackToLocalMatcher()
+          if (!localFallback.enabled && isMounted) {
+            setStatus('no-model')
+            setError(
+              localFallback.reason ||
+                'Modelo base detectado. Para reconhecimento por IA, substitua os arquivos em public/model por um modelo treinado.',
+            )
+          }
+          return
+        }
+
         await recognizerRef.current.load(modelUrl, metadataUrl)
         if (isMounted) {
           setModelLabels(recognizerRef.current.getLabels())
@@ -203,7 +230,7 @@ export const useCardRecognition = ({
     return () => {
       isMounted = false
     }
-  }, [enabled, metadataUrl, modelUrl])
+  }, [cards, enabled, metadataUrl, modelUrl])
 
   useEffect(() => {
     if (!enabled || (status !== 'running' && status !== 'running-local')) return

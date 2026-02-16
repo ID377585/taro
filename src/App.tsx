@@ -1,10 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react'
 import './App.css'
 import SpreadSelector from './components/SpreadSelector'
-import TeleprompterView from './components/TeleprompterView'
 import HistoryPanel from './components/HistoryPanel'
-import HistoryRecordsView from './components/HistoryRecordsView'
-import CardRegistrationView from './components/CardRegistrationView'
 import ConsultationIntakeForm from './components/ConsultationIntakeForm'
 import {
   DrawnCard,
@@ -14,6 +11,10 @@ import {
   ConsultationIntake,
 } from './types'
 import { useIndexedDB } from './hooks/useIndexedDB'
+
+const TeleprompterView = lazy(() => import('./components/TeleprompterView'))
+const HistoryRecordsView = lazy(() => import('./components/HistoryRecordsView'))
+const CardRegistrationView = lazy(() => import('./components/CardRegistrationView'))
 
 interface CardsDataResponse {
   cards: Card[]
@@ -257,12 +258,14 @@ function App() {
         )}
 
         {!loading && !loadError && !selectedSpread && showHistoryRecords && (
-          <HistoryRecordsView
-            sessions={sessions}
-            cards={cards}
-            spreads={spreads}
-            onBack={() => setShowHistoryRecords(false)}
-          />
+          <Suspense fallback={<p className="loading">Carregando módulo...</p>}>
+            <HistoryRecordsView
+              sessions={sessions}
+              cards={cards}
+              spreads={spreads}
+              onBack={() => setShowHistoryRecords(false)}
+            />
+          </Suspense>
         )}
 
         {!loading && !loadError && !selectedSpread && showIntakeForm && (
@@ -314,23 +317,27 @@ function App() {
         )}
 
         {!loading && !loadError && selectedSpread && (
-          <TeleprompterView
-            spread={selectedSpread}
-            cards={cards}
-            consultation={consultationIntake}
-            onBack={() => {
-              setSelectedSpread(null)
-              setShowSpreadSelector(true)
-            }}
-            onSaveSession={handleSaveSession}
-          />
+          <Suspense fallback={<p className="loading">Carregando módulo...</p>}>
+            <TeleprompterView
+              spread={selectedSpread}
+              cards={cards}
+              consultation={consultationIntake}
+              onBack={() => {
+                setSelectedSpread(null)
+                setShowSpreadSelector(true)
+              }}
+              onSaveSession={handleSaveSession}
+            />
+          </Suspense>
         )}
 
         {!loading && !loadError && !selectedSpread && isRegisteringCards && (
-          <CardRegistrationView
-            cards={cards}
-            onBack={() => setIsRegisteringCards(false)}
-          />
+          <Suspense fallback={<p className="loading">Carregando módulo...</p>}>
+            <CardRegistrationView
+              cards={cards}
+              onBack={() => setIsRegisteringCards(false)}
+            />
+          </Suspense>
         )}
       </div>
     </div>

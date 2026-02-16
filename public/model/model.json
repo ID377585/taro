@@ -1,0 +1,83 @@
+{
+  "format": "layers-model",
+  "generatedBy": "taro-bootstrap-model",
+  "convertedBy": null,
+  "modelTopology": {
+    "class_name": "Sequential",
+    "config": {
+      "name": "sequential_1",
+      "layers": [
+        {
+          "class_name": "InputLayer",
+          "config": {
+            "batch_input_shape": [
+              null,
+              8,
+              8,
+              3
+            ],
+            "dtype": "float32",
+            "sparse": false,
+            "name": "input1"
+          }
+        },
+        {
+          "class_name": "Flatten",
+          "config": {
+            "name": "flatten_Flatten1",
+            "trainable": true
+          }
+        },
+        {
+          "class_name": "Dense",
+          "config": {
+            "units": 78,
+            "activation": "softmax",
+            "use_bias": true,
+            "kernel_initializer": {
+              "class_name": "Zeros",
+              "config": {}
+            },
+            "bias_initializer": {
+              "class_name": "Zeros",
+              "config": {}
+            },
+            "kernel_regularizer": null,
+            "bias_regularizer": null,
+            "activity_regularizer": null,
+            "kernel_constraint": null,
+            "bias_constraint": null,
+            "name": "dense_Dense1",
+            "trainable": true
+          }
+        }
+      ]
+    },
+    "keras_version": "tfjs-layers 4.22.0",
+    "backend": "tensor_flow.js"
+  },
+  "weightsManifest": [
+    {
+      "paths": [
+        "weights.bin"
+      ],
+      "weights": [
+        {
+          "name": "dense_Dense1/kernel",
+          "shape": [
+            192,
+            78
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "dense_Dense1/bias",
+          "shape": [
+            78
+          ],
+          "dtype": "float32"
+        }
+      ]
+    }
+  ]
+}

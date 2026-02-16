@@ -1,4 +1,6 @@
-Coloque aqui os arquivos exportados do Teachable Machine:
+Este diretório já contém um modelo bootstrap neutro para evitar falhas de inicialização.
+
+Para reconhecimento com IA treinada, substitua pelos arquivos exportados do Teachable Machine:
 
 - `model.json`
 - `metadata.json`

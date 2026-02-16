@@ -17,14 +17,27 @@ Abra no navegador em `http://localhost:5173`.
 npm run build
 ```
 
+## Qualidade e testes
+
+```bash
+npm run lint
+npm run test
+npm run check
+```
+
+## CI
+
+- Workflow: `.github/workflows/ci.yml`
+- Etapas: `npm ci`, `npm audit --audit-level=moderate`, `npm run check`, `npm run build`
+
 ## Estrutura
 
 - `src/components`: telas e componentes de UI.
 - `src/hooks`: hooks de câmera e IndexedDB.
 - `src/services`: serviços de dados e persistência.
 - `public/data`: base inicial de cartas e tiragens.
-- `public/cards`: imagens das cartas (adicione suas 78 cartas aqui).
-- `public/model`: modelo exportado do Teachable Machine (`model.json`, `metadata.json`, pesos).
+- `public/cards`: imagens locais das cartas (o bootstrap atual usa SVG; você pode substituir por seu deck real).
+- `public/model`: modelo para TensorFlow.js (`model.json`, `metadata.json`, pesos). O projeto inclui um modelo bootstrap neutro.
 
 ## Status atual do MVP
 
@@ -33,6 +46,7 @@ npm run build
 - Registro guiado de cartas (vertical e invertida), com contador 10/10 e exportação ZIP por carta.
 - Importação de fotos no registro de cartas: HEIF/HEIC/HEVC/PNG/JPEG (com conversão para JPEG no app).
 - Reconhecimento com TensorFlow.js + votação de estabilidade.
+- Fallback automático para reconhecimento local quando o modelo é bootstrap/ausente.
 - Mapeamento automático dos labels do Teachable Machine para cartas reais do deck.
 - Teleprompter avançado com:
   - controle de rolagem em WPM (passo de 1)

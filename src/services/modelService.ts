@@ -1,6 +1,3 @@
-import * as tf from '@tensorflow/tfjs'
-import '@tensorflow/tfjs-backend-webgl'
-
 interface ModelMetadata {
   labels?: string[]
   classes?: string[]
@@ -21,17 +18,36 @@ export interface Prediction {
   scores: number[]
 }
 
-let backendReady: Promise<void> | null = null
+type TfModule = typeof import('@tensorflow/tfjs')
 
-const ensureBackendReady = async () => {
+let tfModulePromise: Promise<TfModule> | null = null
+let backendReady: Promise<TfModule> | null = null
+
+const loadTf = async (): Promise<TfModule> => {
+  if (!tfModulePromise) {
+    tfModulePromise = (async () => {
+      const [tf] = await Promise.all([
+        import('@tensorflow/tfjs'),
+        import('@tensorflow/tfjs-backend-webgl'),
+      ])
+      return tf
+    })()
+  }
+
+  return tfModulePromise
+}
+
+const ensureBackendReady = async (): Promise<TfModule> => {
   if (!backendReady) {
     backendReady = (async () => {
+      const tf = await loadTf()
       try {
         await tf.setBackend('webgl')
       } catch {
         await tf.setBackend('cpu')
       }
       await tf.ready()
+      return tf
     })()
   }
 
@@ -39,7 +55,7 @@ const ensureBackendReady = async () => {
 }
 
 export class CardRecognizerModel {
-  private model: tf.LayersModel | null = null
+  private model: import('@tensorflow/tfjs').LayersModel | null = null
   private labels: string[] = []
 
   private extractLabelsFromMetadata(metadata: ModelMetadata) {
@@ -62,7 +78,7 @@ export class CardRecognizerModel {
   }
 
   async load(modelUrl: string, metadataUrl?: string) {
-    await ensureBackendReady()
+    const tf = await ensureBackendReady()
     this.model = await tf.loadLayersModel(modelUrl)
 
     if (metadataUrl) {
@@ -89,18 +105,21 @@ export class CardRecognizerModel {
     if (!this.model) return null
     if (videoElement.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return null
 
-    const [, expectedHeight = 224, expectedWidth = 224] = this.model.inputs[0]
-      .shape || [null, 224, 224]
+    const tf = await ensureBackendReady()
+    const [, expectedHeightRaw = 224, expectedWidthRaw = 224] =
+      this.model.inputs[0].shape || [null, 224, 224]
+    const expectedHeight = Number(expectedHeightRaw || 224)
+    const expectedWidth = Number(expectedWidthRaw || 224)
 
     const logits = tf.tidy(() => {
       const frame = tf.browser
         .fromPixels(videoElement)
-        .resizeBilinear([Number(expectedHeight), Number(expectedWidth)])
+        .resizeBilinear([expectedHeight, expectedWidth])
         .toFloat()
         .div(tf.scalar(255))
         .expandDims(0)
 
-      return this.model!.predict(frame) as tf.Tensor
+      return this.model!.predict(frame) as import('@tensorflow/tfjs').Tensor
     })
 
     const scores = Array.from(await logits.data())

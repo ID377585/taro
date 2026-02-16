@@ -20,7 +20,7 @@
         "luz": "novos começos, liberdade, espontaneidade",
         "sombra": "imprudência, imaturidade, fuga de responsabilidade"
       },
-      "imagemUrl": "/cards/00_fool.jpg",
+      "imagemUrl": "/cards/00_fool.svg",
       "significado": {
         "vertical": {
           "curto": "novos começos, liberdade, espontaneidade",
@@ -63,7 +63,7 @@
         "luz": "iniciativa, poder pessoal, manifestação",
         "sombra": "manipulação, engano, ilusão"
       },
-      "imagemUrl": "/cards/01_magician.jpg",
+      "imagemUrl": "/cards/01_magician.svg",
       "significado": {
         "vertical": {
           "curto": "iniciativa, poder pessoal, manifestação",
@@ -106,7 +106,7 @@
         "luz": "intuição, mistério, sabedoria interior",
         "sombra": "segredos ocultos, frieza, passividade"
       },
-      "imagemUrl": "/cards/02_high-priestess.jpg",
+      "imagemUrl": "/cards/02_high-priestess.svg",
       "significado": {
         "vertical": {
           "curto": "intuição, mistério, sabedoria interior",
@@ -149,7 +149,7 @@
         "luz": "fertilidade, amor, criatividade, prosperidade",
         "sombra": "ciúmes, excessos, dependência emocional"
       },
-      "imagemUrl": "/cards/03_empress.jpg",
+      "imagemUrl": "/cards/03_empress.svg",
       "significado": {
         "vertical": {
           "curto": "fertilidade, amor, criatividade, prosperidade",
@@ -192,7 +192,7 @@
         "luz": "estrutura, liderança, estabilidade",
         "sombra": "rigidez, autoritarismo, controle excessivo"
       },
-      "imagemUrl": "/cards/04_emperor.jpg",
+      "imagemUrl": "/cards/04_emperor.svg",
       "significado": {
         "vertical": {
           "curto": "estrutura, liderança, estabilidade",
@@ -235,7 +235,7 @@
         "luz": "tradição, espiritualidade, ensinamentos",
         "sombra": "dogmas, mente fechada, conservadorismo extremo"
       },
-      "imagemUrl": "/cards/05_hierophant.jpg",
+      "imagemUrl": "/cards/05_hierophant.svg",
       "significado": {
         "vertical": {
           "curto": "tradição, espiritualidade, ensinamentos",
@@ -278,7 +278,7 @@
         "luz": "união, escolhas do coração, parceria",
         "sombra": "indecisão, triângulos, conflitos amorosos"
       },
-      "imagemUrl": "/cards/06_lovers.jpg",
+      "imagemUrl": "/cards/06_lovers.svg",
       "significado": {
         "vertical": {
           "curto": "união, escolhas do coração, parceria",
@@ -321,7 +321,7 @@
         "luz": "vitória, avanço, determinação",
         "sombra": "impulsividade, perda de controle"
       },
-      "imagemUrl": "/cards/07_chariot.jpg",
+      "imagemUrl": "/cards/07_chariot.svg",
       "significado": {
         "vertical": {
           "curto": "vitória, avanço, determinação",
@@ -364,7 +364,7 @@
         "luz": "equilíbrio, verdade, decisões justas",
         "sombra": "injustiça, frieza, julgamento severo"
       },
-      "imagemUrl": "/cards/08_justice.jpg",
+      "imagemUrl": "/cards/08_justice.svg",
       "significado": {
         "vertical": {
           "curto": "equilíbrio, verdade, decisões justas",
@@ -407,7 +407,7 @@
         "luz": "sabedoria, introspecção, busca interior",
         "sombra": "isolamento, solidão, distanciamento emocional"
       },
-      "imagemUrl": "/cards/09_hermit.jpg",
+      "imagemUrl": "/cards/09_hermit.svg",
       "significado": {
         "vertical": {
           "curto": "sabedoria, introspecção, busca interior",
@@ -450,7 +450,7 @@
         "luz": "mudanças positivas, destino, ciclos",
         "sombra": "instabilidade, imprevistos, perda de controle"
       },
-      "imagemUrl": "/cards/10_wheel-of-fortune.jpg",
+      "imagemUrl": "/cards/10_wheel-of-fortune.svg",
       "significado": {
         "vertical": {
           "curto": "mudanças positivas, destino, ciclos",
@@ -493,7 +493,7 @@
         "luz": "coragem, domínio emocional, autocontrole",
         "sombra": "explosões emocionais, fraqueza interna"
       },
-      "imagemUrl": "/cards/11_strength.jpg",
+      "imagemUrl": "/cards/11_strength.svg",
       "significado": {
         "vertical": {
           "curto": "coragem, domínio emocional, autocontrole",
@@ -536,7 +536,7 @@
         "luz": "pausa necessária, nova perspectiva",
         "sombra": "estagnação, sacrifício inútil"
       },
-      "imagemUrl": "/cards/12_hanged-man.jpg",
+      "imagemUrl": "/cards/12_hanged-man.svg",
       "significado": {
         "vertical": {
           "curto": "pausa necessária, nova perspectiva",
@@ -579,7 +579,7 @@
         "luz": "transformação, renascimento, fim necessário",
         "sombra": "resistência à mudança, medo do fim"
       },
-      "imagemUrl": "/cards/13_death.jpg",
+      "imagemUrl": "/cards/13_death.svg",
       "significado": {
         "vertical": {
           "curto": "transformação, renascimento, fim necessário",
@@ -622,7 +622,7 @@
         "luz": "equilíbrio, harmonia, cura",
         "sombra": "desequilíbrio, impaciência"
       },
-      "imagemUrl": "/cards/14_temperance.jpg",
+      "imagemUrl": "/cards/14_temperance.svg",
       "significado": {
         "vertical": {
           "curto": "equilíbrio, harmonia, cura",
@@ -665,7 +665,7 @@
         "luz": "desejos intensos, magnetismo, paixão",
         "sombra": "vícios, obsessão, dependência"
       },
-      "imagemUrl": "/cards/15_devil.jpg",
+      "imagemUrl": "/cards/15_devil.svg",
       "significado": {
         "vertical": {
           "curto": "desejos intensos, magnetismo, paixão",
@@ -708,7 +708,7 @@
         "luz": "libertação, quebra de ilusões",
         "sombra": "ruptura dolorosa, caos"
       },
-      "imagemUrl": "/cards/16_tower.jpg",
+      "imagemUrl": "/cards/16_tower.svg",
       "significado": {
         "vertical": {
           "curto": "libertação, quebra de ilusões",
@@ -751,7 +751,7 @@
         "luz": "esperança, fé, proteção espiritual",
         "sombra": "ilusões, ingenuidade"
       },
-      "imagemUrl": "/cards/17_star.jpg",
+      "imagemUrl": "/cards/17_star.svg",
       "significado": {
         "vertical": {
           "curto": "esperança, fé, proteção espiritual",
@@ -794,7 +794,7 @@
         "luz": "intuição profunda, sensibilidade",
         "sombra": "medos, confusão, enganos"
       },
-      "imagemUrl": "/cards/18_moon.jpg",
+      "imagemUrl": "/cards/18_moon.svg",
       "significado": {
         "vertical": {
           "curto": "intuição profunda, sensibilidade",
@@ -837,7 +837,7 @@
         "luz": "sucesso, alegria, clareza",
         "sombra": "ego inflado, excesso de confiança"
       },
-      "imagemUrl": "/cards/19_sun.jpg",
+      "imagemUrl": "/cards/19_sun.svg",
       "significado": {
         "vertical": {
           "curto": "sucesso, alegria, clareza",
@@ -880,7 +880,7 @@
         "luz": "despertar, renascimento, chamada espiritual",
         "sombra": "culpa, dificuldade de perdoar"
       },
-      "imagemUrl": "/cards/20_judgement.jpg",
+      "imagemUrl": "/cards/20_judgement.svg",
       "significado": {
         "vertical": {
           "curto": "despertar, renascimento, chamada espiritual",
@@ -923,7 +923,7 @@
         "luz": "realização, conclusão, sucesso pleno",
         "sombra": "sensação de ciclo incompleto"
       },
-      "imagemUrl": "/cards/21_world.jpg",
+      "imagemUrl": "/cards/21_world.svg",
       "significado": {
         "vertical": {
           "curto": "realização, conclusão, sucesso pleno",
@@ -969,7 +969,7 @@
         "luz": "novo projeto, impulso",
         "sombra": "Sombra de Ás de Paus: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/22_wands_ace.jpg",
+      "imagemUrl": "/cards/22_wands_ace.svg",
       "significado": {
         "vertical": {
           "curto": "novo projeto, impulso",
@@ -1016,7 +1016,7 @@
         "luz": "planejamento",
         "sombra": "Sombra de 2 de Paus: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/23_wands_2.jpg",
+      "imagemUrl": "/cards/23_wands_2.svg",
       "significado": {
         "vertical": {
           "curto": "planejamento",
@@ -1063,7 +1063,7 @@
         "luz": "expansão",
         "sombra": "Sombra de 3 de Paus: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/24_wands_3.jpg",
+      "imagemUrl": "/cards/24_wands_3.svg",
       "significado": {
         "vertical": {
           "curto": "expansão",
@@ -1110,7 +1110,7 @@
         "luz": "estabilidade",
         "sombra": "Sombra de 4 de Paus: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/25_wands_4.jpg",
+      "imagemUrl": "/cards/25_wands_4.svg",
       "significado": {
         "vertical": {
           "curto": "estabilidade",
@@ -1157,7 +1157,7 @@
         "luz": "conflitos",
         "sombra": "Sombra de 5 de Paus: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/26_wands_5.jpg",
+      "imagemUrl": "/cards/26_wands_5.svg",
       "significado": {
         "vertical": {
           "curto": "conflitos",
@@ -1204,7 +1204,7 @@
         "luz": "reconhecimento",
         "sombra": "Sombra de 6 de Paus: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/27_wands_6.jpg",
+      "imagemUrl": "/cards/27_wands_6.svg",
       "significado": {
         "vertical": {
           "curto": "reconhecimento",
@@ -1251,7 +1251,7 @@
         "luz": "defesa",
         "sombra": "Sombra de 7 de Paus: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/28_wands_7.jpg",
+      "imagemUrl": "/cards/28_wands_7.svg",
       "significado": {
         "vertical": {
           "curto": "defesa",
@@ -1298,7 +1298,7 @@
         "luz": "movimento rápido",
         "sombra": "Sombra de 8 de Paus: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/29_wands_8.jpg",
+      "imagemUrl": "/cards/29_wands_8.svg",
       "significado": {
         "vertical": {
           "curto": "movimento rápido",
@@ -1345,7 +1345,7 @@
         "luz": "resistência",
         "sombra": "Sombra de 9 de Paus: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/30_wands_9.jpg",
+      "imagemUrl": "/cards/30_wands_9.svg",
       "significado": {
         "vertical": {
           "curto": "resistência",
@@ -1392,7 +1392,7 @@
         "luz": "sobrecarga",
         "sombra": "Sombra de 10 de Paus: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/31_wands_10.jpg",
+      "imagemUrl": "/cards/31_wands_10.svg",
       "significado": {
         "vertical": {
           "curto": "sobrecarga",
@@ -1442,7 +1442,7 @@
         "luz": "novidade profissional",
         "sombra": "Sombra de Pajem de Paus: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/32_wands_page.jpg",
+      "imagemUrl": "/cards/32_wands_page.svg",
       "significado": {
         "vertical": {
           "curto": "novidade profissional",
@@ -1492,7 +1492,7 @@
         "luz": "ação intensa",
         "sombra": "Sombra de Cavaleiro de Paus: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/33_wands_knight.jpg",
+      "imagemUrl": "/cards/33_wands_knight.svg",
       "significado": {
         "vertical": {
           "curto": "ação intensa",
@@ -1542,7 +1542,7 @@
         "luz": "liderança criativa",
         "sombra": "Sombra de Rainha de Paus: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/34_wands_queen.jpg",
+      "imagemUrl": "/cards/34_wands_queen.svg",
       "significado": {
         "vertical": {
           "curto": "liderança criativa",
@@ -1592,7 +1592,7 @@
         "luz": "autoridade e visão estratégica",
         "sombra": "Sombra de Rei de Paus: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/35_wands_king.jpg",
+      "imagemUrl": "/cards/35_wands_king.svg",
       "significado": {
         "vertical": {
           "curto": "autoridade e visão estratégica",
@@ -1639,7 +1639,7 @@
         "luz": "novo amor",
         "sombra": "Sombra de Ás de Copas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/36_cups_ace.jpg",
+      "imagemUrl": "/cards/36_cups_ace.svg",
       "significado": {
         "vertical": {
           "curto": "novo amor",
@@ -1686,7 +1686,7 @@
         "luz": "união amorosa",
         "sombra": "Sombra de 2 de Copas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/37_cups_2.jpg",
+      "imagemUrl": "/cards/37_cups_2.svg",
       "significado": {
         "vertical": {
           "curto": "união amorosa",
@@ -1733,7 +1733,7 @@
         "luz": "celebração",
         "sombra": "Sombra de 3 de Copas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/38_cups_3.jpg",
+      "imagemUrl": "/cards/38_cups_3.svg",
       "significado": {
         "vertical": {
           "curto": "celebração",
@@ -1780,7 +1780,7 @@
         "luz": "insatisfação emocional",
         "sombra": "Sombra de 4 de Copas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/39_cups_4.jpg",
+      "imagemUrl": "/cards/39_cups_4.svg",
       "significado": {
         "vertical": {
           "curto": "insatisfação emocional",
@@ -1827,7 +1827,7 @@
         "luz": "decepção",
         "sombra": "Sombra de 5 de Copas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/40_cups_5.jpg",
+      "imagemUrl": "/cards/40_cups_5.svg",
       "significado": {
         "vertical": {
           "curto": "decepção",
@@ -1874,7 +1874,7 @@
         "luz": "passado, nostalgia",
         "sombra": "Sombra de 6 de Copas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/41_cups_6.jpg",
+      "imagemUrl": "/cards/41_cups_6.svg",
       "significado": {
         "vertical": {
           "curto": "passado, nostalgia",
@@ -1921,7 +1921,7 @@
         "luz": "ilusões",
         "sombra": "Sombra de 7 de Copas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/42_cups_7.jpg",
+      "imagemUrl": "/cards/42_cups_7.svg",
       "significado": {
         "vertical": {
           "curto": "ilusões",
@@ -1968,7 +1968,7 @@
         "luz": "afastamento emocional",
         "sombra": "Sombra de 8 de Copas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/43_cups_8.jpg",
+      "imagemUrl": "/cards/43_cups_8.svg",
       "significado": {
         "vertical": {
           "curto": "afastamento emocional",
@@ -2015,7 +2015,7 @@
         "luz": "satisfação",
         "sombra": "Sombra de 9 de Copas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/44_cups_9.jpg",
+      "imagemUrl": "/cards/44_cups_9.svg",
       "significado": {
         "vertical": {
           "curto": "satisfação",
@@ -2062,7 +2062,7 @@
         "luz": "felicidade familiar",
         "sombra": "Sombra de 10 de Copas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/45_cups_10.jpg",
+      "imagemUrl": "/cards/45_cups_10.svg",
       "significado": {
         "vertical": {
           "curto": "felicidade familiar",
@@ -2112,7 +2112,7 @@
         "luz": "mensagem amorosa",
         "sombra": "Sombra de Pajem de Copas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/46_cups_page.jpg",
+      "imagemUrl": "/cards/46_cups_page.svg",
       "significado": {
         "vertical": {
           "curto": "mensagem amorosa",
@@ -2162,7 +2162,7 @@
         "luz": "romantismo",
         "sombra": "Sombra de Cavaleiro de Copas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/47_cups_knight.jpg",
+      "imagemUrl": "/cards/47_cups_knight.svg",
       "significado": {
         "vertical": {
           "curto": "romantismo",
@@ -2212,7 +2212,7 @@
         "luz": "sensibilidade",
         "sombra": "Sombra de Rainha de Copas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/48_cups_queen.jpg",
+      "imagemUrl": "/cards/48_cups_queen.svg",
       "significado": {
         "vertical": {
           "curto": "sensibilidade",
@@ -2262,7 +2262,7 @@
         "luz": "maturidade emocional",
         "sombra": "Sombra de Rei de Copas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/49_cups_king.jpg",
+      "imagemUrl": "/cards/49_cups_king.svg",
       "significado": {
         "vertical": {
           "curto": "maturidade emocional",
@@ -2309,7 +2309,7 @@
         "luz": "verdade revelada",
         "sombra": "Sombra de Ás de Espadas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/50_swords_ace.jpg",
+      "imagemUrl": "/cards/50_swords_ace.svg",
       "significado": {
         "vertical": {
           "curto": "verdade revelada",
@@ -2356,7 +2356,7 @@
         "luz": "indecisão",
         "sombra": "Sombra de 2 de Espadas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/51_swords_2.jpg",
+      "imagemUrl": "/cards/51_swords_2.svg",
       "significado": {
         "vertical": {
           "curto": "indecisão",
@@ -2403,7 +2403,7 @@
         "luz": "dor emocional",
         "sombra": "Sombra de 3 de Espadas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/52_swords_3.jpg",
+      "imagemUrl": "/cards/52_swords_3.svg",
       "significado": {
         "vertical": {
           "curto": "dor emocional",
@@ -2450,7 +2450,7 @@
         "luz": "descanso",
         "sombra": "Sombra de 4 de Espadas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/53_swords_4.jpg",
+      "imagemUrl": "/cards/53_swords_4.svg",
       "significado": {
         "vertical": {
           "curto": "descanso",
@@ -2497,7 +2497,7 @@
         "luz": "conflito",
         "sombra": "Sombra de 5 de Espadas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/54_swords_5.jpg",
+      "imagemUrl": "/cards/54_swords_5.svg",
       "significado": {
         "vertical": {
           "curto": "conflito",
@@ -2544,7 +2544,7 @@
         "luz": "transição",
         "sombra": "Sombra de 6 de Espadas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/55_swords_6.jpg",
+      "imagemUrl": "/cards/55_swords_6.svg",
       "significado": {
         "vertical": {
           "curto": "transição",
@@ -2591,7 +2591,7 @@
         "luz": "traição",
         "sombra": "Sombra de 7 de Espadas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/56_swords_7.jpg",
+      "imagemUrl": "/cards/56_swords_7.svg",
       "significado": {
         "vertical": {
           "curto": "traição",
@@ -2638,7 +2638,7 @@
         "luz": "bloqueio mental",
         "sombra": "Sombra de 8 de Espadas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/57_swords_8.jpg",
+      "imagemUrl": "/cards/57_swords_8.svg",
       "significado": {
         "vertical": {
           "curto": "bloqueio mental",
@@ -2685,7 +2685,7 @@
         "luz": "ansiedade",
         "sombra": "Sombra de 9 de Espadas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/58_swords_9.jpg",
+      "imagemUrl": "/cards/58_swords_9.svg",
       "significado": {
         "vertical": {
           "curto": "ansiedade",
@@ -2732,7 +2732,7 @@
         "luz": "fim doloroso",
         "sombra": "Sombra de 10 de Espadas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/59_swords_10.jpg",
+      "imagemUrl": "/cards/59_swords_10.svg",
       "significado": {
         "vertical": {
           "curto": "fim doloroso",
@@ -2782,7 +2782,7 @@
         "luz": "notícia inesperada",
         "sombra": "Sombra de Pajem de Espadas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/60_swords_page.jpg",
+      "imagemUrl": "/cards/60_swords_page.svg",
       "significado": {
         "vertical": {
           "curto": "notícia inesperada",
@@ -2832,7 +2832,7 @@
         "luz": "discussões",
         "sombra": "Sombra de Cavaleiro de Espadas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/61_swords_knight.jpg",
+      "imagemUrl": "/cards/61_swords_knight.svg",
       "significado": {
         "vertical": {
           "curto": "discussões",
@@ -2882,7 +2882,7 @@
         "luz": "racionalidade",
         "sombra": "Sombra de Rainha de Espadas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/62_swords_queen.jpg",
+      "imagemUrl": "/cards/62_swords_queen.svg",
       "significado": {
         "vertical": {
           "curto": "racionalidade",
@@ -2932,7 +2932,7 @@
         "luz": "autoridade mental",
         "sombra": "Sombra de Rei de Espadas: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/63_swords_king.jpg",
+      "imagemUrl": "/cards/63_swords_king.svg",
       "significado": {
         "vertical": {
           "curto": "autoridade mental",
@@ -2979,7 +2979,7 @@
         "luz": "oportunidade financeira",
         "sombra": "Sombra de Ás de Ouros: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/64_pentacles_ace.jpg",
+      "imagemUrl": "/cards/64_pentacles_ace.svg",
       "significado": {
         "vertical": {
           "curto": "oportunidade financeira",
@@ -3026,7 +3026,7 @@
         "luz": "equilíbrio financeiro",
         "sombra": "Sombra de 2 de Ouros: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/65_pentacles_2.jpg",
+      "imagemUrl": "/cards/65_pentacles_2.svg",
       "significado": {
         "vertical": {
           "curto": "equilíbrio financeiro",
@@ -3073,7 +3073,7 @@
         "luz": "trabalho em equipe",
         "sombra": "Sombra de 3 de Ouros: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/66_pentacles_3.jpg",
+      "imagemUrl": "/cards/66_pentacles_3.svg",
       "significado": {
         "vertical": {
           "curto": "trabalho em equipe",
@@ -3120,7 +3120,7 @@
         "luz": "apego material",
         "sombra": "Sombra de 4 de Ouros: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/67_pentacles_4.jpg",
+      "imagemUrl": "/cards/67_pentacles_4.svg",
       "significado": {
         "vertical": {
           "curto": "apego material",
@@ -3167,7 +3167,7 @@
         "luz": "dificuldades financeiras",
         "sombra": "Sombra de 5 de Ouros: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/68_pentacles_5.jpg",
+      "imagemUrl": "/cards/68_pentacles_5.svg",
       "significado": {
         "vertical": {
           "curto": "dificuldades financeiras",
@@ -3214,7 +3214,7 @@
         "luz": "ajuda ou apoio financeiro",
         "sombra": "Sombra de 6 de Ouros: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/69_pentacles_6.jpg",
+      "imagemUrl": "/cards/69_pentacles_6.svg",
       "significado": {
         "vertical": {
           "curto": "ajuda ou apoio financeiro",
@@ -3261,7 +3261,7 @@
         "luz": "espera por resultados",
         "sombra": "Sombra de 7 de Ouros: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/70_pentacles_7.jpg",
+      "imagemUrl": "/cards/70_pentacles_7.svg",
       "significado": {
         "vertical": {
           "curto": "espera por resultados",
@@ -3308,7 +3308,7 @@
         "luz": "dedicação ao trabalho",
         "sombra": "Sombra de 8 de Ouros: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/71_pentacles_8.jpg",
+      "imagemUrl": "/cards/71_pentacles_8.svg",
       "significado": {
         "vertical": {
           "curto": "dedicação ao trabalho",
@@ -3355,7 +3355,7 @@
         "luz": "independência financeira",
         "sombra": "Sombra de 9 de Ouros: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/72_pentacles_9.jpg",
+      "imagemUrl": "/cards/72_pentacles_9.svg",
       "significado": {
         "vertical": {
           "curto": "independência financeira",
@@ -3402,7 +3402,7 @@
         "luz": "prosperidade familiar",
         "sombra": "Sombra de 10 de Ouros: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/73_pentacles_10.jpg",
+      "imagemUrl": "/cards/73_pentacles_10.svg",
       "significado": {
         "vertical": {
           "curto": "prosperidade familiar",
@@ -3452,7 +3452,7 @@
         "luz": "nova oportunidade de estudo ou trabalho",
         "sombra": "Sombra de Pajem de Ouros: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/74_pentacles_page.jpg",
+      "imagemUrl": "/cards/74_pentacles_page.svg",
       "significado": {
         "vertical": {
           "curto": "nova oportunidade de estudo ou trabalho",
@@ -3502,7 +3502,7 @@
         "luz": "constância profissional",
         "sombra": "Sombra de Cavaleiro de Ouros: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/75_pentacles_knight.jpg",
+      "imagemUrl": "/cards/75_pentacles_knight.svg",
       "significado": {
         "vertical": {
           "curto": "constância profissional",
@@ -3552,7 +3552,7 @@
         "luz": "estabilidade financeira",
         "sombra": "Sombra de Rainha de Ouros: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/76_pentacles_queen.jpg",
+      "imagemUrl": "/cards/76_pentacles_queen.svg",
       "significado": {
         "vertical": {
           "curto": "estabilidade financeira",
@@ -3602,7 +3602,7 @@
         "luz": "sucesso material",
         "sombra": "Sombra de Rei de Ouros: desequilíbrio, atraso ou excesso no tema da carta."
       },
-      "imagemUrl": "/cards/77_pentacles_king.jpg",
+      "imagemUrl": "/cards/77_pentacles_king.svg",
       "significado": {
         "vertical": {
           "curto": "sucesso material",

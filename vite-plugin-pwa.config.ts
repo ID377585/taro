@@ -2,7 +2,12 @@ import type { VitePWAOptions } from 'vite-plugin-pwa'
 
 const pwaOptions: Partial<VitePWAOptions> = {
   registerType: 'prompt',
-  includeAssets: ['vite.svg', 'cards/*.jpg'],
+  includeAssets: [
+    'vite.svg',
+    'icons/icon-192.png',
+    'icons/icon-512.png',
+    'cards/*.{svg,jpg,jpeg,png}',
+  ],
   manifest: {
     id: '/',
     name: 'Leituras de Tarot',
@@ -16,14 +21,14 @@ const pwaOptions: Partial<VitePWAOptions> = {
     lang: 'pt-BR',
     icons: [
       {
-        src: '/vite.svg',
+        src: '/icons/icon-192.png',
         sizes: '192x192',
-        type: 'image/svg+xml',
+        type: 'image/png',
       },
       {
-        src: '/vite.svg',
+        src: '/icons/icon-512.png',
         sizes: '512x512',
-        type: 'image/svg+xml',
+        type: 'image/png',
       },
     ],
   },

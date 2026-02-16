@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="540" viewBox="0 0 360 540" role="img" aria-label="7 de Espadas">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="hsl(140 66% 22%)"/>
+      <stop offset="100%" stop-color="hsl(174 64% 12%)"/>
+    </linearGradient>
+    <linearGradient id="mid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="hsl(140 88% 58% / 0.70)"/>
+      <stop offset="100%" stop-color="hsl(174 84% 48% / 0.38)"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="8" y="8" width="344" height="524" rx="20" fill="url(#bg)" stroke="hsl(140 80% 72%)" stroke-width="3"/>
+  <rect x="26" y="26" width="308" height="488" rx="16" fill="none" stroke="hsl(174 78% 76% / 0.65)" stroke-width="2"/>
+
+  <polygon points="180,52 210,88 150,88" fill="hsl(140 86% 82%)"/>
+  <polygon points="180,488 150,452 210,452" fill="hsl(140 86% 62% / 0.68)"/>
+
+  <rect x="54" y="122" width="252" height="274" rx="18" fill="url(#mid)" stroke="hsl(174 90% 88% / 0.45)" stroke-width="1.5"/>
+
+  <text x="180" y="172" text-anchor="middle" font-family="Georgia, serif" font-size="34" font-weight="700" fill="white">56</text>
+  <text x="180" y="222" text-anchor="middle" font-family="Georgia, serif" font-size="19" font-weight="700" fill="white">7 de Espadas</text>
+  
+  <text x="180" y="336" text-anchor="middle" font-family="Verdana, sans-serif" font-size="13" letter-spacing="1.1" fill="white">ARCANO MENOR</text>
+  <text x="180" y="372" text-anchor="middle" font-family="Verdana, sans-serif" font-size="11" letter-spacing="0.6" fill="hsl(0 0% 95%)">ASSET LOCAL DO APP TARO</text>
+</svg>

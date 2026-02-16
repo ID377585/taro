@@ -138,6 +138,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
   const [feedback, setFeedback] = useState<string>('')
   const [isExporting, setIsExporting] = useState(false)
   const [isImporting, setIsImporting] = useState(false)
+  const [isPanelExpanded, setIsPanelExpanded] = useState(false)
   const importInputRef = useRef<HTMLInputElement>(null)
 
   const {
@@ -457,122 +458,144 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
         onStart={() => startCamera(currentDeviceId || devices[0]?.deviceId)}
         onSwitch={switchCamera}
       >
-        <div className="capture-guidance">
+        <div
+          className={`capture-guidance ${
+            isPanelExpanded ? 'with-panel-expanded' : 'with-panel-collapsed'
+          }`}
+        >
           <strong>Posicione a carta dentro do quadro</strong>
           <span>Mantenha a carta completa, sem reflexo e com boa iluminação.</span>
         </div>
       </CameraView>
 
-      <div className="registration-panel">
-        <div className="registration-topline">
-          <h2>Registrar Cartas</h2>
-          <button className="secondary" onClick={onBack}>
-            Voltar
-          </button>
-        </div>
+      <div
+        className={`registration-panel ${isPanelExpanded ? 'expanded' : 'collapsed'}`}
+      >
+        <button
+          className="panel-toggle"
+          onClick={() => setIsPanelExpanded(prev => !prev)}
+          aria-expanded={isPanelExpanded}
+          aria-controls="registration-panel-content"
+        >
+          <span className="panel-toggle-title">Registrar Cartas</span>
+          <span className="panel-toggle-state">
+            {isPanelExpanded ? 'Ocultar funções' : 'Mostrar funções'}
+          </span>
+        </button>
 
-        <div className="registration-controls">
-          <div className="control-group">
-            <label htmlFor="card-selector">Carta</label>
-            <select
-              id="card-selector"
-              value={selectedCardId}
-              onChange={event => setSelectedCardId(event.target.value)}
-            >
-              {cards.map(card => (
-                <option key={card.id} value={card.id}>
-                  {card.id.toString().padStart(2, '0')} - {card.nome}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="control-group">
-            <label>Orientação</label>
-            <div className="orientation-buttons">
-              <button
-                className={orientation === 'vertical' ? 'secondary active' : 'secondary'}
-                onClick={() => setOrientation('vertical')}
-              >
-                Vertical
-              </button>
-              <button
-                className={orientation === 'invertido' ? 'secondary active' : 'secondary'}
-                onClick={() => setOrientation('invertido')}
-              >
-                Invertida
+        {isPanelExpanded && (
+          <div id="registration-panel-content" className="registration-panel-content">
+            <div className="registration-topline">
+              <h2>Registrar Cartas</h2>
+              <button className="secondary" onClick={onBack}>
+                Voltar
               </button>
             </div>
-          </div>
-        </div>
 
-        <div className="counter-grid">
-          <div>
-            <small>Vertical</small>
-            <strong>
-              {currentVerticalCount}/{TARGET_PER_ORIENTATION}
-            </strong>
-          </div>
-          <div>
-            <small>Invertida</small>
-            <strong>
-              {currentInvertedCount}/{TARGET_PER_ORIENTATION}
-            </strong>
-          </div>
-          <div>
-            <small>Status</small>
-            <strong>{isCardReady ? 'Pronta para treino' : 'Em captura'}</strong>
-          </div>
-        </div>
+            <div className="registration-controls">
+              <div className="control-group">
+                <label htmlFor="card-selector">Carta</label>
+                <select
+                  id="card-selector"
+                  value={selectedCardId}
+                  onChange={event => setSelectedCardId(event.target.value)}
+                >
+                  {cards.map(card => (
+                    <option key={card.id} value={card.id}>
+                      {card.id.toString().padStart(2, '0')} - {card.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-        <div className="capture-actions">
-          <button onClick={handleCapture}>Capturar foto</button>
-          <button
-            className="secondary"
-            onClick={() => importInputRef.current?.click()}
-            disabled={isImporting}
-          >
-            {isImporting ? 'Importando...' : 'Importar fotos'}
-          </button>
-          <button className="secondary" onClick={removeLastCapture}>
-            Desfazer última
-          </button>
-          <button className="secondary" onClick={clearCurrentCard}>
-            Limpar carta
-          </button>
-          <button className="secondary" onClick={goToNextCard}>
-            Próxima carta
-          </button>
-          <button onClick={exportCurrentCard} disabled={isExporting}>
-            {isExporting ? 'Exportando...' : 'Exportar carta (ZIP)'}
-          </button>
-        </div>
+              <div className="control-group">
+                <label>Orientação</label>
+                <div className="orientation-buttons">
+                  <button
+                    className={orientation === 'vertical' ? 'secondary active' : 'secondary'}
+                    onClick={() => setOrientation('vertical')}
+                  >
+                    Vertical
+                  </button>
+                  <button
+                    className={orientation === 'invertido' ? 'secondary active' : 'secondary'}
+                    onClick={() => setOrientation('invertido')}
+                  >
+                    Invertida
+                  </button>
+                </div>
+              </div>
+            </div>
 
-        <p className="registration-supported">
-          Formatos aceitos: HEIF/HEIC/HEVC/PNG/JPEG (convertidos para JPEG quando
-          necessário).
-        </p>
+            <div className="counter-grid">
+              <div>
+                <small>Vertical</small>
+                <strong>
+                  {currentVerticalCount}/{TARGET_PER_ORIENTATION}
+                </strong>
+              </div>
+              <div>
+                <small>Invertida</small>
+                <strong>
+                  {currentInvertedCount}/{TARGET_PER_ORIENTATION}
+                </strong>
+              </div>
+              <div>
+                <small>Status</small>
+                <strong>{isCardReady ? 'Pronta para treino' : 'Em captura'}</strong>
+              </div>
+            </div>
 
-        {feedback && <p className="registration-feedback">{feedback}</p>}
+            <div className="capture-actions">
+              <button onClick={handleCapture}>Capturar foto</button>
+              <button
+                className="secondary"
+                onClick={() => importInputRef.current?.click()}
+                disabled={isImporting}
+              >
+                {isImporting ? 'Importando...' : 'Importar fotos'}
+              </button>
+              <button className="secondary" onClick={removeLastCapture}>
+                Desfazer última
+              </button>
+              <button className="secondary" onClick={clearCurrentCard}>
+                Limpar carta
+              </button>
+              <button className="secondary" onClick={goToNextCard}>
+                Próxima carta
+              </button>
+              <button onClick={exportCurrentCard} disabled={isExporting}>
+                {isExporting ? 'Exportando...' : 'Exportar carta (ZIP)'}
+              </button>
+            </div>
 
-        <div className="preview-grid">
-          <div>
-            <h3>Prévias verticais</h3>
-            <div className="thumb-list">
-              {currentBucket.vertical.map(item => (
-                <img key={item.id} src={item.objectUrl} alt="Vertical" />
-              ))}
+            <p className="registration-supported">
+              Formatos aceitos: HEIF/HEIC/HEVC/PNG/JPEG (convertidos para JPEG quando
+              necessário).
+            </p>
+
+            {feedback && <p className="registration-feedback">{feedback}</p>}
+
+            <div className="preview-grid">
+              <div>
+                <h3>Prévias verticais</h3>
+                <div className="thumb-list">
+                  {currentBucket.vertical.map(item => (
+                    <img key={item.id} src={item.objectUrl} alt="Vertical" />
+                  ))}
+                </div>
+              </div>
+              <div>
+                <h3>Prévias invertidas</h3>
+                <div className="thumb-list">
+                  {currentBucket.invertido.map(item => (
+                    <img key={item.id} src={item.objectUrl} alt="Invertida" />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
-          <div>
-            <h3>Prévias invertidas</h3>
-            <div className="thumb-list">
-              {currentBucket.invertido.map(item => (
-                <img key={item.id} src={item.objectUrl} alt="Invertida" />
-              ))}
-            </div>
-          </div>
-        </div>
+        )}
       </div>
 
       <input

@@ -56,12 +56,30 @@ export interface Spread {
   positions: Position[]
 }
 
+export type ConsultationType = 'pessoal' | 'sobre-outra-pessoa'
+export type PersonSex = 'masculino' | 'feminino'
+
+export interface ConsultationPerson {
+  nomeCompleto: string
+  dataNascimento?: string
+  sexo: PersonSex
+}
+
+export interface ConsultationIntake {
+  tipo: ConsultationType
+  pessoa1: ConsultationPerson
+  pessoa2?: ConsultationPerson | null
+  situacaoPrincipal: string
+  createdAt: number
+}
+
 export interface SpreadingSession {
   id: string
   spreadId: string
   timestamp: number
   spreadName: string
   drawnCards: DrawnCard[]
+  intake?: ConsultationIntake
 }
 
 export interface DrawnCard {

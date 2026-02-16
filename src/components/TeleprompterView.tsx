@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import { Card, DrawnCard, Spread } from '../types'
+import { Card, DrawnCard, Spread, ConsultationIntake } from '../types'
 import { CameraResolution, useCamera } from '../hooks/useCamera'
 import { useCardRecognition } from '../hooks/useCardRecognition'
 import { generateAdvancedSpreadSynthesis } from '../services/advancedReadingService'
@@ -90,6 +90,7 @@ type SpeechRecognitionCtor = new () => SpeechRecognitionLike
 interface TeleprompterViewProps {
   spread: Spread
   cards: Card[]
+  consultation: ConsultationIntake | null
   onBack: () => void
   onSaveSession: (drawnCards: DrawnCard[]) => Promise<void>
 }
@@ -210,6 +211,7 @@ const formatNaipeElementLabel = (card: Card) => {
 const TeleprompterView: FC<TeleprompterViewProps> = ({
   spread,
   cards,
+  consultation,
   onBack,
   onSaveSession,
 }) => {
@@ -272,14 +274,52 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
     () => cards.find(card => card.id === currentDrawn?.cardId) || null,
     [cards, currentDrawn],
   )
+  const consultationSummary = useMemo(() => {
+    if (!consultation) return null
+
+    if (consultation.tipo === 'pessoal') {
+      return `Atendimento pessoal: ${consultation.pessoa1.nomeCompleto}`
+    }
+
+    return `Atendimento: ${consultation.pessoa1.nomeCompleto} e ${
+      consultation.pessoa2?.nomeCompleto || 'Pessoa 2'
+    }`
+  }, [consultation])
 
   const autoScript = useMemo(() => {
     if (!currentPosition) {
       return 'Selecione uma posição da tiragem.'
     }
 
+    const consultationLines: string[] = []
+    if (consultation) {
+      if (consultation.tipo === 'pessoal') {
+        const adjective = consultation.pessoa1.sexo === 'feminino' ? 'acolhida' : 'acolhido'
+        consultationLines.push(
+          `[[Cliente: ${consultation.pessoa1.nomeCompleto}]]`,
+          `Situação principal: ${consultation.situacaoPrincipal}`,
+          `Condução sugerida: mantenha um tom claro e ${adjective}, com foco em passos concretos.`,
+        )
+      } else {
+        const pessoa2Nome = consultation.pessoa2?.nomeCompleto || 'Pessoa 2'
+        const pessoa1Pronome = consultation.pessoa1.sexo === 'feminino' ? 'ela' : 'ele'
+        const pessoa2Pronome =
+          consultation.pessoa2?.sexo === 'feminino' ? 'ela' : 'ele'
+        consultationLines.push(
+          `[[Leitura para: ${consultation.pessoa1.nomeCompleto} e ${pessoa2Nome}]]`,
+          `Situação principal: ${consultation.situacaoPrincipal}`,
+          `Condução sugerida: explique a dinâmica entre as pessoas, validando como ${pessoa1Pronome} e ${pessoa2Pronome} contribuem para o cenário atual.`,
+        )
+      }
+    }
+
     if (!currentCard || !currentDrawn) {
-      return `Posição: ${currentPosition.nome}\n\n${currentPosition.descricao}\n\nAponte a carta para a câmera para preencher automaticamente esta posição.`
+      return [
+        ...consultationLines,
+        `Posição: ${currentPosition.nome}`,
+        currentPosition.descricao,
+        'Aponte a carta para a câmera para preencher automaticamente esta posição.',
+      ].join('\n\n')
     }
 
     const orientationLabel = currentDrawn.isReversed ? 'Invertida' : 'Vertical'
@@ -288,6 +328,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
       : currentCard.significado.vertical.longo
 
     return [
+      ...consultationLines,
       `[[Posição ${currentPosition.index}: ${currentPosition.nome}]]`,
       currentPosition.descricao,
       `Carta: [[${currentCard.nome}]] (${orientationLabel})`,
@@ -304,7 +345,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
       `Espiritual: ${currentCard.areas.espiritual}`,
       '((Dica privada: mantenha tom de voz pausado e finalize com um conselho prático.))',
     ].join('\n\n')
-  }, [currentCard, currentDrawn, currentPosition])
+  }, [consultation, currentCard, currentDrawn, currentPosition])
 
   useEffect(() => {
     const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY)
@@ -925,8 +966,9 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
         spread,
         orderedDrawn,
         cardById,
+        consultation,
       }),
-    [cardById, spread],
+    [cardById, consultation, spread],
   )
 
   const handleGenerateSynthesis = () => {
@@ -1013,6 +1055,9 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
               <div>
                 <h2>{currentPosition?.nome || 'Posição'}</h2>
                 <p className="position-desc">{currentPosition?.descricao}</p>
+                {consultationSummary && (
+                  <p className="reading-context">{consultationSummary}</p>
+                )}
               </div>
               <div className="topline-meta">
                 <span>{progressLabel}</span>

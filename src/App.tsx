@@ -4,7 +4,14 @@ import SpreadSelector from './components/SpreadSelector'
 import TeleprompterView from './components/TeleprompterView'
 import HistoryPanel from './components/HistoryPanel'
 import CardRegistrationView from './components/CardRegistrationView'
-import { DrawnCard, Spread, Card, SpreadingSession } from './types'
+import ConsultationIntakeForm from './components/ConsultationIntakeForm'
+import {
+  DrawnCard,
+  Spread,
+  Card,
+  SpreadingSession,
+  ConsultationIntake,
+} from './types'
 import { useIndexedDB } from './hooks/useIndexedDB'
 
 interface CardsDataResponse {
@@ -18,7 +25,10 @@ interface SpreadsDataResponse {
 function App() {
   const [selectedSpread, setSelectedSpread] = useState<Spread | null>(null)
   const [showSpreadSelector, setShowSpreadSelector] = useState(false)
+  const [showIntakeForm, setShowIntakeForm] = useState(false)
   const [isRegisteringCards, setIsRegisteringCards] = useState(false)
+  const [consultationIntake, setConsultationIntake] =
+    useState<ConsultationIntake | null>(null)
   const [cards, setCards] = useState<Card[]>([])
   const [spreads, setSpreads] = useState<Spread[]>([])
   const [sessions, setSessions] = useState<SpreadingSession[]>([])
@@ -73,6 +83,7 @@ function App() {
       spreadName: selectedSpread.nome,
       timestamp: Date.now(),
       drawnCards,
+      intake: consultationIntake || undefined,
     }
 
     await saveSession(session)
@@ -94,7 +105,8 @@ function App() {
           !loadError &&
           !selectedSpread &&
           !isRegisteringCards &&
-          !showSpreadSelector && (
+          !showSpreadSelector &&
+          !showIntakeForm && (
           <>
             <div className="home-menu">
               <h1>Tarô Teleprompter</h1>
@@ -103,12 +115,22 @@ function App() {
                 novas imagens de cartas para treino do modelo.
               </p>
               <div className="home-actions">
-                <button onClick={() => setShowSpreadSelector(true)}>
+                <button
+                  onClick={() => {
+                    setIsRegisteringCards(false)
+                    setShowSpreadSelector(false)
+                    setShowIntakeForm(true)
+                  }}
+                >
                   Iniciar Tiragem
                 </button>
                 <button
                   className="secondary"
-                  onClick={() => setIsRegisteringCards(true)}
+                  onClick={() => {
+                    setShowIntakeForm(false)
+                    setShowSpreadSelector(false)
+                    setIsRegisteringCards(true)
+                  }}
                 >
                   Registrar Cartas
                 </button>
@@ -118,11 +140,48 @@ function App() {
           </>
         )}
 
+        {!loading && !loadError && !selectedSpread && showIntakeForm && (
+          <ConsultationIntakeForm
+            initialValue={consultationIntake}
+            onSubmit={intake => {
+              setConsultationIntake(intake)
+              setShowIntakeForm(false)
+              setShowSpreadSelector(true)
+            }}
+            onBack={() => setShowIntakeForm(false)}
+          />
+        )}
+
         {!loading && !loadError && !selectedSpread && showSpreadSelector && (
           <>
+            {consultationIntake && (
+              <div className="active-reading-context">
+                <h3>Atendimento registrado</h3>
+                <p>
+                  {consultationIntake.tipo === 'pessoal'
+                    ? `Pessoal: ${consultationIntake.pessoa1.nomeCompleto}.`
+                    : `Sobre outra pessoa: ${consultationIntake.pessoa1.nomeCompleto} e ${consultationIntake.pessoa2?.nomeCompleto || 'Pessoa 2'}.`}
+                </p>
+                <small>Situação: {consultationIntake.situacaoPrincipal}</small>
+              </div>
+            )}
             <SpreadSelector spreads={spreads} onSelect={setSelectedSpread} />
             <div className="home-actions home-actions--compact">
-              <button className="secondary" onClick={() => setShowSpreadSelector(false)}>
+              <button
+                className="secondary"
+                onClick={() => {
+                  setShowSpreadSelector(false)
+                  setShowIntakeForm(true)
+                }}
+              >
+                Editar dados iniciais
+              </button>
+              <button
+                className="secondary"
+                onClick={() => {
+                  setShowSpreadSelector(false)
+                }}
+              >
                 Voltar ao menu
               </button>
             </div>
@@ -133,6 +192,7 @@ function App() {
           <TeleprompterView
             spread={selectedSpread}
             cards={cards}
+            consultation={consultationIntake}
             onBack={() => {
               setSelectedSpread(null)
               setShowSpreadSelector(true)

@@ -65,6 +65,31 @@
   justify-content: center;
 }
 
+.active-reading-context {
+  max-width: 760px;
+  margin: 0 auto 1rem;
+  border: 1px solid #312e81;
+  border-radius: 12px;
+  background: rgba(30, 27, 75, 0.25);
+  padding: 0.9rem;
+}
+
+.active-reading-context h3 {
+  margin: 0;
+  color: #c4b5fd;
+}
+
+.active-reading-context p {
+  margin: 0.45rem 0 0;
+  color: #f5f3ff;
+}
+
+.active-reading-context small {
+  display: block;
+  margin-top: 0.35rem;
+  color: #d1d5db;
+}
+
 .loading,
 .error {
   text-align: center;

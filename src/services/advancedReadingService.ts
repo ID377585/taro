@@ -1,4 +1,11 @@
-import { Card, DrawnCard, Spread } from '../types'
+import {
+  Card,
+  DrawnCard,
+  Spread,
+  ConsultationIntake,
+  ConsultationPerson,
+  PersonSex,
+} from '../types'
 
 interface PositionedCard {
   drawn: DrawnCard
@@ -10,6 +17,7 @@ interface AdvancedReadingInput {
   spread: Spread
   orderedDrawn: DrawnCard[]
   cardById: Map<number, Card>
+  consultation?: ConsultationIntake | null
 }
 
 interface SpreadProfile {
@@ -152,6 +160,71 @@ const normalize = (value: string) =>
 
 const includesNormalized = (value: string, pattern: string) =>
   normalize(value).includes(normalize(pattern))
+
+const applyGender = (
+  sex: PersonSex,
+  masculine: string,
+  feminine: string,
+) => (sex === 'feminino' ? feminine : masculine)
+
+const subjectPronoun = (sex: PersonSex) => (sex === 'feminino' ? 'ela' : 'ele')
+
+const formatBirthDate = (dateValue?: string) => {
+  if (!dateValue) return 'não informada'
+  const parsed = new Date(`${dateValue}T00:00:00`)
+  if (Number.isNaN(parsed.getTime())) return dateValue
+  return parsed.toLocaleDateString('pt-BR')
+}
+
+const formatPersonSummary = (label: string, person: ConsultationPerson) =>
+  `${label}: ${person.nomeCompleto} (${person.sexo}), nascimento ${formatBirthDate(
+    person.dataNascimento,
+  )}.`
+
+const buildConsultationContextLines = (
+  consultation?: ConsultationIntake | null,
+) => {
+  if (!consultation) return ['- Atendimento sem cadastro inicial de pessoas.']
+
+  if (consultation.tipo === 'pessoal') {
+    return [
+      `- Tipo de atendimento: Pessoal`,
+      `- ${formatPersonSummary('Pessoa 1', consultation.pessoa1)}`,
+      `- Situação principal: ${consultation.situacaoPrincipal}`,
+    ]
+  }
+
+  const personTwoSummary = consultation.pessoa2
+    ? formatPersonSummary('Pessoa 2', consultation.pessoa2)
+    : 'Pessoa 2: não informada.'
+
+  return [
+    `- Tipo de atendimento: Sobre outra pessoa`,
+    `- ${formatPersonSummary('Pessoa 1', consultation.pessoa1)}`,
+    `- ${personTwoSummary}`,
+    `- Situação principal: ${consultation.situacaoPrincipal}`,
+  ]
+}
+
+const buildPersonalizedIntegratedLine = (
+  consultation: ConsultationIntake | null | undefined,
+  spreadProfile: SpreadProfile,
+) => {
+  if (!consultation) return null
+
+  if (consultation.tipo === 'pessoal') {
+    const pronoun = subjectPronoun(consultation.pessoa1.sexo)
+    const adjective = applyGender(
+      consultation.pessoa1.sexo,
+      'estruturado',
+      'estruturada',
+    )
+    return `Para ${consultation.pessoa1.nomeCompleto}, a leitura orienta que ${pronoun} mantenha uma postura ${adjective} para transformar ${spreadProfile.foco} em resultado prático.`
+  }
+
+  const personTwoName = consultation.pessoa2?.nomeCompleto || 'Pessoa 2'
+  return `No vínculo entre ${consultation.pessoa1.nomeCompleto} e ${personTwoName}, a leitura pede clareza de expectativa, maturidade emocional e acordos explícitos para sustentar ${spreadProfile.foco}.`
+}
 
 const getPositionedCards = ({
   spread,
@@ -555,10 +628,37 @@ const getPurposeLayer = (cards: PositionedCard[]) => {
   return lines
 }
 
-const getIntegratedAdvice = (cards: PositionedCard[], spreadProfile: SpreadProfile) => {
+const getIntegratedAdvice = (
+  cards: PositionedCard[],
+  spreadProfile: SpreadProfile,
+  consultation?: ConsultationIntake | null,
+) => {
   const dominantElement = getDominantElement(cards)
   const reversedCount = cards.filter(item => item.drawn.isReversed).length
   const advicePosition = cards.find(item => includesNormalized(item.position.nome, 'conselho'))
+
+  const personalizedAdvice: string[] = []
+  if (consultation) {
+    if (consultation.tipo === 'pessoal') {
+      const attentive = applyGender(consultation.pessoa1.sexo, 'atento', 'atenta')
+      const receptive = applyGender(consultation.pessoa1.sexo, 'receptivo', 'receptiva')
+      const disciplined = applyGender(consultation.pessoa1.sexo, 'disciplinado', 'disciplinada')
+      personalizedAdvice.push(
+        `Direcionamento para ${consultation.pessoa1.nomeCompleto}: manter-se ${attentive}, ${receptive} e ${disciplined} durante os próximos passos.`,
+      )
+    } else {
+      const personTwo = consultation.pessoa2
+      if (personTwo) {
+        const p1Open = applyGender(consultation.pessoa1.sexo, 'aberto', 'aberta')
+        const p2Open = applyGender(personTwo.sexo, 'aberto', 'aberta')
+        personalizedAdvice.push(
+          `Direcionamento relacional: ${consultation.pessoa1.nomeCompleto} e ${personTwo.nomeCompleto} precisam de diálogo objetivo; é essencial que ${
+            consultation.pessoa1.nomeCompleto
+          } esteja ${p1Open} para ouvir e que ${personTwo.nomeCompleto} esteja ${p2Open} para negociar limites e responsabilidades.`,
+        )
+      }
+    }
+  }
 
   const directAdvice = advicePosition
     ? `Conselho da posição específica: ${advicePosition.card.nome} indica ${
@@ -578,6 +678,7 @@ const getIntegratedAdvice = (cards: PositionedCard[], spreadProfile: SpreadProfi
       : 'Predomínio vertical: mantenha execução consistente no que já demonstra resultado prático.'
 
   return [
+    ...personalizedAdvice,
     directAdvice,
     `Direção da tiragem: ${spreadProfile.decisao}.`,
     elementAdvice,
@@ -591,6 +692,7 @@ export const generateAdvancedSpreadSynthesis = ({
   spread,
   orderedDrawn,
   cardById,
+  consultation,
 }: AdvancedReadingInput): string => {
   const positioned = getPositionedCards({ spread, orderedDrawn, cardById })
 
@@ -625,12 +727,18 @@ export const generateAdvancedSpreadSynthesis = ({
     dominantElement
       ? `Elemento dominante da sessão: ${dominantElement}.`
       : 'Sem domínio elemental único, indicando campo multifatorial.',
-  ].join(' ')
+    buildPersonalizedIntegratedLine(consultation, spreadProfile),
+  ]
+    .filter((line): line is string => Boolean(line))
+    .join(' ')
 
   const sections = [
     `Síntese Final da Tiragem: ${spread.nome}`,
     `Data: ${new Date().toLocaleString('pt-BR')}`,
     `Progresso: ${positioned.length}/${spread.positions.length} posições preenchidas.`,
+    '',
+    'Contexto do atendimento:',
+    ...buildConsultationContextLines(consultation),
     '',
     'Contexto da tiragem:',
     `- Foco: ${spreadProfile.foco}`,
@@ -646,7 +754,9 @@ export const generateAdvancedSpreadSynthesis = ({
     integratedSummary,
     '',
     'Conselho Final Integrado:',
-    ...getIntegratedAdvice(positioned, spreadProfile).map(line => `- ${line}`),
+    ...getIntegratedAdvice(positioned, spreadProfile, consultation).map(
+      line => `- ${line}`,
+    ),
   ]
 
   return sections.join('\n')

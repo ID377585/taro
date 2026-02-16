@@ -64,6 +64,7 @@ const pwaOptions: Partial<VitePWAOptions> = {
   },
   devOptions: {
     enabled: true,
+    suppressWarnings: true,
   },
 }
 

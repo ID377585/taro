@@ -304,7 +304,8 @@
 .session-footer button,
 .manual-row button,
 .script-editor-actions button,
-.advanced-panel button {
+.advanced-panel button,
+.synthesis-actions button {
   padding: 0.62rem 0.9rem;
   background-color: #7c3aed;
   border: none;
@@ -318,7 +319,8 @@
 .controls button.secondary,
 .manual-row button.secondary,
 .script-editor-actions button.secondary,
-.advanced-panel button.secondary {
+.advanced-panel button.secondary,
+.synthesis-actions button.secondary {
   background-color: transparent;
   border: 2px solid #7c3aed;
   color: #c4b5fd;
@@ -436,6 +438,40 @@
   margin: 0;
   color: #93c5fd;
   font-size: 0.85rem;
+}
+
+.synthesis-panel {
+  margin-top: 0.8rem;
+  border: 1px solid #374151;
+  border-radius: 10px;
+  padding: 0.75rem;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.synthesis-panel h4 {
+  margin: 0 0 0.45rem;
+  color: #ddd6fe;
+  font-size: 0.9rem;
+}
+
+.synthesis-panel textarea {
+  width: 100%;
+  min-height: 160px;
+  resize: vertical;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background-color: #0b1220;
+  color: #f8fafc;
+  padding: 0.6rem;
+  font-size: 0.83rem;
+  line-height: 1.45;
+}
+
+.synthesis-actions {
+  margin-top: 0.55rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 @media (max-width: 900px) {

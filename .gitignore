@@ -1,6 +1,9 @@
 node_modules
 dist
+dev-dist
 .DS_Store
 .env
 .vercel
 taro
+playwright-report
+test-results

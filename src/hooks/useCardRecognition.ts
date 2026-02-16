@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useMemo, useRef, useState } from 'react'
+import { RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Card, RecognitionResult } from '../types'
 import { CardRecognizerModel } from '../services/modelService'
 import {
@@ -347,11 +347,11 @@ export const useCardRecognition = ({
     localStats.candidates,
   ])
 
-  const resetLastConfirmation = () => {
+  const resetLastConfirmation = useCallback(() => {
     lastConfirmedKeyRef.current = ''
     votesRef.current = null
     setLastResult(null)
-  }
+  }, [])
 
   return {
     status,

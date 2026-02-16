@@ -28,7 +28,13 @@ npm run check
 ## CI
 
 - Workflow: `.github/workflows/ci.yml`
-- Etapas: `npm ci`, `npm audit --audit-level=moderate`, `npm run check`, `npm run build`
+- Etapas: `npm ci`, `npm audit --audit-level=moderate`, `npm run check`, `npm run build`, `npm run e2e`
+
+## E2E
+
+```bash
+npm run e2e
+```
 
 ## Estrutura
 

@@ -9,20 +9,2236 @@
       "imagemUrl": "/cards/00_fool.jpg",
       "significado": {
         "vertical": {
-          "curto": "Novo começo, liberdade, espontaneidade",
-          "longo": "O Louco representa um novo começo repleto de possibilidades infinitas. Ele simboliza a liberdade, a espontaneidade e a disposição para embarcar em uma jornada desconhecida."
+          "curto": "O Louco: expressão consciente, clareza e movimento.",
+          "longo": "O Louco em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
         },
         "invertido": {
-          "curto": "Impulsividade, inconsideração, falta de direção",
-          "longo": "Quando invertido, O Louco pode indicar impulsividade excessiva, falta de direção e necessidade de mais cautela."
+          "curto": "O Louco: bloqueio, revisão e ajuste de rota.",
+          "longo": "O Louco invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
         }
       },
       "areas": {
-        "carreira": "Mudança de rumo profissional, novo projeto arrojado",
-        "relacionamentos": "Novo romance, abertura para experiências",
-        "espiritual": "Despertar espiritual, jornada de autodescoberta"
+        "carreira": "O Louco: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "O Louco: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "O Louco: integrar intuição, autoconhecimento e alinhamento interno."
       },
-      "tags": ["novo", "liberdade", "começo", "espontaneidade"]
+      "tags": [
+        "o-louco",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 1,
+      "nome": "O Mago",
+      "arcano": "maior",
+      "numero": 1,
+      "naipe": null,
+      "imagemUrl": "/cards/01_magician.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "O Mago: expressão consciente, clareza e movimento.",
+          "longo": "O Mago em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "O Mago: bloqueio, revisão e ajuste de rota.",
+          "longo": "O Mago invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "O Mago: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "O Mago: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "O Mago: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "o-mago",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 2,
+      "nome": "A Sacerdotisa",
+      "arcano": "maior",
+      "numero": 2,
+      "naipe": null,
+      "imagemUrl": "/cards/02_high-priestess.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "A Sacerdotisa: expressão consciente, clareza e movimento.",
+          "longo": "A Sacerdotisa em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "A Sacerdotisa: bloqueio, revisão e ajuste de rota.",
+          "longo": "A Sacerdotisa invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "A Sacerdotisa: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "A Sacerdotisa: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "A Sacerdotisa: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "a-sacerdotisa",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 3,
+      "nome": "A Imperatriz",
+      "arcano": "maior",
+      "numero": 3,
+      "naipe": null,
+      "imagemUrl": "/cards/03_empress.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "A Imperatriz: expressão consciente, clareza e movimento.",
+          "longo": "A Imperatriz em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "A Imperatriz: bloqueio, revisão e ajuste de rota.",
+          "longo": "A Imperatriz invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "A Imperatriz: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "A Imperatriz: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "A Imperatriz: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "a-imperatriz",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 4,
+      "nome": "O Imperador",
+      "arcano": "maior",
+      "numero": 4,
+      "naipe": null,
+      "imagemUrl": "/cards/04_emperor.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "O Imperador: expressão consciente, clareza e movimento.",
+          "longo": "O Imperador em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "O Imperador: bloqueio, revisão e ajuste de rota.",
+          "longo": "O Imperador invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "O Imperador: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "O Imperador: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "O Imperador: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "o-imperador",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 5,
+      "nome": "O Hierofante (Papa)",
+      "arcano": "maior",
+      "numero": 5,
+      "naipe": null,
+      "imagemUrl": "/cards/05_hierophant.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "O Hierofante (Papa): expressão consciente, clareza e movimento.",
+          "longo": "O Hierofante (Papa) em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "O Hierofante (Papa): bloqueio, revisão e ajuste de rota.",
+          "longo": "O Hierofante (Papa) invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "O Hierofante (Papa): avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "O Hierofante (Papa): observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "O Hierofante (Papa): integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "o-hierofante-papa",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 6,
+      "nome": "Os Enamorados",
+      "arcano": "maior",
+      "numero": 6,
+      "naipe": null,
+      "imagemUrl": "/cards/06_lovers.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Os Enamorados: expressão consciente, clareza e movimento.",
+          "longo": "Os Enamorados em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Os Enamorados: bloqueio, revisão e ajuste de rota.",
+          "longo": "Os Enamorados invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Os Enamorados: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Os Enamorados: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Os Enamorados: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "os-enamorados",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 7,
+      "nome": "O Carro",
+      "arcano": "maior",
+      "numero": 7,
+      "naipe": null,
+      "imagemUrl": "/cards/07_chariot.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "O Carro: expressão consciente, clareza e movimento.",
+          "longo": "O Carro em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "O Carro: bloqueio, revisão e ajuste de rota.",
+          "longo": "O Carro invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "O Carro: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "O Carro: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "O Carro: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "o-carro",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 8,
+      "nome": "A Força",
+      "arcano": "maior",
+      "numero": 8,
+      "naipe": null,
+      "imagemUrl": "/cards/08_strength.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "A Força: expressão consciente, clareza e movimento.",
+          "longo": "A Força em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "A Força: bloqueio, revisão e ajuste de rota.",
+          "longo": "A Força invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "A Força: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "A Força: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "A Força: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "a-forca",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 9,
+      "nome": "O Eremita",
+      "arcano": "maior",
+      "numero": 9,
+      "naipe": null,
+      "imagemUrl": "/cards/09_hermit.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "O Eremita: expressão consciente, clareza e movimento.",
+          "longo": "O Eremita em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "O Eremita: bloqueio, revisão e ajuste de rota.",
+          "longo": "O Eremita invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "O Eremita: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "O Eremita: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "O Eremita: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "o-eremita",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 10,
+      "nome": "A Roda da Fortuna",
+      "arcano": "maior",
+      "numero": 10,
+      "naipe": null,
+      "imagemUrl": "/cards/10_wheel-of-fortune.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "A Roda da Fortuna: expressão consciente, clareza e movimento.",
+          "longo": "A Roda da Fortuna em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "A Roda da Fortuna: bloqueio, revisão e ajuste de rota.",
+          "longo": "A Roda da Fortuna invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "A Roda da Fortuna: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "A Roda da Fortuna: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "A Roda da Fortuna: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "a-roda-da-fortuna",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 11,
+      "nome": "A Justiça",
+      "arcano": "maior",
+      "numero": 11,
+      "naipe": null,
+      "imagemUrl": "/cards/11_justice.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "A Justiça: expressão consciente, clareza e movimento.",
+          "longo": "A Justiça em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "A Justiça: bloqueio, revisão e ajuste de rota.",
+          "longo": "A Justiça invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "A Justiça: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "A Justiça: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "A Justiça: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "a-justica",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 12,
+      "nome": "O Enforcado",
+      "arcano": "maior",
+      "numero": 12,
+      "naipe": null,
+      "imagemUrl": "/cards/12_hanged-man.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "O Enforcado: expressão consciente, clareza e movimento.",
+          "longo": "O Enforcado em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "O Enforcado: bloqueio, revisão e ajuste de rota.",
+          "longo": "O Enforcado invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "O Enforcado: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "O Enforcado: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "O Enforcado: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "o-enforcado",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 13,
+      "nome": "A Morte",
+      "arcano": "maior",
+      "numero": 13,
+      "naipe": null,
+      "imagemUrl": "/cards/13_death.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "A Morte: expressão consciente, clareza e movimento.",
+          "longo": "A Morte em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "A Morte: bloqueio, revisão e ajuste de rota.",
+          "longo": "A Morte invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "A Morte: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "A Morte: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "A Morte: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "a-morte",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 14,
+      "nome": "A Temperança",
+      "arcano": "maior",
+      "numero": 14,
+      "naipe": null,
+      "imagemUrl": "/cards/14_temperance.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "A Temperança: expressão consciente, clareza e movimento.",
+          "longo": "A Temperança em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "A Temperança: bloqueio, revisão e ajuste de rota.",
+          "longo": "A Temperança invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "A Temperança: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "A Temperança: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "A Temperança: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "a-temperanca",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 15,
+      "nome": "O Diabo",
+      "arcano": "maior",
+      "numero": 15,
+      "naipe": null,
+      "imagemUrl": "/cards/15_devil.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "O Diabo: expressão consciente, clareza e movimento.",
+          "longo": "O Diabo em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "O Diabo: bloqueio, revisão e ajuste de rota.",
+          "longo": "O Diabo invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "O Diabo: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "O Diabo: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "O Diabo: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "o-diabo",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 16,
+      "nome": "A Torre",
+      "arcano": "maior",
+      "numero": 16,
+      "naipe": null,
+      "imagemUrl": "/cards/16_tower.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "A Torre: expressão consciente, clareza e movimento.",
+          "longo": "A Torre em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "A Torre: bloqueio, revisão e ajuste de rota.",
+          "longo": "A Torre invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "A Torre: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "A Torre: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "A Torre: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "a-torre",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 17,
+      "nome": "A Estrela",
+      "arcano": "maior",
+      "numero": 17,
+      "naipe": null,
+      "imagemUrl": "/cards/17_star.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "A Estrela: expressão consciente, clareza e movimento.",
+          "longo": "A Estrela em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "A Estrela: bloqueio, revisão e ajuste de rota.",
+          "longo": "A Estrela invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "A Estrela: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "A Estrela: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "A Estrela: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "a-estrela",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 18,
+      "nome": "A Lua",
+      "arcano": "maior",
+      "numero": 18,
+      "naipe": null,
+      "imagemUrl": "/cards/18_moon.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "A Lua: expressão consciente, clareza e movimento.",
+          "longo": "A Lua em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "A Lua: bloqueio, revisão e ajuste de rota.",
+          "longo": "A Lua invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "A Lua: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "A Lua: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "A Lua: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "a-lua",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 19,
+      "nome": "O Sol",
+      "arcano": "maior",
+      "numero": 19,
+      "naipe": null,
+      "imagemUrl": "/cards/19_sun.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "O Sol: expressão consciente, clareza e movimento.",
+          "longo": "O Sol em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "O Sol: bloqueio, revisão e ajuste de rota.",
+          "longo": "O Sol invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "O Sol: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "O Sol: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "O Sol: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "o-sol",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 20,
+      "nome": "O Julgamento",
+      "arcano": "maior",
+      "numero": 20,
+      "naipe": null,
+      "imagemUrl": "/cards/20_judgement.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "O Julgamento: expressão consciente, clareza e movimento.",
+          "longo": "O Julgamento em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "O Julgamento: bloqueio, revisão e ajuste de rota.",
+          "longo": "O Julgamento invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "O Julgamento: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "O Julgamento: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "O Julgamento: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "o-julgamento",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 21,
+      "nome": "O Mundo",
+      "arcano": "maior",
+      "numero": 21,
+      "naipe": null,
+      "imagemUrl": "/cards/21_world.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "O Mundo: expressão consciente, clareza e movimento.",
+          "longo": "O Mundo em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "O Mundo: bloqueio, revisão e ajuste de rota.",
+          "longo": "O Mundo invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "O Mundo: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "O Mundo: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "O Mundo: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "o-mundo",
+        "maior",
+        "arcano-maior"
+      ]
+    },
+    {
+      "id": 22,
+      "nome": "Ás de Paus",
+      "arcano": "menor",
+      "numero": 1,
+      "naipe": "paus",
+      "imagemUrl": "/cards/22_wands_ace.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Ás de Paus: expressão consciente, clareza e movimento.",
+          "longo": "Ás de Paus em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Ás de Paus: bloqueio, revisão e ajuste de rota.",
+          "longo": "Ás de Paus invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Ás de Paus: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Ás de Paus: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Ás de Paus: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "as-de-paus",
+        "menor",
+        "paus",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 23,
+      "nome": "2 de Paus",
+      "arcano": "menor",
+      "numero": 2,
+      "naipe": "paus",
+      "imagemUrl": "/cards/23_wands_2.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "2 de Paus: expressão consciente, clareza e movimento.",
+          "longo": "2 de Paus em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "2 de Paus: bloqueio, revisão e ajuste de rota.",
+          "longo": "2 de Paus invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "2 de Paus: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "2 de Paus: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "2 de Paus: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "2-de-paus",
+        "menor",
+        "paus",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 24,
+      "nome": "3 de Paus",
+      "arcano": "menor",
+      "numero": 3,
+      "naipe": "paus",
+      "imagemUrl": "/cards/24_wands_3.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "3 de Paus: expressão consciente, clareza e movimento.",
+          "longo": "3 de Paus em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "3 de Paus: bloqueio, revisão e ajuste de rota.",
+          "longo": "3 de Paus invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "3 de Paus: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "3 de Paus: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "3 de Paus: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "3-de-paus",
+        "menor",
+        "paus",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 25,
+      "nome": "4 de Paus",
+      "arcano": "menor",
+      "numero": 4,
+      "naipe": "paus",
+      "imagemUrl": "/cards/25_wands_4.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "4 de Paus: expressão consciente, clareza e movimento.",
+          "longo": "4 de Paus em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "4 de Paus: bloqueio, revisão e ajuste de rota.",
+          "longo": "4 de Paus invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "4 de Paus: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "4 de Paus: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "4 de Paus: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "4-de-paus",
+        "menor",
+        "paus",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 26,
+      "nome": "5 de Paus",
+      "arcano": "menor",
+      "numero": 5,
+      "naipe": "paus",
+      "imagemUrl": "/cards/26_wands_5.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "5 de Paus: expressão consciente, clareza e movimento.",
+          "longo": "5 de Paus em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "5 de Paus: bloqueio, revisão e ajuste de rota.",
+          "longo": "5 de Paus invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "5 de Paus: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "5 de Paus: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "5 de Paus: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "5-de-paus",
+        "menor",
+        "paus",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 27,
+      "nome": "6 de Paus",
+      "arcano": "menor",
+      "numero": 6,
+      "naipe": "paus",
+      "imagemUrl": "/cards/27_wands_6.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "6 de Paus: expressão consciente, clareza e movimento.",
+          "longo": "6 de Paus em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "6 de Paus: bloqueio, revisão e ajuste de rota.",
+          "longo": "6 de Paus invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "6 de Paus: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "6 de Paus: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "6 de Paus: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "6-de-paus",
+        "menor",
+        "paus",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 28,
+      "nome": "7 de Paus",
+      "arcano": "menor",
+      "numero": 7,
+      "naipe": "paus",
+      "imagemUrl": "/cards/28_wands_7.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "7 de Paus: expressão consciente, clareza e movimento.",
+          "longo": "7 de Paus em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "7 de Paus: bloqueio, revisão e ajuste de rota.",
+          "longo": "7 de Paus invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "7 de Paus: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "7 de Paus: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "7 de Paus: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "7-de-paus",
+        "menor",
+        "paus",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 29,
+      "nome": "8 de Paus",
+      "arcano": "menor",
+      "numero": 8,
+      "naipe": "paus",
+      "imagemUrl": "/cards/29_wands_8.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "8 de Paus: expressão consciente, clareza e movimento.",
+          "longo": "8 de Paus em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "8 de Paus: bloqueio, revisão e ajuste de rota.",
+          "longo": "8 de Paus invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "8 de Paus: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "8 de Paus: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "8 de Paus: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "8-de-paus",
+        "menor",
+        "paus",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 30,
+      "nome": "9 de Paus",
+      "arcano": "menor",
+      "numero": 9,
+      "naipe": "paus",
+      "imagemUrl": "/cards/30_wands_9.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "9 de Paus: expressão consciente, clareza e movimento.",
+          "longo": "9 de Paus em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "9 de Paus: bloqueio, revisão e ajuste de rota.",
+          "longo": "9 de Paus invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "9 de Paus: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "9 de Paus: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "9 de Paus: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "9-de-paus",
+        "menor",
+        "paus",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 31,
+      "nome": "10 de Paus",
+      "arcano": "menor",
+      "numero": 10,
+      "naipe": "paus",
+      "imagemUrl": "/cards/31_wands_10.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "10 de Paus: expressão consciente, clareza e movimento.",
+          "longo": "10 de Paus em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "10 de Paus: bloqueio, revisão e ajuste de rota.",
+          "longo": "10 de Paus invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "10 de Paus: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "10 de Paus: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "10 de Paus: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "10-de-paus",
+        "menor",
+        "paus",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 32,
+      "nome": "Pajem de Paus",
+      "arcano": "menor",
+      "numero": 11,
+      "naipe": "paus",
+      "imagemUrl": "/cards/32_wands_page.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Pajem de Paus: expressão consciente, clareza e movimento.",
+          "longo": "Pajem de Paus em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Pajem de Paus: bloqueio, revisão e ajuste de rota.",
+          "longo": "Pajem de Paus invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Pajem de Paus: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Pajem de Paus: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Pajem de Paus: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "pajem-de-paus",
+        "menor",
+        "paus",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 33,
+      "nome": "Cavaleiro de Paus",
+      "arcano": "menor",
+      "numero": 12,
+      "naipe": "paus",
+      "imagemUrl": "/cards/33_wands_knight.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Cavaleiro de Paus: expressão consciente, clareza e movimento.",
+          "longo": "Cavaleiro de Paus em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Cavaleiro de Paus: bloqueio, revisão e ajuste de rota.",
+          "longo": "Cavaleiro de Paus invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Cavaleiro de Paus: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Cavaleiro de Paus: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Cavaleiro de Paus: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "cavaleiro-de-paus",
+        "menor",
+        "paus",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 34,
+      "nome": "Rainha de Paus",
+      "arcano": "menor",
+      "numero": 13,
+      "naipe": "paus",
+      "imagemUrl": "/cards/34_wands_queen.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Rainha de Paus: expressão consciente, clareza e movimento.",
+          "longo": "Rainha de Paus em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Rainha de Paus: bloqueio, revisão e ajuste de rota.",
+          "longo": "Rainha de Paus invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Rainha de Paus: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Rainha de Paus: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Rainha de Paus: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "rainha-de-paus",
+        "menor",
+        "paus",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 35,
+      "nome": "Rei de Paus",
+      "arcano": "menor",
+      "numero": 14,
+      "naipe": "paus",
+      "imagemUrl": "/cards/35_wands_king.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Rei de Paus: expressão consciente, clareza e movimento.",
+          "longo": "Rei de Paus em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Rei de Paus: bloqueio, revisão e ajuste de rota.",
+          "longo": "Rei de Paus invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Rei de Paus: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Rei de Paus: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Rei de Paus: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "rei-de-paus",
+        "menor",
+        "paus",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 36,
+      "nome": "Ás de Copas",
+      "arcano": "menor",
+      "numero": 1,
+      "naipe": "copas",
+      "imagemUrl": "/cards/36_cups_ace.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Ás de Copas: expressão consciente, clareza e movimento.",
+          "longo": "Ás de Copas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Ás de Copas: bloqueio, revisão e ajuste de rota.",
+          "longo": "Ás de Copas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Ás de Copas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Ás de Copas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Ás de Copas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "as-de-copas",
+        "menor",
+        "copas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 37,
+      "nome": "2 de Copas",
+      "arcano": "menor",
+      "numero": 2,
+      "naipe": "copas",
+      "imagemUrl": "/cards/37_cups_2.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "2 de Copas: expressão consciente, clareza e movimento.",
+          "longo": "2 de Copas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "2 de Copas: bloqueio, revisão e ajuste de rota.",
+          "longo": "2 de Copas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "2 de Copas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "2 de Copas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "2 de Copas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "2-de-copas",
+        "menor",
+        "copas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 38,
+      "nome": "3 de Copas",
+      "arcano": "menor",
+      "numero": 3,
+      "naipe": "copas",
+      "imagemUrl": "/cards/38_cups_3.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "3 de Copas: expressão consciente, clareza e movimento.",
+          "longo": "3 de Copas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "3 de Copas: bloqueio, revisão e ajuste de rota.",
+          "longo": "3 de Copas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "3 de Copas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "3 de Copas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "3 de Copas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "3-de-copas",
+        "menor",
+        "copas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 39,
+      "nome": "4 de Copas",
+      "arcano": "menor",
+      "numero": 4,
+      "naipe": "copas",
+      "imagemUrl": "/cards/39_cups_4.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "4 de Copas: expressão consciente, clareza e movimento.",
+          "longo": "4 de Copas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "4 de Copas: bloqueio, revisão e ajuste de rota.",
+          "longo": "4 de Copas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "4 de Copas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "4 de Copas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "4 de Copas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "4-de-copas",
+        "menor",
+        "copas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 40,
+      "nome": "5 de Copas",
+      "arcano": "menor",
+      "numero": 5,
+      "naipe": "copas",
+      "imagemUrl": "/cards/40_cups_5.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "5 de Copas: expressão consciente, clareza e movimento.",
+          "longo": "5 de Copas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "5 de Copas: bloqueio, revisão e ajuste de rota.",
+          "longo": "5 de Copas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "5 de Copas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "5 de Copas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "5 de Copas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "5-de-copas",
+        "menor",
+        "copas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 41,
+      "nome": "6 de Copas",
+      "arcano": "menor",
+      "numero": 6,
+      "naipe": "copas",
+      "imagemUrl": "/cards/41_cups_6.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "6 de Copas: expressão consciente, clareza e movimento.",
+          "longo": "6 de Copas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "6 de Copas: bloqueio, revisão e ajuste de rota.",
+          "longo": "6 de Copas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "6 de Copas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "6 de Copas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "6 de Copas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "6-de-copas",
+        "menor",
+        "copas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 42,
+      "nome": "7 de Copas",
+      "arcano": "menor",
+      "numero": 7,
+      "naipe": "copas",
+      "imagemUrl": "/cards/42_cups_7.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "7 de Copas: expressão consciente, clareza e movimento.",
+          "longo": "7 de Copas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "7 de Copas: bloqueio, revisão e ajuste de rota.",
+          "longo": "7 de Copas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "7 de Copas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "7 de Copas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "7 de Copas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "7-de-copas",
+        "menor",
+        "copas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 43,
+      "nome": "8 de Copas",
+      "arcano": "menor",
+      "numero": 8,
+      "naipe": "copas",
+      "imagemUrl": "/cards/43_cups_8.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "8 de Copas: expressão consciente, clareza e movimento.",
+          "longo": "8 de Copas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "8 de Copas: bloqueio, revisão e ajuste de rota.",
+          "longo": "8 de Copas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "8 de Copas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "8 de Copas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "8 de Copas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "8-de-copas",
+        "menor",
+        "copas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 44,
+      "nome": "9 de Copas",
+      "arcano": "menor",
+      "numero": 9,
+      "naipe": "copas",
+      "imagemUrl": "/cards/44_cups_9.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "9 de Copas: expressão consciente, clareza e movimento.",
+          "longo": "9 de Copas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "9 de Copas: bloqueio, revisão e ajuste de rota.",
+          "longo": "9 de Copas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "9 de Copas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "9 de Copas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "9 de Copas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "9-de-copas",
+        "menor",
+        "copas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 45,
+      "nome": "10 de Copas",
+      "arcano": "menor",
+      "numero": 10,
+      "naipe": "copas",
+      "imagemUrl": "/cards/45_cups_10.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "10 de Copas: expressão consciente, clareza e movimento.",
+          "longo": "10 de Copas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "10 de Copas: bloqueio, revisão e ajuste de rota.",
+          "longo": "10 de Copas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "10 de Copas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "10 de Copas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "10 de Copas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "10-de-copas",
+        "menor",
+        "copas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 46,
+      "nome": "Pajem de Copas",
+      "arcano": "menor",
+      "numero": 11,
+      "naipe": "copas",
+      "imagemUrl": "/cards/46_cups_page.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Pajem de Copas: expressão consciente, clareza e movimento.",
+          "longo": "Pajem de Copas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Pajem de Copas: bloqueio, revisão e ajuste de rota.",
+          "longo": "Pajem de Copas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Pajem de Copas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Pajem de Copas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Pajem de Copas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "pajem-de-copas",
+        "menor",
+        "copas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 47,
+      "nome": "Cavaleiro de Copas",
+      "arcano": "menor",
+      "numero": 12,
+      "naipe": "copas",
+      "imagemUrl": "/cards/47_cups_knight.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Cavaleiro de Copas: expressão consciente, clareza e movimento.",
+          "longo": "Cavaleiro de Copas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Cavaleiro de Copas: bloqueio, revisão e ajuste de rota.",
+          "longo": "Cavaleiro de Copas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Cavaleiro de Copas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Cavaleiro de Copas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Cavaleiro de Copas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "cavaleiro-de-copas",
+        "menor",
+        "copas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 48,
+      "nome": "Rainha de Copas",
+      "arcano": "menor",
+      "numero": 13,
+      "naipe": "copas",
+      "imagemUrl": "/cards/48_cups_queen.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Rainha de Copas: expressão consciente, clareza e movimento.",
+          "longo": "Rainha de Copas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Rainha de Copas: bloqueio, revisão e ajuste de rota.",
+          "longo": "Rainha de Copas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Rainha de Copas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Rainha de Copas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Rainha de Copas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "rainha-de-copas",
+        "menor",
+        "copas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 49,
+      "nome": "Rei de Copas",
+      "arcano": "menor",
+      "numero": 14,
+      "naipe": "copas",
+      "imagemUrl": "/cards/49_cups_king.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Rei de Copas: expressão consciente, clareza e movimento.",
+          "longo": "Rei de Copas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Rei de Copas: bloqueio, revisão e ajuste de rota.",
+          "longo": "Rei de Copas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Rei de Copas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Rei de Copas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Rei de Copas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "rei-de-copas",
+        "menor",
+        "copas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 50,
+      "nome": "Ás de Espadas",
+      "arcano": "menor",
+      "numero": 1,
+      "naipe": "espadas",
+      "imagemUrl": "/cards/50_swords_ace.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Ás de Espadas: expressão consciente, clareza e movimento.",
+          "longo": "Ás de Espadas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Ás de Espadas: bloqueio, revisão e ajuste de rota.",
+          "longo": "Ás de Espadas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Ás de Espadas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Ás de Espadas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Ás de Espadas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "as-de-espadas",
+        "menor",
+        "espadas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 51,
+      "nome": "2 de Espadas",
+      "arcano": "menor",
+      "numero": 2,
+      "naipe": "espadas",
+      "imagemUrl": "/cards/51_swords_2.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "2 de Espadas: expressão consciente, clareza e movimento.",
+          "longo": "2 de Espadas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "2 de Espadas: bloqueio, revisão e ajuste de rota.",
+          "longo": "2 de Espadas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "2 de Espadas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "2 de Espadas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "2 de Espadas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "2-de-espadas",
+        "menor",
+        "espadas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 52,
+      "nome": "3 de Espadas",
+      "arcano": "menor",
+      "numero": 3,
+      "naipe": "espadas",
+      "imagemUrl": "/cards/52_swords_3.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "3 de Espadas: expressão consciente, clareza e movimento.",
+          "longo": "3 de Espadas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "3 de Espadas: bloqueio, revisão e ajuste de rota.",
+          "longo": "3 de Espadas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "3 de Espadas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "3 de Espadas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "3 de Espadas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "3-de-espadas",
+        "menor",
+        "espadas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 53,
+      "nome": "4 de Espadas",
+      "arcano": "menor",
+      "numero": 4,
+      "naipe": "espadas",
+      "imagemUrl": "/cards/53_swords_4.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "4 de Espadas: expressão consciente, clareza e movimento.",
+          "longo": "4 de Espadas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "4 de Espadas: bloqueio, revisão e ajuste de rota.",
+          "longo": "4 de Espadas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "4 de Espadas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "4 de Espadas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "4 de Espadas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "4-de-espadas",
+        "menor",
+        "espadas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 54,
+      "nome": "5 de Espadas",
+      "arcano": "menor",
+      "numero": 5,
+      "naipe": "espadas",
+      "imagemUrl": "/cards/54_swords_5.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "5 de Espadas: expressão consciente, clareza e movimento.",
+          "longo": "5 de Espadas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "5 de Espadas: bloqueio, revisão e ajuste de rota.",
+          "longo": "5 de Espadas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "5 de Espadas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "5 de Espadas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "5 de Espadas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "5-de-espadas",
+        "menor",
+        "espadas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 55,
+      "nome": "6 de Espadas",
+      "arcano": "menor",
+      "numero": 6,
+      "naipe": "espadas",
+      "imagemUrl": "/cards/55_swords_6.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "6 de Espadas: expressão consciente, clareza e movimento.",
+          "longo": "6 de Espadas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "6 de Espadas: bloqueio, revisão e ajuste de rota.",
+          "longo": "6 de Espadas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "6 de Espadas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "6 de Espadas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "6 de Espadas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "6-de-espadas",
+        "menor",
+        "espadas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 56,
+      "nome": "7 de Espadas",
+      "arcano": "menor",
+      "numero": 7,
+      "naipe": "espadas",
+      "imagemUrl": "/cards/56_swords_7.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "7 de Espadas: expressão consciente, clareza e movimento.",
+          "longo": "7 de Espadas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "7 de Espadas: bloqueio, revisão e ajuste de rota.",
+          "longo": "7 de Espadas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "7 de Espadas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "7 de Espadas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "7 de Espadas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "7-de-espadas",
+        "menor",
+        "espadas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 57,
+      "nome": "8 de Espadas",
+      "arcano": "menor",
+      "numero": 8,
+      "naipe": "espadas",
+      "imagemUrl": "/cards/57_swords_8.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "8 de Espadas: expressão consciente, clareza e movimento.",
+          "longo": "8 de Espadas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "8 de Espadas: bloqueio, revisão e ajuste de rota.",
+          "longo": "8 de Espadas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "8 de Espadas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "8 de Espadas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "8 de Espadas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "8-de-espadas",
+        "menor",
+        "espadas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 58,
+      "nome": "9 de Espadas",
+      "arcano": "menor",
+      "numero": 9,
+      "naipe": "espadas",
+      "imagemUrl": "/cards/58_swords_9.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "9 de Espadas: expressão consciente, clareza e movimento.",
+          "longo": "9 de Espadas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "9 de Espadas: bloqueio, revisão e ajuste de rota.",
+          "longo": "9 de Espadas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "9 de Espadas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "9 de Espadas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "9 de Espadas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "9-de-espadas",
+        "menor",
+        "espadas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 59,
+      "nome": "10 de Espadas",
+      "arcano": "menor",
+      "numero": 10,
+      "naipe": "espadas",
+      "imagemUrl": "/cards/59_swords_10.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "10 de Espadas: expressão consciente, clareza e movimento.",
+          "longo": "10 de Espadas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "10 de Espadas: bloqueio, revisão e ajuste de rota.",
+          "longo": "10 de Espadas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "10 de Espadas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "10 de Espadas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "10 de Espadas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "10-de-espadas",
+        "menor",
+        "espadas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 60,
+      "nome": "Pajem de Espadas",
+      "arcano": "menor",
+      "numero": 11,
+      "naipe": "espadas",
+      "imagemUrl": "/cards/60_swords_page.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Pajem de Espadas: expressão consciente, clareza e movimento.",
+          "longo": "Pajem de Espadas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Pajem de Espadas: bloqueio, revisão e ajuste de rota.",
+          "longo": "Pajem de Espadas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Pajem de Espadas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Pajem de Espadas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Pajem de Espadas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "pajem-de-espadas",
+        "menor",
+        "espadas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 61,
+      "nome": "Cavaleiro de Espadas",
+      "arcano": "menor",
+      "numero": 12,
+      "naipe": "espadas",
+      "imagemUrl": "/cards/61_swords_knight.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Cavaleiro de Espadas: expressão consciente, clareza e movimento.",
+          "longo": "Cavaleiro de Espadas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Cavaleiro de Espadas: bloqueio, revisão e ajuste de rota.",
+          "longo": "Cavaleiro de Espadas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Cavaleiro de Espadas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Cavaleiro de Espadas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Cavaleiro de Espadas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "cavaleiro-de-espadas",
+        "menor",
+        "espadas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 62,
+      "nome": "Rainha de Espadas",
+      "arcano": "menor",
+      "numero": 13,
+      "naipe": "espadas",
+      "imagemUrl": "/cards/62_swords_queen.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Rainha de Espadas: expressão consciente, clareza e movimento.",
+          "longo": "Rainha de Espadas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Rainha de Espadas: bloqueio, revisão e ajuste de rota.",
+          "longo": "Rainha de Espadas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Rainha de Espadas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Rainha de Espadas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Rainha de Espadas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "rainha-de-espadas",
+        "menor",
+        "espadas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 63,
+      "nome": "Rei de Espadas",
+      "arcano": "menor",
+      "numero": 14,
+      "naipe": "espadas",
+      "imagemUrl": "/cards/63_swords_king.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Rei de Espadas: expressão consciente, clareza e movimento.",
+          "longo": "Rei de Espadas em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Rei de Espadas: bloqueio, revisão e ajuste de rota.",
+          "longo": "Rei de Espadas invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Rei de Espadas: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Rei de Espadas: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Rei de Espadas: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "rei-de-espadas",
+        "menor",
+        "espadas",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 64,
+      "nome": "Ás de Ouros",
+      "arcano": "menor",
+      "numero": 1,
+      "naipe": "ouros",
+      "imagemUrl": "/cards/64_pentacles_ace.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Ás de Ouros: expressão consciente, clareza e movimento.",
+          "longo": "Ás de Ouros em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Ás de Ouros: bloqueio, revisão e ajuste de rota.",
+          "longo": "Ás de Ouros invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Ás de Ouros: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Ás de Ouros: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Ás de Ouros: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "as-de-ouros",
+        "menor",
+        "ouros",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 65,
+      "nome": "2 de Ouros",
+      "arcano": "menor",
+      "numero": 2,
+      "naipe": "ouros",
+      "imagemUrl": "/cards/65_pentacles_2.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "2 de Ouros: expressão consciente, clareza e movimento.",
+          "longo": "2 de Ouros em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "2 de Ouros: bloqueio, revisão e ajuste de rota.",
+          "longo": "2 de Ouros invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "2 de Ouros: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "2 de Ouros: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "2 de Ouros: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "2-de-ouros",
+        "menor",
+        "ouros",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 66,
+      "nome": "3 de Ouros",
+      "arcano": "menor",
+      "numero": 3,
+      "naipe": "ouros",
+      "imagemUrl": "/cards/66_pentacles_3.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "3 de Ouros: expressão consciente, clareza e movimento.",
+          "longo": "3 de Ouros em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "3 de Ouros: bloqueio, revisão e ajuste de rota.",
+          "longo": "3 de Ouros invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "3 de Ouros: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "3 de Ouros: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "3 de Ouros: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "3-de-ouros",
+        "menor",
+        "ouros",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 67,
+      "nome": "4 de Ouros",
+      "arcano": "menor",
+      "numero": 4,
+      "naipe": "ouros",
+      "imagemUrl": "/cards/67_pentacles_4.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "4 de Ouros: expressão consciente, clareza e movimento.",
+          "longo": "4 de Ouros em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "4 de Ouros: bloqueio, revisão e ajuste de rota.",
+          "longo": "4 de Ouros invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "4 de Ouros: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "4 de Ouros: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "4 de Ouros: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "4-de-ouros",
+        "menor",
+        "ouros",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 68,
+      "nome": "5 de Ouros",
+      "arcano": "menor",
+      "numero": 5,
+      "naipe": "ouros",
+      "imagemUrl": "/cards/68_pentacles_5.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "5 de Ouros: expressão consciente, clareza e movimento.",
+          "longo": "5 de Ouros em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "5 de Ouros: bloqueio, revisão e ajuste de rota.",
+          "longo": "5 de Ouros invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "5 de Ouros: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "5 de Ouros: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "5 de Ouros: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "5-de-ouros",
+        "menor",
+        "ouros",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 69,
+      "nome": "6 de Ouros",
+      "arcano": "menor",
+      "numero": 6,
+      "naipe": "ouros",
+      "imagemUrl": "/cards/69_pentacles_6.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "6 de Ouros: expressão consciente, clareza e movimento.",
+          "longo": "6 de Ouros em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "6 de Ouros: bloqueio, revisão e ajuste de rota.",
+          "longo": "6 de Ouros invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "6 de Ouros: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "6 de Ouros: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "6 de Ouros: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "6-de-ouros",
+        "menor",
+        "ouros",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 70,
+      "nome": "7 de Ouros",
+      "arcano": "menor",
+      "numero": 7,
+      "naipe": "ouros",
+      "imagemUrl": "/cards/70_pentacles_7.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "7 de Ouros: expressão consciente, clareza e movimento.",
+          "longo": "7 de Ouros em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "7 de Ouros: bloqueio, revisão e ajuste de rota.",
+          "longo": "7 de Ouros invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "7 de Ouros: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "7 de Ouros: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "7 de Ouros: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "7-de-ouros",
+        "menor",
+        "ouros",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 71,
+      "nome": "8 de Ouros",
+      "arcano": "menor",
+      "numero": 8,
+      "naipe": "ouros",
+      "imagemUrl": "/cards/71_pentacles_8.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "8 de Ouros: expressão consciente, clareza e movimento.",
+          "longo": "8 de Ouros em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "8 de Ouros: bloqueio, revisão e ajuste de rota.",
+          "longo": "8 de Ouros invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "8 de Ouros: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "8 de Ouros: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "8 de Ouros: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "8-de-ouros",
+        "menor",
+        "ouros",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 72,
+      "nome": "9 de Ouros",
+      "arcano": "menor",
+      "numero": 9,
+      "naipe": "ouros",
+      "imagemUrl": "/cards/72_pentacles_9.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "9 de Ouros: expressão consciente, clareza e movimento.",
+          "longo": "9 de Ouros em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "9 de Ouros: bloqueio, revisão e ajuste de rota.",
+          "longo": "9 de Ouros invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "9 de Ouros: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "9 de Ouros: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "9 de Ouros: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "9-de-ouros",
+        "menor",
+        "ouros",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 73,
+      "nome": "10 de Ouros",
+      "arcano": "menor",
+      "numero": 10,
+      "naipe": "ouros",
+      "imagemUrl": "/cards/73_pentacles_10.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "10 de Ouros: expressão consciente, clareza e movimento.",
+          "longo": "10 de Ouros em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "10 de Ouros: bloqueio, revisão e ajuste de rota.",
+          "longo": "10 de Ouros invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "10 de Ouros: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "10 de Ouros: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "10 de Ouros: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "10-de-ouros",
+        "menor",
+        "ouros",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 74,
+      "nome": "Pajem de Ouros",
+      "arcano": "menor",
+      "numero": 11,
+      "naipe": "ouros",
+      "imagemUrl": "/cards/74_pentacles_page.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Pajem de Ouros: expressão consciente, clareza e movimento.",
+          "longo": "Pajem de Ouros em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Pajem de Ouros: bloqueio, revisão e ajuste de rota.",
+          "longo": "Pajem de Ouros invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Pajem de Ouros: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Pajem de Ouros: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Pajem de Ouros: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "pajem-de-ouros",
+        "menor",
+        "ouros",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 75,
+      "nome": "Cavaleiro de Ouros",
+      "arcano": "menor",
+      "numero": 12,
+      "naipe": "ouros",
+      "imagemUrl": "/cards/75_pentacles_knight.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Cavaleiro de Ouros: expressão consciente, clareza e movimento.",
+          "longo": "Cavaleiro de Ouros em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Cavaleiro de Ouros: bloqueio, revisão e ajuste de rota.",
+          "longo": "Cavaleiro de Ouros invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Cavaleiro de Ouros: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Cavaleiro de Ouros: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Cavaleiro de Ouros: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "cavaleiro-de-ouros",
+        "menor",
+        "ouros",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 76,
+      "nome": "Rainha de Ouros",
+      "arcano": "menor",
+      "numero": 13,
+      "naipe": "ouros",
+      "imagemUrl": "/cards/76_pentacles_queen.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Rainha de Ouros: expressão consciente, clareza e movimento.",
+          "longo": "Rainha de Ouros em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Rainha de Ouros: bloqueio, revisão e ajuste de rota.",
+          "longo": "Rainha de Ouros invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Rainha de Ouros: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Rainha de Ouros: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Rainha de Ouros: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "rainha-de-ouros",
+        "menor",
+        "ouros",
+        "arcano-menor"
+      ]
+    },
+    {
+      "id": 77,
+      "nome": "Rei de Ouros",
+      "arcano": "menor",
+      "numero": 14,
+      "naipe": "ouros",
+      "imagemUrl": "/cards/77_pentacles_king.jpg",
+      "significado": {
+        "vertical": {
+          "curto": "Rei de Ouros: expressão consciente, clareza e movimento.",
+          "longo": "Rei de Ouros em posição vertical destaca energia disponível, direção e oportunidade de ação. Use esta carta como eixo principal da interpretação na posição da tiragem."
+        },
+        "invertido": {
+          "curto": "Rei de Ouros: bloqueio, revisão e ajuste de rota.",
+          "longo": "Rei de Ouros invertida sinaliza energia interna, atraso ou necessidade de revisar padrões. Considere obstáculos, medos e o que precisa ser reorganizado antes do próximo passo."
+        }
+      },
+      "areas": {
+        "carreira": "Rei de Ouros: avaliar escolhas práticas, ritmo e próxima ação profissional.",
+        "relacionamentos": "Rei de Ouros: observar comunicação, reciprocidade e limites afetivos.",
+        "espiritual": "Rei de Ouros: integrar intuição, autoconhecimento e alinhamento interno."
+      },
+      "tags": [
+        "rei-de-ouros",
+        "menor",
+        "ouros",
+        "arcano-menor"
+      ]
     }
   ]
 }

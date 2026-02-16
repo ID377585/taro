@@ -10,6 +10,7 @@ interface CameraViewProps {
   videoRef: RefObject<HTMLVideoElement>
   devices: CameraDevice[]
   currentDeviceId: string
+  overlayOrientation?: 'vertical' | 'horizontal'
   isActive: boolean
   isStarting?: boolean
   error: string | null
@@ -23,6 +24,7 @@ const CameraView: FC<CameraViewProps> = ({
   videoRef,
   devices,
   currentDeviceId,
+  overlayOrientation = 'vertical',
   isActive,
   isStarting = false,
   error,
@@ -34,7 +36,11 @@ const CameraView: FC<CameraViewProps> = ({
   return (
     <div className="camera-container">
       <video ref={videoRef} className="camera-feed" autoPlay playsInline muted />
-      <div className="camera-overlay" />
+      <div
+        className={`camera-overlay${
+          overlayOrientation === 'horizontal' ? ' camera-overlay--horizontal' : ''
+        }`}
+      />
 
       <div className="camera-toolbar">
         <div className="camera-toolbar-left">

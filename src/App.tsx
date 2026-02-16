@@ -219,11 +219,7 @@ function App() {
           !showHistoryRecords && (
           <>
             <div className="home-menu">
-              <h1>Tarô Teleprompter</h1>
-              <p>
-                Escolha entre iniciar uma tiragem em modo teleprompter ou registrar
-                novas imagens de cartas para treino do modelo.
-              </p>
+              <h1>Leituras de Tarot</h1>
               <div className="home-actions">
                 <button
                   onClick={() => {

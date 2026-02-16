@@ -5,7 +5,7 @@ const pwaOptions: Partial<VitePWAOptions> = {
   includeAssets: ['vite.svg', 'cards/*.jpg'],
   manifest: {
     id: '/',
-    name: 'Tarô Teleprompter',
+    name: 'Leituras de Tarot',
     short_name: 'Tarô',
     description: 'Leitura de tarô com reconhecimento de cartas por câmera',
     start_url: '/',

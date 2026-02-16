@@ -28,6 +28,12 @@
   animation: pulse 2s ease-in-out infinite;
 }
 
+.camera-overlay--horizontal {
+  width: 84%;
+  max-width: 560px;
+  aspect-ratio: 3 / 2;
+}
+
 .camera-toolbar {
   position: absolute;
   top: 1rem;
@@ -77,6 +83,11 @@
   .camera-select {
     min-width: 145px;
     max-width: 72vw;
+  }
+
+  .camera-overlay--horizontal {
+    width: 88%;
+    max-width: 96vw;
   }
 }
 

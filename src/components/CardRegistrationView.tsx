@@ -198,6 +198,19 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
   const orientationLabel = orientation === 'vertical' ? 'vertical' : 'horizontal'
 
   useEffect(() => {
+    if (
+      orientation === 'vertical' &&
+      currentVerticalCount >= TARGET_PER_ORIENTATION &&
+      currentInvertedCount < TARGET_PER_ORIENTATION
+    ) {
+      setOrientation('invertido')
+      setFeedback(
+        `Vertical ${TARGET_PER_ORIENTATION}/${TARGET_PER_ORIENTATION} concluída. Continue na horizontal.`,
+      )
+    }
+  }, [currentInvertedCount, currentVerticalCount, orientation])
+
+  useEffect(() => {
     capturesRef.current = capturesByCard
   }, [capturesByCard])
 
@@ -283,6 +296,15 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
   const handleCapture = async () => {
     if (!selectedCard) {
       setFeedback('Selecione uma carta para começar a captura.')
+      return
+    }
+
+    const currentCount =
+      orientation === 'vertical' ? currentVerticalCount : currentInvertedCount
+    if (currentCount >= TARGET_PER_ORIENTATION) {
+      setFeedback(
+        `A orientação ${orientationLabel} já atingiu ${TARGET_PER_ORIENTATION} fotos.`,
+      )
       return
     }
 
@@ -488,6 +510,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
         videoRef={videoRef}
         devices={devices}
         currentDeviceId={currentDeviceId}
+        overlayOrientation={orientation === 'vertical' ? 'vertical' : 'horizontal'}
         isActive={isActive}
         isStarting={isStarting}
         error={cameraError}
@@ -510,8 +533,12 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
             isPanelExpanded ? 'with-panel-expanded' : 'with-panel-collapsed'
           }`}
         >
-          <strong>Posicione a carta dentro do quadro</strong>
-          <span>Mantenha a carta completa, sem reflexo e com boa iluminação.</span>
+          <strong>
+            Posicione a carta no quadro ({orientationLabel})
+          </strong>
+          <span>
+            Mantenha a carta completa, sem reflexo e com boa iluminação.
+          </span>
         </div>
       </CameraView>
 

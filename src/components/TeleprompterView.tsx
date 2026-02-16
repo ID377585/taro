@@ -198,6 +198,14 @@ const parseAnnotatedSegments = (paragraph: string) => {
   return segments
 }
 
+const formatArcanoLabel = (card: Card) =>
+  card.arcano === 'maior' ? 'Arcano Maior' : 'Arcano Menor'
+
+const formatNaipeElementLabel = (card: Card) => {
+  if (!card.naipe || !card.elemento) return 'Elemento arquetípico'
+  return `${card.naipe[0].toUpperCase()}${card.naipe.slice(1)} • ${card.elemento.nome}`
+}
+
 const TeleprompterView: FC<TeleprompterViewProps> = ({
   spread,
   cards,
@@ -282,6 +290,10 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
       `[[Posição ${currentPosition.index}: ${currentPosition.nome}]]`,
       currentPosition.descricao,
       `Carta: [[${currentCard.nome}]] (${orientationLabel})`,
+      `Arcano: ${formatArcanoLabel(currentCard)}.`,
+      `Representação: ${currentCard.representacao || 'Não informada.'}`,
+      `Elemento: ${currentCard.elemento ? `${currentCard.elemento.nome} - ${currentCard.elemento.descricao}` : 'Não aplicável para esta carta.'}`,
+      `Numerologia: ${currentCard.numerologia ? `${currentCard.numerologia.valor} (${currentCard.numerologia.titulo}) - ${currentCard.numerologia.descricao}` : 'Sem dados numerológicos.'}`,
       coreMeaning,
       `Carreira: ${currentCard.areas.carreira}`,
       `Relacionamentos: ${currentCard.areas.relacionamentos}`,
@@ -923,6 +935,9 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
             `${position.index}. ${position.nome}: ${card.nome} (${orientationLabel})`,
             `Contexto da posição: ${position.descricao}.`,
             `Significado principal: ${mainMeaning}`,
+            `Arcano e elemento: ${formatArcanoLabel(card)}${card.elemento ? ` | ${card.elemento.nome}` : ''}.`,
+            `Representação: ${card.representacao || 'Não informada.'}`,
+            `Numerologia: ${card.numerologia ? `${card.numerologia.valor} (${card.numerologia.titulo}) - ${card.numerologia.descricao}` : 'Sem dados numerológicos.'}`,
             `Áreas de apoio: Carreira - ${card.areas.carreira} | Relacionamentos - ${card.areas.relacionamentos} | Espiritual - ${card.areas.espiritual}.`,
           ].join('\n'),
         )
@@ -1067,6 +1082,30 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
                   ? `Orientação ${currentDrawn.isReversed ? 'Invertida' : 'Vertical'}`
                   : 'Nenhuma carta registrada nesta posição'}
               </p>
+              {currentCard && (
+                <div className="card-meta">
+                  <p>
+                    <strong>Arcano:</strong> {formatArcanoLabel(currentCard)}{' '}
+                    {currentCard.arcanoDescricao ? `- ${currentCard.arcanoDescricao}` : ''}
+                  </p>
+                  <p>
+                    <strong>Naipe/Elemento:</strong> {formatNaipeElementLabel(currentCard)}
+                    {currentCard.elemento ? ` - ${currentCard.elemento.descricao}` : ''}
+                  </p>
+                  {currentCard.representacao && (
+                    <p>
+                      <strong>Representa:</strong> {currentCard.representacao}
+                    </p>
+                  )}
+                  {currentCard.numerologia && (
+                    <p>
+                      <strong>Numerologia:</strong> {currentCard.numerologia.valor} (
+                      {currentCard.numerologia.titulo}) -{' '}
+                      {currentCard.numerologia.descricao}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="teleprompter-actions">

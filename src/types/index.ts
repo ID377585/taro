@@ -2,8 +2,28 @@ export interface Card {
   id: number
   nome: string
   arcano: 'maior' | 'menor'
+  arcanoDescricao?: string
   numero: number
   naipe?: string | null
+  representacao?: string
+  elemento?: {
+    nome: string
+    descricao: string
+  } | null
+  numerologia?: {
+    numero: number | null
+    valor: number | null
+    titulo: string
+    descricao: string
+  } | null
+  corte?: {
+    titulo: string
+    descricao: string
+  } | null
+  polaridades?: {
+    luz: string
+    sombra: string
+  }
   imagemUrl: string
   significado: {
     vertical: {

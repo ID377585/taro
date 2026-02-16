@@ -141,6 +141,23 @@
   font-size: 0.9rem;
 }
 
+.card-meta {
+  margin-top: 0.55rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.card-meta p {
+  margin: 0;
+  color: #dbeafe;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.card-meta strong {
+  color: #e9d5ff;
+}
+
 .teleprompter-actions {
   display: flex;
   gap: 0.5rem;

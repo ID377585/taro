@@ -31,24 +31,67 @@ interface CardRegistrationViewProps {
 type LocalSyncState = 'idle' | 'saving' | 'saved' | 'error'
 
 const TARGET_PER_ORIENTATION = 10
-const ACCEPTED_IMAGE_EXTENSIONS = ['.heic', '.heif', '.hevc', '.jpg', '.jpeg', '.png']
+const ACCEPTED_IMAGE_EXTENSIONS = [
+  '.heic',
+  '.heif',
+  '.hevc',
+  '.jpg',
+  '.jpeg',
+  '.png',
+  '.zip',
+]
+const IMAGE_FILE_EXTENSIONS = ['.heic', '.heif', '.hevc', '.jpg', '.jpeg', '.png']
 
 const createEmptyBucket = (): CardCaptureBucket => ({
   vertical: [],
   invertido: [],
 })
 
-const isHeifLike = (file: File) => {
-  const lowerName = file.name.toLowerCase()
-  const mime = file.type.toLowerCase()
+const isHeifLike = (name: string, mime: string) => {
+  const lowerName = name.toLowerCase()
+  const lowerMime = mime.toLowerCase()
   return (
     lowerName.endsWith('.heic') ||
     lowerName.endsWith('.heif') ||
     lowerName.endsWith('.hevc') ||
-    mime.includes('heic') ||
-    mime.includes('heif') ||
-    mime.includes('hevc')
+    lowerMime.includes('heic') ||
+    lowerMime.includes('heif') ||
+    lowerMime.includes('hevc')
   )
+}
+
+const isZipFile = (file: File) => {
+  const lowerName = file.name.toLowerCase()
+  const lowerMime = file.type.toLowerCase()
+  return (
+    lowerName.endsWith('.zip') ||
+    lowerMime === 'application/zip' ||
+    lowerMime === 'application/x-zip-compressed'
+  )
+}
+
+const getExtension = (name: string) => {
+  const lowerName = name.toLowerCase()
+  const dotIndex = lowerName.lastIndexOf('.')
+  return dotIndex >= 0 ? lowerName.slice(dotIndex) : ''
+}
+
+const inferOrientationFromZipEntry = (entryName: string): Orientation | null => {
+  const normalized = normalizeLabelValue(entryName)
+  const hasHorizontalToken =
+    normalized.includes('invertido') ||
+    normalized.includes('horizontal') ||
+    normalized.includes('inverted') ||
+    normalized.includes('reversed')
+  if (hasHorizontalToken) return 'invertido'
+
+  const hasVerticalToken =
+    normalized.includes('vertical') ||
+    normalized.includes('upright') ||
+    normalized.includes('normal')
+  if (hasVerticalToken) return 'vertical'
+
+  return null
 }
 
 const convertImageBlobToJpeg = async (blob: Blob) => {
@@ -200,6 +243,13 @@ const waitForVideoReady = async (video: HTMLVideoElement, timeoutMs = 1500) => {
     video.addEventListener('playing', onReady)
     onReady()
   })
+}
+
+interface ZipExtractionResult {
+  vertical: Blob[]
+  invertido: Blob[]
+  unknownOrientation: number
+  errors: number
 }
 
 const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) => {
@@ -442,6 +492,33 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
     return addedCount
   }
 
+  const appendCapturesToOrientation = (targetOrientation: Orientation, blobs: Blob[]) => {
+    if (!selectedCard) return 0
+    let addedCount = 0
+
+    setCapturesByCard(prev => {
+      const current = prev[selectedCard.id] ?? createEmptyBucket()
+      const remaining = TARGET_PER_ORIENTATION - current[targetOrientation].length
+      if (remaining <= 0) return prev
+
+      const toAdd = blobs.slice(0, remaining).map(blob => ({
+        ...createCaptureItemFromBlob(blob),
+      }))
+
+      addedCount = toAdd.length
+
+      return {
+        ...prev,
+        [selectedCard.id]: {
+          ...current,
+          [targetOrientation]: [...current[targetOrientation], ...toAdd],
+        },
+      }
+    })
+
+    return addedCount
+  }
+
   const handleCapture = async () => {
     if (!selectedCard) {
       setFeedback('Selecione uma carta para começar a captura.')
@@ -473,11 +550,11 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
     }
   }
 
-  const normalizeImportedFile = async (file: File) => {
-    if (isHeifLike(file)) {
+  const normalizeImportedBlob = async (blob: Blob, sourceName: string) => {
+    if (isHeifLike(sourceName, blob.type)) {
       const heic2anyModule = await import('heic2any')
       const converted = await heic2anyModule.default({
-        blob: file,
+        blob,
         toType: 'image/jpeg',
         quality: 0.92,
       })
@@ -489,11 +566,48 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
         : convertImageBlobToJpeg(firstBlob)
     }
 
-    if (file.type === 'image/jpeg' || file.type === 'image/jpg') {
-      return file
+    if (blob.type === 'image/jpeg' || blob.type === 'image/jpg') {
+      return blob
     }
 
-    return convertImageBlobToJpeg(file)
+    return convertImageBlobToJpeg(blob)
+  }
+
+  const extractImagesFromZip = async (zipFile: File): Promise<ZipExtractionResult> => {
+    const JSZip = (await import('jszip')).default
+    const zip = await JSZip.loadAsync(zipFile)
+
+    const result: ZipExtractionResult = {
+      vertical: [],
+      invertido: [],
+      unknownOrientation: 0,
+      errors: 0,
+    }
+
+    for (const entry of Object.values(zip.files)) {
+      if (entry.dir) continue
+
+      const entryName = entry.name
+      const extension = getExtension(entryName)
+      if (!IMAGE_FILE_EXTENSIONS.includes(extension)) continue
+
+      const inferredOrientation = inferOrientationFromZipEntry(entryName)
+      if (!inferredOrientation) {
+        result.unknownOrientation += 1
+        continue
+      }
+
+      try {
+        const rawBlob = await entry.async('blob')
+        const normalizedBlob = await normalizeImportedBlob(rawBlob, entryName)
+        result[inferredOrientation].push(normalizedBlob)
+      } catch (err) {
+        result.errors += 1
+        console.error('Falha ao processar imagem do ZIP:', entryName, err)
+      }
+    }
+
+    return result
   }
 
   const handleImportFiles = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -509,11 +623,30 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
     setFeedback('')
 
     let failed = 0
+    let zipCount = 0
+    let zipUnknownOrientation = 0
     const normalizedBlobs: Blob[] = []
+    const zipVerticalBlobs: Blob[] = []
+    const zipInvertedBlobs: Blob[] = []
 
     for (const file of files) {
+      if (isZipFile(file)) {
+        zipCount += 1
+        try {
+          const zipExtraction = await extractImagesFromZip(file)
+          zipVerticalBlobs.push(...zipExtraction.vertical)
+          zipInvertedBlobs.push(...zipExtraction.invertido)
+          zipUnknownOrientation += zipExtraction.unknownOrientation
+          failed += zipExtraction.errors
+        } catch (err) {
+          failed += 1
+          console.error('Falha ao importar ZIP:', file.name, err)
+        }
+        continue
+      }
+
       try {
-        const blob = await normalizeImportedFile(file)
+        const blob = await normalizeImportedBlob(file, file.name)
         normalizedBlobs.push(blob)
       } catch (err) {
         failed += 1
@@ -522,15 +655,45 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
     }
 
     const addedCount = appendCaptures(normalizedBlobs)
+    const zipVerticalAdded = appendCapturesToOrientation('vertical', zipVerticalBlobs)
+    const zipInvertedAdded = appendCapturesToOrientation('invertido', zipInvertedBlobs)
     const ignoredCount = Math.max(0, normalizedBlobs.length - addedCount)
+    const zipVerticalIgnored = Math.max(0, zipVerticalBlobs.length - zipVerticalAdded)
+    const zipInvertedIgnored = Math.max(0, zipInvertedBlobs.length - zipInvertedAdded)
 
-    const parts = [`Importadas ${addedCount} foto(s)`]
+    const parts: string[] = []
+    if (normalizedBlobs.length > 0) {
+      parts.push(
+        `Importadas ${addedCount} foto(s) na orientação ${orientationLabel}`,
+      )
+    }
+
+    if (zipCount > 0) {
+      parts.push(
+        `ZIP: +${zipVerticalAdded} vertical, +${zipInvertedAdded} horizontal`,
+      )
+    }
+
     if (ignoredCount > 0) {
       parts.push(`${ignoredCount} excederam o limite da orientação atual`)
+    }
+    if (zipVerticalIgnored > 0 || zipInvertedIgnored > 0) {
+      parts.push(
+        `${zipVerticalIgnored + zipInvertedIgnored} do ZIP excederam o limite por orientação`,
+      )
+    }
+    if (zipUnknownOrientation > 0) {
+      parts.push(
+        `${zipUnknownOrientation} no ZIP sem orientação identificada (use vertical/invertido no nome)`,
+      )
     }
     if (failed > 0) {
       parts.push(`${failed} com erro de conversão`)
     }
+    if (!parts.length) {
+      parts.push('Nenhuma foto válida encontrada para importar.')
+    }
+
     setFeedback(parts.join(' | '))
     setIsImporting(false)
   }
@@ -818,8 +981,8 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
             </div>
 
             <p className="registration-supported">
-              Formatos aceitos: HEIF/HEIC/HEVC/PNG/JPEG (convertidos para JPEG quando
-              necessário).
+              Formatos aceitos: ZIP, HEIF/HEIC/HEVC, PNG e JPEG (convertidos para
+              JPEG quando necessário).
             </p>
 
             {isHydratingCaptures && (

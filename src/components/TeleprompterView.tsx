@@ -220,6 +220,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
   const [shortcuts, setShortcuts] = useState<ShortcutConfig>(DEFAULT_SHORTCUTS)
   const [capturingShortcut, setCapturingShortcut] = useState<ShortcutAction | null>(null)
   const [showAdvancedPanel, setShowAdvancedPanel] = useState(false)
+  const [isPanelExpanded, setIsPanelExpanded] = useState(false)
   const [controlFeedback, setControlFeedback] = useState('')
   const [currentPositionIndex, setCurrentPositionIndex] = useState(0)
   const [drawnByPosition, setDrawnByPosition] = useState<Record<number, DrawnCard>>({})
@@ -928,8 +929,28 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
         onSwitch={deviceId => switchCamera(deviceId, selectedResolution)}
       />
 
-      <div className="text-overlay">
-        <div className="teleprompter-topline">
+      <div className={`text-overlay ${isPanelExpanded ? 'expanded' : 'collapsed'}`}>
+        <button
+          className="tp-panel-toggle"
+          onClick={() => setIsPanelExpanded(prev => !prev)}
+          aria-expanded={isPanelExpanded}
+          aria-controls="teleprompter-panel-content"
+        >
+          <div className="tp-panel-toggle-main">
+            <span className="tp-panel-title">Iniciar Tiragem</span>
+            <span className="tp-panel-state">
+              {isPanelExpanded ? 'Ocultar funções' : 'Mostrar funções'}
+            </span>
+          </div>
+          <div className="tp-panel-toggle-badges">
+            <span>{progressLabel}</span>
+            <span>WPM: {settings.wpm}</span>
+          </div>
+        </button>
+
+        {isPanelExpanded && (
+          <div id="teleprompter-panel-content" className="text-overlay-content">
+            <div className="teleprompter-topline">
           <div>
             <h2>{currentPosition?.nome || 'Posição'}</h2>
             <p className="position-desc">{currentPosition?.descricao}</p>
@@ -1416,13 +1437,15 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
           </div>
         )}
 
-        <div className="session-footer">
-          <button onClick={handleSaveSession} disabled={isSaving || completion === 0}>
-            {isSaving ? 'Salvando...' : 'Salvar sessão'}
-          </button>
-          {saveFeedback && <p className="save-feedback">{saveFeedback}</p>}
-          {controlFeedback && <p className="control-feedback">{controlFeedback}</p>}
-        </div>
+            <div className="session-footer">
+              <button onClick={handleSaveSession} disabled={isSaving || completion === 0}>
+                {isSaving ? 'Salvando...' : 'Salvar sessão'}
+              </button>
+              {saveFeedback && <p className="save-feedback">{saveFeedback}</p>}
+              {controlFeedback && <p className="control-feedback">{controlFeedback}</p>}
+            </div>
+          </div>
+        )}
 
         <input
           ref={fileInputRef}

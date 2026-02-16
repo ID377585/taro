@@ -1,4 +1,5 @@
 .teleprompter-view {
+  position: relative;
   width: 100%;
   height: 100vh;
   display: flex;
@@ -7,12 +8,82 @@
   overflow: hidden;
 }
 
+.teleprompter-view .camera-container {
+  flex: 1 1 auto;
+  min-height: 100%;
+}
+
 .text-overlay {
-  flex: 0 0 auto;
-  padding: 1rem;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 12;
   background: linear-gradient(180deg, rgba(12, 12, 12, 0.98) 0%, #090909 100%);
   border-top: 2px solid #2a2a2a;
-  max-height: 56vh;
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+}
+
+.text-overlay.collapsed {
+  max-height: calc(4.35rem + env(safe-area-inset-bottom));
+}
+
+.text-overlay.expanded {
+  max-height: 52vh;
+}
+
+.tp-panel-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: rgba(14, 14, 14, 0.9);
+  border: none;
+  color: #ffffff;
+  border-bottom: 1px solid rgba(124, 58, 237, 0.35);
+  padding: 0.95rem 1rem calc(0.95rem + env(safe-area-inset-bottom));
+  cursor: pointer;
+}
+
+.tp-panel-toggle-main {
+  display: grid;
+  gap: 0.15rem;
+  text-align: left;
+}
+
+.tp-panel-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #c4b5fd;
+}
+
+.tp-panel-state {
+  font-size: 0.82rem;
+  color: #ddd6fe;
+}
+
+.tp-panel-toggle-badges {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.tp-panel-toggle-badges span {
+  font-size: 0.75rem;
+  color: #d1d5db;
+  border: 1px solid #374151;
+  border-radius: 6px;
+  padding: 0.25rem 0.45rem;
+  background: rgba(31, 41, 55, 0.35);
+}
+
+.text-overlay-content {
+  padding: 0.8rem 1rem calc(1.1rem + env(safe-area-inset-bottom));
+  max-height: calc(52vh - 4.5rem);
   overflow-y: auto;
 }
 
@@ -368,9 +439,21 @@
 }
 
 @media (max-width: 900px) {
-  .text-overlay {
-    max-height: 62vh;
-    padding: 0.85rem;
+  .text-overlay.expanded {
+    max-height: 58vh;
+  }
+
+  .text-overlay-content {
+    max-height: calc(58vh - 4.5rem);
+    padding: 0.75rem 0.85rem calc(1rem + env(safe-area-inset-bottom));
+  }
+
+  .tp-panel-title {
+    font-size: 1rem;
+  }
+
+  .tp-panel-state {
+    font-size: 0.8rem;
   }
 
   .script-window {

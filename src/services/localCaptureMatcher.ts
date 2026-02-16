@@ -1,9 +1,8 @@
 import { dbService } from './dbService'
 
-const SIGNATURE_WIDTH = 24
-const SIGNATURE_HEIGHT = 36
+const SIGNATURE_WIDTH = 36
+const SIGNATURE_HEIGHT = 54
 const TARGET_RATIO = 2 / 3
-const CAMERA_ROI_WIDTH_FACTOR = 0.68
 
 interface LocalCaptureCandidate {
   cardId: number
@@ -104,26 +103,6 @@ const drawCoverCrop = (
   draw(sx, sy, sw, sh)
 }
 
-const drawCenteredRoi = (
-  sourceWidth: number,
-  sourceHeight: number,
-  draw: (sx: number, sy: number, sw: number, sh: number) => void,
-) => {
-  if (!sourceWidth || !sourceHeight) return
-
-  let sw = Math.floor(sourceWidth * CAMERA_ROI_WIDTH_FACTOR)
-  let sh = Math.floor(sw / TARGET_RATIO)
-
-  if (sh > sourceHeight) {
-    sh = sourceHeight
-    sw = Math.floor(sh * TARGET_RATIO)
-  }
-
-  const sx = Math.max(0, Math.floor((sourceWidth - sw) / 2))
-  const sy = Math.max(0, Math.floor((sourceHeight - sh) / 2))
-  draw(sx, sy, sw, sh)
-}
-
 const createWorkingCanvas = () => {
   const canvas = document.createElement('canvas')
   canvas.width = SIGNATURE_WIDTH
@@ -210,13 +189,22 @@ export class LocalCaptureMatcher {
     return computeSignatureFromImageData(imageData)
   }
 
-  private signatureFromVideo(video: HTMLVideoElement) {
+  private signatureFromVideo(video: HTMLVideoElement, mirrored = false) {
     if (video.videoWidth <= 0 || video.videoHeight <= 0) return null
 
     const { canvas, context } = this.getCanvas()
     context.clearRect(0, 0, canvas.width, canvas.height)
 
-    drawCenteredRoi(video.videoWidth, video.videoHeight, (sx, sy, sw, sh) => {
+    drawCoverCrop(video.videoWidth, video.videoHeight, (sx, sy, sw, sh) => {
+      if (mirrored) {
+        context.save()
+        context.translate(canvas.width, 0)
+        context.scale(-1, 1)
+        context.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height)
+        context.restore()
+        return
+      }
+
       context.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height)
     })
 
@@ -317,15 +305,17 @@ export class LocalCaptureMatcher {
   predict(video: HTMLVideoElement): LocalCapturePrediction | null {
     if (!this.candidates.length) return null
 
-    const frameSignature = this.signatureFromVideo(video)
-    if (!frameSignature) return null
+    const frameSignature = this.signatureFromVideo(video, false)
+    const mirroredFrameSignature = this.signatureFromVideo(video, true)
+    if (!frameSignature || !mirroredFrameSignature) return null
 
     const ranked = this.candidates
       .map(candidate => ({
         candidate,
         distance: candidate.signatures.reduce((bestDistance, signature) => {
-          const distance = meanAbsoluteDistance(frameSignature, signature)
-          return Math.min(bestDistance, distance)
+          const normalDistance = meanAbsoluteDistance(frameSignature, signature)
+          const mirroredDistance = meanAbsoluteDistance(mirroredFrameSignature, signature)
+          return Math.min(bestDistance, normalDistance, mirroredDistance)
         }, Number.POSITIVE_INFINITY),
       }))
       .sort((a, b) => a.distance - b.distance)

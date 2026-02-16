@@ -129,7 +129,9 @@ export const useCamera = (
         constraints.facingMode = { ideal: facingMode }
       }
 
-      if (isIOSDevice() && facingMode) {
+      // On iOS Safari, keep `deviceId` when user explicitly picked a lens.
+      // Fallback to facingMode-only only when no specific camera was selected.
+      if (isIOSDevice() && facingMode && !selectedDeviceId) {
         delete constraints.deviceId
       }
 

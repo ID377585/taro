@@ -19,8 +19,9 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 70%;
-  max-width: 400px;
+  --camera-overlay-width: min(70vw, 400px);
+  --camera-overlay-height: calc(var(--camera-overlay-width) * 1.5);
+  width: var(--camera-overlay-width);
   aspect-ratio: 2 / 3;
   border: 2px dashed rgba(124, 58, 237, 0.78);
   border-radius: 8px;
@@ -30,13 +31,14 @@
 }
 
 .camera-overlay--horizontal {
-  width: 84%;
-  max-width: 560px;
+  --camera-overlay-width: min(84vw, 560px);
+  --camera-overlay-height: calc(var(--camera-overlay-width) * 0.6666667);
+  width: var(--camera-overlay-width);
   aspect-ratio: 3 / 2;
 }
 
 .camera-overlay--dimmed {
-  box-shadow: 0 0 0 200vmax rgba(0, 0, 0, 0.56);
+  box-shadow: 0 0 0 200vmax rgba(0, 0, 0, 0.72);
 }
 
 .camera-toolbar {

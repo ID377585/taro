@@ -30,9 +30,9 @@
 
 .capture-guidance {
   position: absolute;
-  top: clamp(4.3rem, 10vh, 6.4rem);
+  top: max(3.8rem, calc(50% - var(--capture-overlay-height) / 2 - 0.35rem));
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -100%);
   z-index: 7;
   width: min(88%, 440px);
   text-align: center;
@@ -44,6 +44,16 @@
   gap: 0.12rem;
   pointer-events: none;
   animation: capture-guidance-fade 2s linear forwards;
+}
+
+.capture-guidance--vertical {
+  --capture-overlay-width: min(70vw, 400px);
+  --capture-overlay-height: calc(var(--capture-overlay-width) * 1.5);
+}
+
+.capture-guidance--horizontal {
+  --capture-overlay-width: min(84vw, 560px);
+  --capture-overlay-height: calc(var(--capture-overlay-width) * 0.6666667);
 }
 
 .capture-guidance strong {
@@ -282,7 +292,7 @@
   }
 
   .capture-guidance {
-    top: 4rem;
+    top: max(3.2rem, calc(50% - var(--capture-overlay-height) / 2 - 0.4rem));
     width: min(90%, 380px);
   }
 

@@ -879,7 +879,14 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
         }
       >
         {showCaptureGuidance && (
-          <div className="capture-guidance" aria-live="polite">
+          <div
+            className={`capture-guidance ${
+              orientation === 'vertical'
+                ? 'capture-guidance--vertical'
+                : 'capture-guidance--horizontal'
+            }`}
+            aria-live="polite"
+          >
             <strong>Posicione a carta no quadro ({orientationLabel})</strong>
             <span>Mantenha a carta completa, sem reflexo e com boa iluminação.</span>
           </div>

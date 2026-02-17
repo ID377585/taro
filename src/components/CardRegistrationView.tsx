@@ -269,6 +269,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
   const [localSyncState, setLocalSyncState] = useState<LocalSyncState>('idle')
   const [lastLocalSyncAt, setLastLocalSyncAt] = useState<number | null>(null)
   const [isPanelExpanded, setIsPanelExpanded] = useState(false)
+  const [showCaptureGuidance, setShowCaptureGuidance] = useState(true)
   const importInputRef = useRef<HTMLInputElement>(null)
 
   const {
@@ -310,6 +311,17 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
       )
     }
   }, [currentInvertedCount, currentVerticalCount, orientation])
+
+  useEffect(() => {
+    setShowCaptureGuidance(true)
+    const timerId = window.setTimeout(() => {
+      setShowCaptureGuidance(false)
+    }, 2000)
+
+    return () => {
+      window.clearTimeout(timerId)
+    }
+  }, [orientation])
 
   useEffect(() => {
     capturesRef.current = capturesByCard
@@ -848,6 +860,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
         devices={devices}
         currentDeviceId={currentDeviceId}
         overlayOrientation={orientation === 'vertical' ? 'vertical' : 'horizontal'}
+        dimOutsideOverlay
         isActive={isActive}
         isStarting={isStarting}
         error={cameraError}
@@ -865,18 +878,12 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
           </button>
         }
       >
-        <div
-          className={`capture-guidance ${
-            isPanelExpanded ? 'with-panel-expanded' : 'with-panel-collapsed'
-          }`}
-        >
-          <strong>
-            Posicione a carta no quadro ({orientationLabel})
-          </strong>
-          <span>
-            Mantenha a carta completa, sem reflexo e com boa iluminação.
-          </span>
-        </div>
+        {showCaptureGuidance && (
+          <div className="capture-guidance" aria-live="polite">
+            <strong>Posicione a carta no quadro ({orientationLabel})</strong>
+            <span>Mantenha a carta completa, sem reflexo e com boa iluminação.</span>
+          </div>
+        )}
       </CameraView>
 
       <div

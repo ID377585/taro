@@ -11,6 +11,7 @@ interface CameraViewProps {
   devices: CameraDevice[]
   currentDeviceId: string
   overlayOrientation?: 'vertical' | 'horizontal'
+  dimOutsideOverlay?: boolean
   isActive: boolean
   isStarting?: boolean
   error: string | null
@@ -25,6 +26,7 @@ const CameraView: FC<CameraViewProps> = ({
   devices,
   currentDeviceId,
   overlayOrientation = 'vertical',
+  dimOutsideOverlay = false,
   isActive,
   isStarting = false,
   error,
@@ -39,7 +41,7 @@ const CameraView: FC<CameraViewProps> = ({
       <div
         className={`camera-overlay${
           overlayOrientation === 'horizontal' ? ' camera-overlay--horizontal' : ''
-        }`}
+        }${dimOutsideOverlay ? ' camera-overlay--dimmed' : ''}`}
       />
 
       <div className="camera-toolbar">

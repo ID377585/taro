@@ -30,36 +30,32 @@
 
 .capture-guidance {
   position: absolute;
+  top: clamp(4.3rem, 10vh, 6.4rem);
   left: 50%;
   transform: translateX(-50%);
-  bottom: 5.2rem;
-  width: min(90%, 520px);
+  z-index: 7;
+  width: min(88%, 440px);
   text-align: center;
-  background: rgba(17, 17, 17, 0.72);
-  border: 1px solid rgba(124, 58, 237, 0.7);
+  background: rgba(17, 17, 17, 0.82);
+  border: 1px solid rgba(124, 58, 237, 0.55);
   border-radius: 8px;
-  padding: 0.55rem 0.8rem;
+  padding: 0.4rem 0.62rem;
   display: grid;
-  gap: 0.2rem;
-  transition: bottom 0.25s ease;
-}
-
-.capture-guidance.with-panel-expanded {
-  bottom: calc(min(52vh, 430px) + 0.8rem);
-}
-
-.capture-guidance.with-panel-collapsed {
-  bottom: 5.2rem;
+  gap: 0.12rem;
+  pointer-events: none;
+  animation: capture-guidance-fade 2s linear forwards;
 }
 
 .capture-guidance strong {
   color: #ddd6fe;
-  font-size: 0.88rem;
+  font-size: 0.73rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .capture-guidance span {
   color: #d1d5db;
-  font-size: 0.78rem;
+  font-size: 0.68rem;
 }
 
 .registration-panel {
@@ -285,12 +281,25 @@
     font-size: 0.82rem;
   }
 
-  .capture-guidance.with-panel-expanded {
-    bottom: calc(58vh + 0.65rem);
+  .capture-guidance {
+    top: 4rem;
+    width: min(90%, 380px);
   }
 
   .camera-capture-btn {
     padding: 0.5rem 0.64rem;
     font-size: 0.78rem;
+  }
+}
+
+@keyframes capture-guidance-fade {
+  0% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }

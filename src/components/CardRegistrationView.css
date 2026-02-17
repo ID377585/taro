@@ -247,6 +247,28 @@
   color: #fca5a5;
 }
 
+.registration-cloud-sync {
+  margin: 0.4rem 0 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.registration-cloud-sync.saving {
+  color: #facc15;
+}
+
+.registration-cloud-sync.saved {
+  color: #93c5fd;
+}
+
+.registration-cloud-sync.error {
+  color: #fca5a5;
+}
+
+.registration-cloud-sync.disabled {
+  color: #fcd34d;
+}
+
 .preview-grid {
   margin-top: 1rem;
   display: grid;

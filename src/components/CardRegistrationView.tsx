@@ -1,11 +1,21 @@
-import { ChangeEvent, FC, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Card } from '../types'
 import { useCamera } from '../hooks/useCamera'
 import { normalizeLabelValue } from '../services/labelService'
 import {
+  CardCaptureOrientation,
   dbService,
   PersistedCardCaptureRecord,
+  UploadedCardCaptureCounts,
 } from '../services/dbService'
+import {
+  CaptureUploadQueueSummary,
+  cleanupLocalSamplesFromUploadedQueue,
+  fetchRemoteCardCaptureCounts,
+  getCaptureCloudConfigStatus,
+  processCaptureUploadQueue,
+  enqueueCardCaptureRecordUploads,
+} from '../services/captureUploadService'
 import CameraView from './CameraView'
 import './CardRegistrationView.css'
 
@@ -29,6 +39,8 @@ interface CardRegistrationViewProps {
 }
 
 type LocalSyncState = 'idle' | 'saving' | 'saved' | 'error'
+type CloudSyncState = 'idle' | 'syncing' | 'disabled' | 'error'
+type CloudCounterSource = 'metadata' | 'local-queue'
 
 const TARGET_PER_ORIENTATION = 10
 const ACCEPTED_IMAGE_EXTENSIONS = [
@@ -46,6 +58,7 @@ const createEmptyBucket = (): CardCaptureBucket => ({
   vertical: [],
   invertido: [],
 })
+const EMPTY_CAPTURE_COUNTS: UploadedCardCaptureCounts = { vertical: 0, invertido: 0 }
 
 const isHeifLike = (name: string, mime: string) => {
   const lowerName = name.toLowerCase()
@@ -256,6 +269,8 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
   const videoRef = useRef<HTMLVideoElement>(null)
   const capturesRef = useRef<Record<number, CardCaptureBucket>>({})
   const persistedSnapshotRef = useRef<Map<number, string>>(new Map())
+  const uploadedCountsRef = useRef<Record<number, UploadedCardCaptureCounts>>({})
+  const isProcessingCloudQueueRef = useRef(false)
 
   const [selectedCardId, setSelectedCardId] = useState<string>('')
   const [orientation, setOrientation] = useState<Orientation>('vertical')
@@ -268,6 +283,26 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
   const [isHydratingCaptures, setIsHydratingCaptures] = useState(true)
   const [localSyncState, setLocalSyncState] = useState<LocalSyncState>('idle')
   const [lastLocalSyncAt, setLastLocalSyncAt] = useState<number | null>(null)
+  const [uploadedCountsByCard, setUploadedCountsByCard] = useState<
+    Record<number, UploadedCardCaptureCounts>
+  >({})
+  const [pendingCountsByCard, setPendingCountsByCard] = useState<
+    Record<number, UploadedCardCaptureCounts>
+  >({})
+  const [selectedCardCloudCounts, setSelectedCardCloudCounts] =
+    useState<UploadedCardCaptureCounts | null>(null)
+  const [cloudCounterSource, setCloudCounterSource] =
+    useState<CloudCounterSource>('local-queue')
+  const [cloudCounterHint, setCloudCounterHint] = useState('')
+  const [cloudSyncState, setCloudSyncState] = useState<CloudSyncState>('idle')
+  const [cloudQueueStats, setCloudQueueStats] = useState<CaptureUploadQueueSummary>({
+    total: 0,
+    pending: 0,
+    uploading: 0,
+    failed: 0,
+    uploaded: 0,
+  })
+  const [cloudSyncMessage, setCloudSyncMessage] = useState('')
   const [isPanelExpanded, setIsPanelExpanded] = useState(false)
   const [showCaptureGuidance, setShowCaptureGuidance] = useState(true)
   const importInputRef = useRef<HTMLInputElement>(null)
@@ -292,8 +327,32 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
     return capturesByCard[selectedCard.id] ?? createEmptyBucket()
   }, [capturesByCard, selectedCard])
 
-  const currentVerticalCount = currentBucket.vertical.length
-  const currentInvertedCount = currentBucket.invertido.length
+  const localUploadedCountForSelectedCard = useMemo(
+    () =>
+      selectedCard
+        ? uploadedCountsByCard[selectedCard.id] || EMPTY_CAPTURE_COUNTS
+        : EMPTY_CAPTURE_COUNTS,
+    [selectedCard, uploadedCountsByCard],
+  )
+
+  const localPendingCountForSelectedCard = useMemo(
+    () =>
+      selectedCard
+        ? pendingCountsByCard[selectedCard.id] || EMPTY_CAPTURE_COUNTS
+        : EMPTY_CAPTURE_COUNTS,
+    [pendingCountsByCard, selectedCard],
+  )
+
+  const currentVerticalCount =
+    cloudCounterSource === 'metadata'
+      ? (selectedCardCloudCounts || EMPTY_CAPTURE_COUNTS).vertical +
+        localPendingCountForSelectedCard.vertical
+      : currentBucket.vertical.length + localUploadedCountForSelectedCard.vertical
+  const currentInvertedCount =
+    cloudCounterSource === 'metadata'
+      ? (selectedCardCloudCounts || EMPTY_CAPTURE_COUNTS).invertido +
+        localPendingCountForSelectedCard.invertido
+      : currentBucket.invertido.length + localUploadedCountForSelectedCard.invertido
   const isCardReady =
     currentVerticalCount >= TARGET_PER_ORIENTATION &&
     currentInvertedCount >= TARGET_PER_ORIENTATION
@@ -328,13 +387,68 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
   }, [capturesByCard])
 
   useEffect(() => {
+    uploadedCountsRef.current = uploadedCountsByCard
+  }, [uploadedCountsByCard])
+
+  const dropLocalUploadedSample = useCallback(
+    ({
+      cardId,
+      orientation,
+      capturedAt,
+      byteSize,
+    }: {
+      cardId: number
+      orientation: CardCaptureOrientation
+      capturedAt: number
+      byteSize: number
+    }) => {
+      setCapturesByCard(prev => {
+        const bucket = prev[cardId]
+        if (!bucket) return prev
+
+        const list = bucket[orientation]
+        const index = list.findIndex(
+          item => item.capturedAt === capturedAt && item.blob.size === byteSize,
+        )
+        if (index < 0) return prev
+
+        const removed = list[index]
+        URL.revokeObjectURL(removed.objectUrl)
+        const nextList = [...list.slice(0, index), ...list.slice(index + 1)]
+        const nextBucket: CardCaptureBucket = {
+          ...bucket,
+          [orientation]: nextList,
+        }
+
+        if (isBucketEmpty(nextBucket)) {
+          const next = { ...prev }
+          delete next[cardId]
+          return next
+        }
+
+        return {
+          ...prev,
+          [cardId]: nextBucket,
+        }
+      })
+    },
+    [],
+  )
+
+  useEffect(() => {
     let isMounted = true
 
     const loadPersistedCaptures = async () => {
       setIsHydratingCaptures(true)
       try {
         await dbService.init()
-        const records = await dbService.getAllCardCaptures()
+        await cleanupLocalSamplesFromUploadedQueue()
+        const [records, uploadedCounts, pendingCounts, queueStats] = await Promise.all([
+          dbService.getAllCardCaptures(),
+          dbService.getUploadedCaptureCountsByCard(),
+          dbService.getCaptureUploadCountsByCard(['pending', 'uploading', 'failed']),
+          dbService.getCaptureUploadQueueStats(),
+        ])
         if (!isMounted) return
 
         const hydrated: Record<number, CardCaptureBucket> = {}
@@ -348,6 +462,37 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
         })
 
         setCapturesByCard(hydrated)
+        setUploadedCountsByCard(uploadedCounts)
+        setPendingCountsByCard(pendingCounts)
+        setCloudQueueStats({
+          total: queueStats.total,
+          pending: queueStats.pending,
+          uploading: queueStats.uploading,
+          failed: queueStats.failed,
+          uploaded: queueStats.uploaded,
+        })
+
+        const cloudConfig = getCaptureCloudConfigStatus()
+        if (!cloudConfig.enabled) {
+          setCloudSyncState('disabled')
+          setCloudCounterSource('local-queue')
+          setCloudCounterHint(
+            `Contador remoto indisponível: configure ${cloudConfig.missing.join(', ')}.`,
+          )
+          setCloudSyncMessage(
+            `Nuvem desativada: configure ${cloudConfig.missing.join(', ')}.`,
+          )
+        } else {
+          setCloudSyncState('idle')
+          setCloudCounterHint(
+            cloudConfig.metadataTable
+              ? `Contador remoto usando ${cloudConfig.metadataTable}.`
+              : 'Contador remoto desativado: configure VITE_SUPABASE_METADATA_TABLE.',
+          )
+          setCloudSyncMessage(
+            `Supabase ativo no bucket "${cloudConfig.bucket}" (${cloudConfig.folderPrefix}).`,
+          )
+        }
         persistedSnapshotRef.current = nextSnapshot
       } catch (err) {
         console.error('Erro ao carregar capturas salvas:', err)
@@ -368,6 +513,66 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
       isMounted = false
     }
   }, [])
+
+  useEffect(() => {
+    if (isHydratingCaptures) return
+
+    let isMounted = true
+
+    const refreshRemoteCounter = async () => {
+      const cardId = Number(selectedCardId)
+      if (!Number.isFinite(cardId)) {
+        if (isMounted) {
+          setSelectedCardCloudCounts(null)
+          setCloudCounterSource('local-queue')
+          setCloudCounterHint('')
+        }
+        return
+      }
+
+      try {
+        const result = await fetchRemoteCardCaptureCounts(cardId)
+        if (!isMounted) return
+
+        if (result.available) {
+          setSelectedCardCloudCounts(result.counts)
+          setCloudCounterSource('metadata')
+          setCloudCounterHint(result.message)
+          return
+        }
+
+        setSelectedCardCloudCounts(null)
+        setCloudCounterSource('local-queue')
+        setCloudCounterHint(result.message)
+      } catch (error) {
+        console.error('Falha ao consultar contador remoto no Supabase:', error)
+        if (!isMounted) return
+        setSelectedCardCloudCounts(previous => previous || EMPTY_CAPTURE_COUNTS)
+        setCloudCounterSource('metadata')
+        setCloudCounterHint(
+          error instanceof Error
+            ? `Falha ao consultar contador remoto: ${error.message}`
+            : 'Falha ao consultar contador remoto.',
+        )
+      }
+    }
+
+    const refreshSafe = () => {
+      void refreshRemoteCounter()
+    }
+
+    refreshSafe()
+    const intervalId = window.setInterval(refreshSafe, 5_000)
+    window.addEventListener('focus', refreshSafe)
+    window.addEventListener('online', refreshSafe)
+
+    return () => {
+      isMounted = false
+      window.clearInterval(intervalId)
+      window.removeEventListener('focus', refreshSafe)
+      window.removeEventListener('online', refreshSafe)
+    }
+  }, [isHydratingCaptures, selectedCardId])
 
   useEffect(() => {
     if (isHydratingCaptures) return
@@ -405,7 +610,9 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
 
             if (currentSnapshot.get(cardId) !== fingerprint) {
               markSyncStarted()
-              await dbService.saveCardCapture(serializeBucket(cardId, bucket))
+              const serialized = serializeBucket(cardId, bucket)
+              await dbService.saveCardCapture(serialized)
+              await enqueueCardCaptureRecordUploads(serialized)
             }
           }
 
@@ -419,6 +626,12 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
           persistedSnapshotRef.current = nextSnapshot
 
           if (hasChangesToPersist) {
+            const [uploadedCounts, pendingCounts] = await Promise.all([
+              dbService.getUploadedCaptureCountsByCard(),
+              dbService.getCaptureUploadCountsByCard(['pending', 'uploading', 'failed']),
+            ])
+            setUploadedCountsByCard(uploadedCounts)
+            setPendingCountsByCard(pendingCounts)
             setLocalSyncState('saved')
             setLastLocalSyncAt(Date.now())
           }
@@ -433,6 +646,71 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
       window.clearTimeout(timerId)
     }
   }, [capturesByCard, isHydratingCaptures])
+
+  useEffect(() => {
+    if (isHydratingCaptures) return
+
+    let isMounted = true
+
+    const runQueue = async () => {
+      if (isProcessingCloudQueueRef.current) return
+      isProcessingCloudQueueRef.current = true
+
+      try {
+        setCloudSyncState(prev => (prev === 'disabled' ? prev : 'syncing'))
+        const result = await processCaptureUploadQueue({
+          cards,
+          onUploadedSample: payload => {
+            if (!isMounted) return
+            dropLocalUploadedSample(payload)
+          },
+        })
+        if (!isMounted) return
+
+        setCloudQueueStats(result.queue)
+        setCloudSyncMessage(result.message)
+        setCloudSyncState(() => {
+          if (!result.enabled) return 'disabled'
+          if (result.failedNow > 0) return 'error'
+          return 'idle'
+        })
+
+        const [uploadedCounts, pendingCounts] = await Promise.all([
+          dbService.getUploadedCaptureCountsByCard(),
+          dbService.getCaptureUploadCountsByCard(['pending', 'uploading', 'failed']),
+        ])
+        if (!isMounted) return
+        setUploadedCountsByCard(uploadedCounts)
+        setPendingCountsByCard(pendingCounts)
+      } catch (error) {
+        console.error('Falha ao processar fila de upload para Supabase:', error)
+        if (isMounted) {
+          setCloudSyncState('error')
+          setCloudSyncMessage(
+            error instanceof Error
+              ? error.message
+              : 'Erro ao sincronizar capturas com a nuvem.',
+          )
+        }
+      } finally {
+        isProcessingCloudQueueRef.current = false
+      }
+    }
+
+    const runQueueSafe = () => {
+      void runQueue()
+    }
+
+    runQueueSafe()
+    const intervalId = window.setInterval(runQueueSafe, 6_000)
+    window.addEventListener('online', runQueueSafe)
+
+    return () => {
+      isMounted = false
+      window.clearInterval(intervalId)
+      window.removeEventListener('online', runQueueSafe)
+    }
+  }, [cards, dropLocalUploadedSample, isHydratingCaptures])
 
   useEffect(() => {
     if (!selectedCardId && cards.length > 0) {
@@ -452,12 +730,21 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
     }
   }, [])
 
+  const getCloudCountForOrientation = (targetOrientation: Orientation) =>
+    (selectedCardCloudCounts || EMPTY_CAPTURE_COUNTS)[targetOrientation] +
+    localPendingCountForSelectedCard[targetOrientation]
+
   const saveCapture = (blob: Blob) => {
     if (!selectedCard) return
 
     setCapturesByCard(prev => {
       const current = prev[selectedCard.id] ?? createEmptyBucket()
-      const currentCount = current[orientation].length
+      const uploadedCounts =
+        uploadedCountsRef.current[selectedCard.id] || EMPTY_CAPTURE_COUNTS
+      const currentCount =
+        cloudCounterSource === 'metadata'
+          ? getCloudCountForOrientation(orientation)
+          : current[orientation].length + uploadedCounts[orientation]
       if (currentCount >= TARGET_PER_ORIENTATION) {
         setFeedback(
           `A orientação ${orientationLabel} já atingiu ${TARGET_PER_ORIENTATION} fotos.`,
@@ -483,7 +770,13 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
 
     setCapturesByCard(prev => {
       const current = prev[selectedCard.id] ?? createEmptyBucket()
-      const remaining = TARGET_PER_ORIENTATION - current[orientation].length
+      const uploadedCounts =
+        uploadedCountsRef.current[selectedCard.id] || EMPTY_CAPTURE_COUNTS
+      const totalForOrientation =
+        cloudCounterSource === 'metadata'
+          ? getCloudCountForOrientation(orientation)
+          : current[orientation].length + uploadedCounts[orientation]
+      const remaining = TARGET_PER_ORIENTATION - totalForOrientation
       if (remaining <= 0) return prev
 
       const toAdd = blobs.slice(0, remaining).map(blob => ({
@@ -510,7 +803,13 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
 
     setCapturesByCard(prev => {
       const current = prev[selectedCard.id] ?? createEmptyBucket()
-      const remaining = TARGET_PER_ORIENTATION - current[targetOrientation].length
+      const uploadedCounts =
+        uploadedCountsRef.current[selectedCard.id] || EMPTY_CAPTURE_COUNTS
+      const totalForOrientation =
+        cloudCounterSource === 'metadata'
+          ? getCloudCountForOrientation(targetOrientation)
+          : current[targetOrientation].length + uploadedCounts[targetOrientation]
+      const remaining = TARGET_PER_ORIENTATION - totalForOrientation
       if (remaining <= 0) return prev
 
       const toAdd = blobs.slice(0, remaining).map(blob => ({
@@ -853,6 +1152,41 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
     return ''
   }, [lastLocalSyncAt, localSyncState])
 
+  const cloudSyncStatusClass = useMemo(() => {
+    if (cloudSyncState === 'syncing') return 'saving'
+    if (cloudSyncState === 'error') return 'error'
+    if (cloudSyncState === 'disabled') return 'disabled'
+    return 'saved'
+  }, [cloudSyncState])
+
+  const cloudSyncStatusMessage = useMemo(() => {
+    const queueCounts = `fila pendente: ${cloudQueueStats.pending}, falhas: ${cloudQueueStats.failed}`
+    const counterSourceLabel =
+      cloudCounterSource === 'metadata'
+        ? 'contador: nuvem (tabela metadata)'
+        : 'contador: fallback local'
+    if (cloudSyncState === 'syncing') {
+      return `Sincronizando com Supabase... (${queueCounts} | ${counterSourceLabel})`
+    }
+    if (cloudSyncState === 'disabled') {
+      return cloudSyncMessage || 'Supabase não configurado neste ambiente.'
+    }
+    if (cloudSyncState === 'error') {
+      return `Falha na nuvem: ${cloudSyncMessage || 'tente novamente.'} (${queueCounts} | ${counterSourceLabel})`
+    }
+    if (cloudCounterHint) {
+      return `Supabase ativo. ${queueCounts} | ${counterSourceLabel}. ${cloudCounterHint}`
+    }
+    return `Supabase ativo. ${queueCounts} | ${counterSourceLabel}.`
+  }, [
+    cloudCounterHint,
+    cloudCounterSource,
+    cloudQueueStats.failed,
+    cloudQueueStats.pending,
+    cloudSyncMessage,
+    cloudSyncState,
+  ])
+
   return (
     <div className="card-registration-view">
       <CameraView
@@ -1008,6 +1342,12 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
             {!isHydratingCaptures && localSyncMessage && (
               <p className={`registration-local-sync ${localSyncState}`}>
                 {localSyncMessage}
+              </p>
+            )}
+
+            {!isHydratingCaptures && (
+              <p className={`registration-cloud-sync ${cloudSyncStatusClass}`}>
+                {cloudSyncStatusMessage}
               </p>
             )}
 

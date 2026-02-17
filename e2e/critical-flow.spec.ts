@@ -40,4 +40,30 @@ test.describe('Fluxo crítico do app Taro', () => {
 
     await expect(page.getByText('1 carta(s) registradas')).toBeVisible()
   })
+
+  test('registro de cartas exibe dica por 2s e mantém máscara externa ativa', async ({
+    page,
+  }) => {
+    await page.goto('/')
+
+    await page.getByRole('button', { name: 'Registrar Cartas' }).click()
+
+    const overlay = page.locator('.camera-overlay')
+    await expect(overlay).toHaveClass(/camera-overlay--dimmed/)
+
+    const guidance = page.locator('.capture-guidance')
+    await expect(guidance).toBeVisible()
+    await expect(guidance).toContainText('Posicione a carta no quadro')
+    await expect(guidance).toHaveCount(0, { timeout: 3500 })
+
+    await page.getByRole('button', { name: /Mostrar funções/ }).click()
+    await page.getByRole('button', { name: 'Horizontal' }).click()
+
+    const guidanceAfterOrientationChange = page.locator('.capture-guidance')
+    await expect(guidanceAfterOrientationChange).toBeVisible()
+    await expect(guidanceAfterOrientationChange).toContainText(
+      'Posicione a carta no quadro (horizontal)',
+    )
+    await expect(guidanceAfterOrientationChange).toHaveCount(0, { timeout: 3500 })
+  })
 })

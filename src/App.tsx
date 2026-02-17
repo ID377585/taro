@@ -39,6 +39,27 @@ interface PersistedFlowState {
 }
 
 const FLOW_STORAGE_KEY = 'taro.flow.state.v1'
+const toUppercaseDisplay = (value: string) => value.toLocaleUpperCase('pt-BR')
+
+const formatBirthDate = (raw?: string) => {
+  if (!raw) return null
+  const [year, month, day] = raw.split('-')
+  if (!year || !month || !day) return raw
+  return `${day}/${month}/${year}`
+}
+
+const formatSexLabel = (sex: 'masculino' | 'feminino') =>
+  sex === 'feminino' ? 'FEMININO' : 'MASCULINO'
+
+const formatPersonContext = (
+  person: ConsultationIntake['pessoa1'] | ConsultationIntake['pessoa2'] | null | undefined,
+  fallbackLabel: string,
+) => {
+  if (!person) return fallbackLabel
+  const name = toUppercaseDisplay(person.nomeCompleto || fallbackLabel)
+  const birthDate = formatBirthDate(person.dataNascimento)
+  return `${name} (${formatSexLabel(person.sexo)}${birthDate ? `, NASC.: ${birthDate}` : ''})`
+}
 
 function App() {
   const [selectedSpread, setSelectedSpread] = useState<Spread | null>(null)
@@ -287,10 +308,15 @@ function App() {
                 <h3>Atendimento registrado</h3>
                 <p>
                   {consultationIntake.tipo === 'pessoal'
-                    ? `Pessoal: ${consultationIntake.pessoa1.nomeCompleto}.`
-                    : `Sobre outra pessoa: ${consultationIntake.pessoa1.nomeCompleto} e ${consultationIntake.pessoa2?.nomeCompleto || 'Pessoa 2'}.`}
+                    ? `Pessoal: ${formatPersonContext(consultationIntake.pessoa1, 'PESSOA 1')}.`
+                    : `Sobre outra pessoa: ${formatPersonContext(
+                        consultationIntake.pessoa1,
+                        'PESSOA 1',
+                      )} e ${formatPersonContext(consultationIntake.pessoa2, 'PESSOA 2')}.`}
                 </p>
-                <small>Situação: {consultationIntake.situacaoPrincipal}</small>
+                <small>
+                  Situação: {toUppercaseDisplay(consultationIntake.situacaoPrincipal)}
+                </small>
               </div>
             )}
             <SpreadSelector spreads={spreads} onSelect={setSelectedSpread} />

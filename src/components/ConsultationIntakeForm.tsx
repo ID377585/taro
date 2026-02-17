@@ -36,11 +36,12 @@ interface IntakeDraftState {
 }
 
 const INTAKE_DRAFT_STORAGE_KEY = 'taro.intake.draft.v1'
+const toUppercaseInput = (value: string) => value.toLocaleUpperCase('pt-BR')
 
 const getPersonState = (
   source?: ConsultationIntake['pessoa1'] | ConsultationIntake['pessoa2'] | null,
 ): PersonFormState => ({
-  nomeCompleto: source?.nomeCompleto || '',
+  nomeCompleto: source?.nomeCompleto ? toUppercaseInput(source.nomeCompleto) : '',
   dataNascimento: source?.dataNascimento || '',
   sexo: source?.sexo || '',
 })
@@ -70,7 +71,7 @@ const ConsultationIntakeForm: FC<ConsultationIntakeFormProps> = ({
       setTipo(initialValue.tipo)
       setPessoa1(getPersonState(initialValue.pessoa1))
       setPessoa2(getPersonState(initialValue.pessoa2))
-      setSituacaoPrincipal(initialValue.situacaoPrincipal || '')
+      setSituacaoPrincipal(toUppercaseInput(initialValue.situacaoPrincipal || ''))
       return
     }
 
@@ -80,9 +81,15 @@ const ConsultationIntakeForm: FC<ConsultationIntakeFormProps> = ({
       const draft = JSON.parse(raw) as IntakeDraftState
 
       setTipo(draft.tipo || 'pessoal')
-      setPessoa1(draft.pessoa1 || getPersonState())
-      setPessoa2(draft.pessoa2 || getPersonState())
-      setSituacaoPrincipal(draft.situacaoPrincipal || '')
+      setPessoa1({
+        ...(draft.pessoa1 || getPersonState()),
+        nomeCompleto: toUppercaseInput(draft.pessoa1?.nomeCompleto || ''),
+      })
+      setPessoa2({
+        ...(draft.pessoa2 || getPersonState()),
+        nomeCompleto: toUppercaseInput(draft.pessoa2?.nomeCompleto || ''),
+      })
+      setSituacaoPrincipal(toUppercaseInput(draft.situacaoPrincipal || ''))
     } catch (error) {
       console.error('Falha ao restaurar rascunho do formulário:', error)
     }
@@ -211,7 +218,7 @@ const ConsultationIntakeForm: FC<ConsultationIntakeFormProps> = ({
             type="text"
             value={pessoa1.nomeCompleto}
             onChange={event => {
-              const value = event.target.value
+              const value = toUppercaseInput(event.target.value)
               setPessoa1(prev => ({ ...prev, nomeCompleto: value }))
             }}
             placeholder="Digite o nome completo"
@@ -260,7 +267,7 @@ const ConsultationIntakeForm: FC<ConsultationIntakeFormProps> = ({
               type="text"
               value={pessoa2.nomeCompleto}
               onChange={event => {
-                const value = event.target.value
+                const value = toUppercaseInput(event.target.value)
                 setPessoa2(prev => ({ ...prev, nomeCompleto: value }))
               }}
               placeholder="Digite o nome completo"
@@ -305,7 +312,7 @@ const ConsultationIntakeForm: FC<ConsultationIntakeFormProps> = ({
           Qual é a principal situação que te trouxe aqui hoje? *
           <textarea
             value={situacaoPrincipal}
-            onChange={event => setSituacaoPrincipal(event.target.value)}
+            onChange={event => setSituacaoPrincipal(toUppercaseInput(event.target.value))}
             placeholder="Ex: Quero entender os próximos passos no relacionamento e no trabalho."
             required
           />

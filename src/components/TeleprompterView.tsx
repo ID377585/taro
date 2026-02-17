@@ -151,6 +151,28 @@ const normalizeText = (value: string) =>
     .toLowerCase()
     .trim()
 
+const toUppercaseDisplay = (value: string) => value.toLocaleUpperCase('pt-BR')
+
+const formatBirthDate = (raw?: string) => {
+  if (!raw) return null
+  const [year, month, day] = raw.split('-')
+  if (!year || !month || !day) return raw
+  return `${day}/${month}/${year}`
+}
+
+const formatSexLabel = (sex: 'masculino' | 'feminino') =>
+  sex === 'feminino' ? 'FEMININO' : 'MASCULINO'
+
+const formatConsultationPerson = (
+  person: ConsultationIntake['pessoa1'] | ConsultationIntake['pessoa2'] | null | undefined,
+  fallback: string,
+) => {
+  if (!person) return fallback
+  const name = toUppercaseDisplay(person.nomeCompleto || fallback)
+  const birthDate = formatBirthDate(person.dataNascimento)
+  return `${name} (${formatSexLabel(person.sexo)}${birthDate ? `, NASC.: ${birthDate}` : ''})`
+}
+
 const formatTime = (seconds: number) => {
   const safe = Math.max(0, seconds)
   const minutes = Math.floor(safe / 60)
@@ -280,13 +302,13 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
   const consultationSummary = useMemo(() => {
     if (!consultation) return null
 
+    const pessoa1Context = formatConsultationPerson(consultation.pessoa1, 'PESSOA 1')
     if (consultation.tipo === 'pessoal') {
-      return `Atendimento pessoal: ${consultation.pessoa1.nomeCompleto}`
+      return `ATENDIMENTO PESSOAL: ${pessoa1Context}`
     }
 
-    return `Atendimento: ${consultation.pessoa1.nomeCompleto} e ${
-      consultation.pessoa2?.nomeCompleto || 'Pessoa 2'
-    }`
+    const pessoa2Context = formatConsultationPerson(consultation.pessoa2, 'PESSOA 2')
+    return `SOBRE OUTRA PESSOA: ${pessoa1Context} E ${pessoa2Context}`
   }, [consultation])
 
   const autoScript = useMemo(() => {
@@ -296,21 +318,26 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
 
     const consultationLines: string[] = []
     if (consultation) {
+      const pessoa1Context = formatConsultationPerson(consultation.pessoa1, 'PESSOA 1')
+      const situation = toUppercaseDisplay(consultation.situacaoPrincipal)
       if (consultation.tipo === 'pessoal') {
         const adjective = consultation.pessoa1.sexo === 'feminino' ? 'acolhida' : 'acolhido'
         consultationLines.push(
-          `[[Cliente: ${consultation.pessoa1.nomeCompleto}]]`,
-          `Situação principal: ${consultation.situacaoPrincipal}`,
+          `[[ATENDIMENTO PESSOAL]]`,
+          `Cliente: ${pessoa1Context}`,
+          `Situação principal: ${situation}`,
           `Condução sugerida: mantenha um tom claro e ${adjective}, com foco em passos concretos.`,
         )
       } else {
-        const pessoa2Nome = consultation.pessoa2?.nomeCompleto || 'Pessoa 2'
+        const pessoa2Context = formatConsultationPerson(consultation.pessoa2, 'PESSOA 2')
         const pessoa1Pronome = consultation.pessoa1.sexo === 'feminino' ? 'ela' : 'ele'
         const pessoa2Pronome =
           consultation.pessoa2?.sexo === 'feminino' ? 'ela' : 'ele'
         consultationLines.push(
-          `[[Leitura para: ${consultation.pessoa1.nomeCompleto} e ${pessoa2Nome}]]`,
-          `Situação principal: ${consultation.situacaoPrincipal}`,
+          `[[LEITURA SOBRE OUTRA PESSOA]]`,
+          `Pessoa 1: ${pessoa1Context}`,
+          `Pessoa 2: ${pessoa2Context}`,
+          `Situação principal: ${situation}`,
           `Condução sugerida: explique a dinâmica entre as pessoas, validando como ${pessoa1Pronome} e ${pessoa2Pronome} contribuem para o cenário atual.`,
         )
       }

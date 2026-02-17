@@ -37,6 +37,8 @@ interface IntakeDraftState {
 
 const INTAKE_DRAFT_STORAGE_KEY = 'taro.intake.draft.v1'
 const toUppercaseInput = (value: string) => value.toLocaleUpperCase('pt-BR')
+const normalizeNameValue = (value: string) => toUppercaseInput(value)
+const normalizeSituationValue = (value: string) => toUppercaseInput(value)
 
 const getPersonState = (
   source?: ConsultationIntake['pessoa1'] | ConsultationIntake['pessoa2'] | null,
@@ -55,7 +57,7 @@ const ConsultationIntakeForm: FC<ConsultationIntakeFormProps> = ({
   const [pessoa1, setPessoa1] = useState<PersonFormState>(getPersonState(initialValue?.pessoa1))
   const [pessoa2, setPessoa2] = useState<PersonFormState>(getPersonState(initialValue?.pessoa2))
   const [situacaoPrincipal, setSituacaoPrincipal] = useState(
-    initialValue?.situacaoPrincipal || '',
+    normalizeSituationValue(initialValue?.situacaoPrincipal || ''),
   )
   const [errors, setErrors] = useState<FormErrors>({})
   const draftSaveTimerRef = useRef<number | null>(null)
@@ -160,22 +162,26 @@ const ConsultationIntakeForm: FC<ConsultationIntakeFormProps> = ({
 
     if (!validate()) return
 
+    const normalizedPessoa1Name = normalizeNameValue(pessoa1.nomeCompleto).trim()
+    const normalizedPessoa2Name = normalizeNameValue(pessoa2.nomeCompleto).trim()
+    const normalizedSituation = normalizeSituationValue(situacaoPrincipal).trim()
+
     const intake: ConsultationIntake = {
       tipo,
       pessoa1: {
-        nomeCompleto: pessoa1.nomeCompleto.trim(),
+        nomeCompleto: normalizedPessoa1Name,
         dataNascimento: pessoa1.dataNascimento || undefined,
         sexo: pessoa1.sexo as PersonSex,
       },
       pessoa2:
         tipo === 'sobre-outra-pessoa'
           ? {
-              nomeCompleto: pessoa2.nomeCompleto.trim(),
+              nomeCompleto: normalizedPessoa2Name,
               dataNascimento: pessoa2.dataNascimento || undefined,
               sexo: pessoa2.sexo as PersonSex,
             }
           : null,
-      situacaoPrincipal: situacaoPrincipal.trim(),
+      situacaoPrincipal: normalizedSituation,
       createdAt: initialValue?.createdAt || Date.now(),
     }
 
@@ -218,7 +224,11 @@ const ConsultationIntakeForm: FC<ConsultationIntakeFormProps> = ({
             type="text"
             value={pessoa1.nomeCompleto}
             onChange={event => {
-              const value = toUppercaseInput(event.target.value)
+              const value = normalizeNameValue(event.target.value)
+              setPessoa1(prev => ({ ...prev, nomeCompleto: value }))
+            }}
+            onInput={event => {
+              const value = normalizeNameValue((event.target as HTMLInputElement).value)
               setPessoa1(prev => ({ ...prev, nomeCompleto: value }))
             }}
             placeholder="Digite o nome completo"
@@ -267,7 +277,11 @@ const ConsultationIntakeForm: FC<ConsultationIntakeFormProps> = ({
               type="text"
               value={pessoa2.nomeCompleto}
               onChange={event => {
-                const value = toUppercaseInput(event.target.value)
+                const value = normalizeNameValue(event.target.value)
+                setPessoa2(prev => ({ ...prev, nomeCompleto: value }))
+              }}
+              onInput={event => {
+                const value = normalizeNameValue((event.target as HTMLInputElement).value)
                 setPessoa2(prev => ({ ...prev, nomeCompleto: value }))
               }}
               placeholder="Digite o nome completo"
@@ -312,7 +326,12 @@ const ConsultationIntakeForm: FC<ConsultationIntakeFormProps> = ({
           Qual é a principal situação que te trouxe aqui hoje? *
           <textarea
             value={situacaoPrincipal}
-            onChange={event => setSituacaoPrincipal(toUppercaseInput(event.target.value))}
+            onChange={event => setSituacaoPrincipal(normalizeSituationValue(event.target.value))}
+            onInput={event =>
+              setSituacaoPrincipal(
+                normalizeSituationValue((event.target as HTMLTextAreaElement).value),
+              )
+            }
             placeholder="Ex: Quero entender os próximos passos no relacionamento e no trabalho."
             required
           />

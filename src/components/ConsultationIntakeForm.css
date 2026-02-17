@@ -83,6 +83,11 @@
   resize: vertical;
 }
 
+.intake-section input[type='text'],
+.intake-section textarea {
+  text-transform: uppercase;
+}
+
 .intake-section small {
   display: block;
   margin-top: 0.35rem;

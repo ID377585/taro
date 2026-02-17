@@ -556,18 +556,23 @@ export const useCardRecognition = ({
 
       if (status === 'running-local' && localMatcherRef.current) {
         try {
+          const catalogOnlyFallback = localStats.records === 0 && localStats.cards > 0
+          if (catalogOnlyFallback) return
+
           const prediction = localMatcherRef.current.predict(video)
           if (!prediction) return
           const verySmallLocalBase = localStats.cards <= 2
           const localThreshold = verySmallLocalBase
-            ? 0.08
-            : Math.min(confidenceThreshold, 0.34)
+            ? Math.max(0.2, Math.min(confidenceThreshold, 0.45))
+            : Math.max(0.52, Math.min(confidenceThreshold, 0.68))
           if (prediction.confidence < localThreshold) return
 
           const card = cardLookup.get(`${prediction.cardId}`) || null
           if (!card) return
 
-          const localVotes = verySmallLocalBase ? 1 : Math.max(2, minVotes - 1)
+          const localVotes = verySmallLocalBase
+            ? Math.max(2, minVotes)
+            : Math.max(4, minVotes + 1)
           handleResult({
             card,
             isReversed: prediction.isReversed,
@@ -596,6 +601,7 @@ export const useCardRecognition = ({
     minVotes,
     onConfirmed,
     labelMappings.byNormalizedLabel,
+    localStats.records,
     localStats.cards,
     localStats.candidates,
   ])

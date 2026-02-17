@@ -343,39 +343,58 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
       }
     }
 
-    if (!currentCard || !currentDrawn) {
-      return [
-        ...consultationLines,
-        `Posição: ${currentPosition.nome}`,
-        currentPosition.descricao,
-        'Aponte a carta para a câmera para preencher automaticamente esta posição.',
-      ].join('\n\n')
-    }
+    const orderedDrawnBlocks = spread.positions
+      .map(position => {
+        const drawn = drawnByPosition[position.index]
+        if (!drawn) return null
 
-    const orientationLabel = currentDrawn.isReversed ? 'Invertida' : 'Vertical'
-    const coreMeaning = currentDrawn.isReversed
-      ? currentCard.significado.invertido.longo
-      : currentCard.significado.vertical.longo
+        const card = cardById.get(drawn.cardId)
+        if (!card) return null
+
+        const orientationLabel = drawn.isReversed ? 'Invertida' : 'Vertical'
+        const coreMeaning = drawn.isReversed
+          ? card.significado.invertido.longo
+          : card.significado.vertical.longo
+
+        return [
+          `[[Posição ${position.index}: ${position.nome}]]`,
+          position.descricao,
+          `Carta: [[${card.nome}]] (${orientationLabel})`,
+          `Arcano: ${formatArcanoLabel(card)}.`,
+          `Representação: ${card.representacao || 'Não informada.'}`,
+          `Elemento: ${card.elemento ? `${card.elemento.nome} - ${card.elemento.descricao}` : 'Não aplicável para esta carta.'}`,
+          `Numerologia: ${card.numerologia ? `${card.numerologia.valor} (${card.numerologia.titulo}) - ${card.numerologia.descricao}` : 'Sem dados numerológicos.'}`,
+          `Luz: ${card.polaridades?.luz || card.significado.vertical.curto}`,
+          `Sombra: ${card.polaridades?.sombra || card.significado.invertido.curto}`,
+          `${card.corte ? `Carta da corte: ${card.corte.titulo} - ${card.corte.descricao}` : ''}`,
+          coreMeaning,
+          `Carreira: ${card.areas.carreira}`,
+          `Relacionamentos: ${card.areas.relacionamentos}`,
+          `Espiritual: ${card.areas.espiritual}`,
+        ]
+          .filter(Boolean)
+          .join('\n\n')
+      })
+      .filter((block): block is string => Boolean(block))
+
+    const nextPendingPosition = spread.positions.find(position => !drawnByPosition[position.index])
+    const nextStepBlock = nextPendingPosition
+      ? [
+          `[[Próxima posição ${nextPendingPosition.index}: ${nextPendingPosition.nome}]]`,
+          nextPendingPosition.descricao,
+          'Aponte a carta para a câmera para preencher automaticamente esta posição.',
+        ].join('\n\n')
+      : 'Todas as posições foram preenchidas. Revise os significados e finalize com a síntese.'
 
     return [
       ...consultationLines,
-      `[[Posição ${currentPosition.index}: ${currentPosition.nome}]]`,
-      currentPosition.descricao,
-      `Carta: [[${currentCard.nome}]] (${orientationLabel})`,
-      `Arcano: ${formatArcanoLabel(currentCard)}.`,
-      `Representação: ${currentCard.representacao || 'Não informada.'}`,
-      `Elemento: ${currentCard.elemento ? `${currentCard.elemento.nome} - ${currentCard.elemento.descricao}` : 'Não aplicável para esta carta.'}`,
-      `Numerologia: ${currentCard.numerologia ? `${currentCard.numerologia.valor} (${currentCard.numerologia.titulo}) - ${currentCard.numerologia.descricao}` : 'Sem dados numerológicos.'}`,
-      `Luz: ${currentCard.polaridades?.luz || currentCard.significado.vertical.curto}`,
-      `Sombra: ${currentCard.polaridades?.sombra || currentCard.significado.invertido.curto}`,
-      `${currentCard.corte ? `Carta da corte: ${currentCard.corte.titulo} - ${currentCard.corte.descricao}` : ''}`,
-      coreMeaning,
-      `Carreira: ${currentCard.areas.carreira}`,
-      `Relacionamentos: ${currentCard.areas.relacionamentos}`,
-      `Espiritual: ${currentCard.areas.espiritual}`,
+      ...(orderedDrawnBlocks.length
+        ? ['[[Cartas registradas até agora]]', ...orderedDrawnBlocks]
+        : []),
+      nextStepBlock,
       '((Dica privada: mantenha tom de voz pausado e finalize com um conselho prático.))',
     ].join('\n\n')
-  }, [consultation, currentCard, currentDrawn, currentPosition])
+  }, [cardById, consultation, currentPosition, drawnByPosition, spread.positions])
 
   useEffect(() => {
     const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY)
@@ -435,28 +454,30 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
 
       setDrawnByPosition(prev => {
         const current = prev[currentPositionNumber]
-        if (
-          source === 'camera' &&
-          current &&
-          current.cardId === card.id &&
-          current.isReversed === isReversed
-        ) {
-          blockedReason = 'Carta já registrada nesta posição. Mostre uma nova carta.'
+
+        const duplicatedPosition = Object.values(prev).find(
+          item => item.position !== currentPositionNumber && item.cardId === card.id,
+        )
+        if (duplicatedPosition) {
+          blockedReason =
+            `Carta repetida detectada (já registrada na posição ${duplicatedPosition.position}). ` +
+            'Troque a carta para manter a tiragem consistente.'
           return prev
         }
 
-        const previousPositionIndex = spread.positions[currentPositionIndex - 1]?.index
-        const previous = previousPositionIndex ? prev[previousPositionIndex] : undefined
-
         if (
           source === 'camera' &&
-          !current &&
-          previous &&
-          previous.cardId === card.id &&
-          previous.isReversed === isReversed
+          current
         ) {
           blockedReason =
-            'Carta repetida detectada. Troque a carta para preencher a próxima posição.'
+            current.cardId === card.id && current.isReversed === isReversed
+              ? 'Carta já registrada nesta posição. Mostre a próxima carta.'
+              : 'Posição já preenchida. Use navegação/manual para alterar esta posição.'
+          return prev
+        }
+
+        if (source === 'manual' && current?.cardId === card.id && current.isReversed === isReversed) {
+          blockedReason = 'Carta já registrada nesta posição.'
           return prev
         }
 
@@ -511,6 +532,9 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
     if (status === 'loading') return 'Carregando motor de reconhecimento...'
     if (status === 'running') return 'Reconhecimento por modelo ativo.'
     if (status === 'running-local') {
+      if (localDiagnostics.records === 0 && localDiagnostics.cards > 0) {
+        return 'Catálogo local carregado apenas para referência. A confirmação automática exige capturas reais ou modelo treinado.'
+      }
       return `Reconhecimento local ativo com ${localDiagnostics.cards} carta(s) utilizáveis.`
     }
     if (status === 'no-model') {

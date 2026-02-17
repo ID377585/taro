@@ -61,6 +61,35 @@ const formatPersonContext = (
   return `${name} (${formatSexLabel(person.sexo)}${birthDate ? `, NASC.: ${birthDate}` : ''})`
 }
 
+const normalizeConsultationIntake = (
+  intake: ConsultationIntake | null | undefined,
+): ConsultationIntake | null => {
+  if (!intake) return null
+
+  const normalizePerson = (
+    person: ConsultationIntake['pessoa1'] | ConsultationIntake['pessoa2'] | null | undefined,
+  ) => {
+    if (!person) return null
+    return {
+      ...person,
+      nomeCompleto: toUppercaseDisplay((person.nomeCompleto || '').trim()),
+    }
+  }
+
+  const normalizedPerson1 = normalizePerson(intake.pessoa1)
+  if (!normalizedPerson1) return null
+
+  const normalizedPerson2 =
+    intake.tipo === 'sobre-outra-pessoa' ? normalizePerson(intake.pessoa2) : null
+
+  return {
+    ...intake,
+    pessoa1: normalizedPerson1,
+    pessoa2: normalizedPerson2,
+    situacaoPrincipal: toUppercaseDisplay((intake.situacaoPrincipal || '').trim()),
+  }
+}
+
 function App() {
   const [selectedSpread, setSelectedSpread] = useState<Spread | null>(null)
   const [showSpreadSelector, setShowSpreadSelector] = useState(false)
@@ -124,10 +153,11 @@ function App() {
       if (!raw) return
 
       const parsed = JSON.parse(raw) as PersistedFlowState
-      const hasIntake = Boolean(parsed.consultationIntake)
+      const normalizedIntake = normalizeConsultationIntake(parsed.consultationIntake)
+      const hasIntake = Boolean(normalizedIntake)
 
-      if (parsed.consultationIntake) {
-        setConsultationIntake(parsed.consultationIntake)
+      if (normalizedIntake) {
+        setConsultationIntake(normalizedIntake)
       }
 
       if (parsed.step === 'reading') {
@@ -190,7 +220,7 @@ function App() {
 
     const state: PersistedFlowState = {
       step,
-      consultationIntake,
+      consultationIntake: normalizeConsultationIntake(consultationIntake),
       selectedSpreadId: selectedSpread?.id || null,
     }
 
@@ -293,7 +323,8 @@ function App() {
           <ConsultationIntakeForm
             initialValue={consultationIntake}
             onSubmit={intake => {
-              setConsultationIntake(intake)
+              const normalizedIntake = normalizeConsultationIntake(intake)
+              setConsultationIntake(normalizedIntake)
               setShowIntakeForm(false)
               setShowSpreadSelector(true)
             }}

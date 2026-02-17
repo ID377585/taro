@@ -66,7 +66,7 @@ Critérios validados automaticamente:
 ## CI
 
 - Workflow: `.github/workflows/ci.yml`
-- Etapas: `npm ci`, `npm audit --audit-level=moderate`, `npm run check`, `npm run build`, `npm run e2e`
+- Etapas: `npm ci`, `npm audit --omit=dev --audit-level=moderate`, `npm run check`, `npm run build`, `npm run e2e`
 
 ## E2E
 

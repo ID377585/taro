@@ -57,6 +57,7 @@ interface TeleprompterSettings {
   smoothAcceleration: boolean
   recognitionIntervalMs: number
   recognitionThreshold: number
+  recognitionMinVotes: number
   resolutionPreset: ResolutionPreset
   renderScale: number
 }
@@ -114,6 +115,7 @@ const DEFAULT_SETTINGS: TeleprompterSettings = {
   smoothAcceleration: true,
   recognitionIntervalMs: 300,
   recognitionThreshold: 0.84,
+  recognitionMinVotes: 3,
   resolutionPreset: 'high',
   renderScale: 1,
 }
@@ -462,6 +464,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
     lastResult,
     resetLastConfirmation,
     labelDiagnostics,
+    modelDiagnostics,
     localDiagnostics,
   } = useCardRecognition({
     videoRef,
@@ -469,6 +472,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
     enabled: recognitionEnabled && isActive,
     intervalMs: settings.recognitionIntervalMs,
     confidenceThreshold: settings.recognitionThreshold,
+    minVotes: settings.recognitionMinVotes,
     onConfirmed: result => {
       if (!result.card) return
       registerCard(result.card, result.isReversed, 'camera', result.confidence)
@@ -1354,6 +1358,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
               onToggle={() => setRecognitionEnabled(prev => !prev)}
               lastResult={lastResult}
               labelDiagnostics={labelDiagnostics}
+              modelDiagnostics={modelDiagnostics}
               localDiagnostics={localDiagnostics}
             />
 
@@ -1562,6 +1567,23 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
                         setSettings(prev => ({
                           ...prev,
                           recognitionThreshold: Number(event.target.value),
+                        }))
+                      }
+                    />
+                  </label>
+
+                  <label>
+                    Votos mínimos: {settings.recognitionMinVotes}
+                    <input
+                      type="range"
+                      min={1}
+                      max={6}
+                      step={1}
+                      value={settings.recognitionMinVotes}
+                      onChange={event =>
+                        setSettings(prev => ({
+                          ...prev,
+                          recognitionMinVotes: Number(event.target.value),
                         }))
                       }
                     />

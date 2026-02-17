@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { RecognitionResult } from '../types'
-import { RecognitionStatus } from '../hooks/useCardRecognition'
+import { ModelDiagnostics, RecognitionStatus } from '../hooks/useCardRecognition'
 import './CardRecognizer.css'
 
 interface CardRecognizerProps {
@@ -14,6 +14,7 @@ interface CardRecognizerProps {
     mappedLabels: number
     unmappedLabels: string[]
   }
+  modelDiagnostics: ModelDiagnostics
   localDiagnostics: {
     records: number
     cards: number
@@ -38,6 +39,7 @@ const CardRecognizer: FC<CardRecognizerProps> = ({
   onToggle,
   lastResult,
   labelDiagnostics,
+  modelDiagnostics,
   localDiagnostics,
 }) => {
   return (
@@ -57,6 +59,23 @@ const CardRecognizer: FC<CardRecognizerProps> = ({
           {labelDiagnostics.totalLabels}
         </p>
       )}
+      {modelDiagnostics.checked && (
+        <p className="recognizer-mapping">
+          Modelo: {modelDiagnostics.format || 'formato desconhecido'} | classes:{' '}
+          {modelDiagnostics.outputClasses ?? '?'} | labels: {modelDiagnostics.labelsCount}/
+          {modelDiagnostics.expectedClasses}
+        </p>
+      )}
+      {modelDiagnostics.placeholder && (
+        <p className="recognizer-unmapped">
+          Modelo bootstrap detectado. Substitua `public/model/*` pelo modelo final.
+        </p>
+      )}
+      {modelDiagnostics.warnings.map((warning, index) => (
+        <p key={`model-warning-${index}`} className="recognizer-unmapped">
+          Aviso do modelo: {warning}
+        </p>
+      ))}
       {status === 'running-local' && (
         <p className="recognizer-mapping">
           Base local: {localDiagnostics.cards} carta(s) utilizáveis,{' '}

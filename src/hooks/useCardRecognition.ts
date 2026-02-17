@@ -29,6 +29,16 @@ interface LabelDiagnostics {
   unmappedLabels: string[]
 }
 
+export interface ModelDiagnostics {
+  checked: boolean
+  placeholder: boolean
+  format: string | null
+  labelsCount: number
+  outputClasses: number | null
+  expectedClasses: number
+  warnings: string[]
+}
+
 export type RecognitionStatus =
   | 'idle'
   | 'loading'
@@ -42,8 +52,227 @@ interface VoteState {
   count: number
 }
 
-interface PlaceholderMetadata {
+interface ModelMetadataLike {
   placeholder?: boolean
+  labels?: unknown
+  classes?: unknown
+  classNames?: unknown
+  wordLabels?: unknown
+  modelSettings?: {
+    labels?: unknown
+  }
+  tfjsMetadata?: {
+    labels?: unknown
+  }
+}
+
+interface ModelInspectionResult {
+  diagnostics: ModelDiagnostics
+  labels: string[]
+  fatalError: string | null
+}
+
+const createInitialModelDiagnostics = (expectedClasses: number): ModelDiagnostics => ({
+  checked: false,
+  placeholder: false,
+  format: null,
+  labelsCount: 0,
+  outputClasses: null,
+  expectedClasses,
+  warnings: [],
+})
+
+const extractLabelsFromMetadata = (metadata: ModelMetadataLike | null): string[] => {
+  if (!metadata) return []
+
+  const candidates: unknown[] = [
+    metadata.labels,
+    metadata.classNames,
+    metadata.classes,
+    metadata.wordLabels,
+    metadata.modelSettings?.labels,
+    metadata.tfjsMetadata?.labels,
+  ]
+
+  for (const candidate of candidates) {
+    if (Array.isArray(candidate) && candidate.every(item => typeof item === 'string')) {
+      return candidate as string[]
+    }
+  }
+
+  return []
+}
+
+const extractOutputClassesFromModelJson = (modelJson: unknown): number | null => {
+  if (!modelJson || typeof modelJson !== 'object') return null
+
+  const typedModel = modelJson as {
+    modelTopology?: {
+      config?: {
+        layers?: Array<{
+          class_name?: string
+          config?: {
+            units?: number
+          }
+        }>
+      }
+    }
+    weightsManifest?: Array<{
+      weights?: Array<{
+        name?: string
+        shape?: number[]
+      }>
+    }>
+  }
+
+  const layers = typedModel.modelTopology?.config?.layers
+  if (Array.isArray(layers)) {
+    for (let index = layers.length - 1; index >= 0; index -= 1) {
+      const units = Number(layers[index]?.config?.units)
+      if (Number.isFinite(units) && units > 0) {
+        return units
+      }
+    }
+  }
+
+  const manifests = typedModel.weightsManifest
+  if (Array.isArray(manifests)) {
+    for (const manifest of manifests) {
+      const weights = manifest.weights
+      if (!Array.isArray(weights)) continue
+
+      for (const weight of weights) {
+        const shape = weight.shape
+        if (!Array.isArray(shape) || shape.length !== 1) continue
+        if (!weight.name?.toLowerCase().includes('/bias')) continue
+
+        const units = Number(shape[0])
+        if (Number.isFinite(units) && units > 0) {
+          return units
+        }
+      }
+    }
+  }
+
+  return null
+}
+
+const inspectModelArtifacts = async (
+  modelUrl: string,
+  metadataUrl: string,
+  expectedClasses: number,
+): Promise<ModelInspectionResult> => {
+  let metadata: ModelMetadataLike | null = null
+
+  try {
+    const response = await fetch(metadataUrl)
+    if (!response.ok) {
+      return {
+        diagnostics: {
+          ...createInitialModelDiagnostics(expectedClasses),
+          checked: true,
+        },
+        labels: [],
+        fatalError: `metadata.json não encontrado (${response.status}).`,
+      }
+    }
+    metadata = (await response.json()) as ModelMetadataLike
+  } catch {
+    return {
+      diagnostics: {
+        ...createInitialModelDiagnostics(expectedClasses),
+        checked: true,
+      },
+      labels: [],
+      fatalError: 'Falha ao ler metadata.json do modelo.',
+    }
+  }
+
+  let rawModel: unknown
+  try {
+    const response = await fetch(modelUrl)
+    if (!response.ok) {
+      return {
+        diagnostics: {
+          ...createInitialModelDiagnostics(expectedClasses),
+          checked: true,
+          placeholder: Boolean(metadata?.placeholder),
+          labelsCount: extractLabelsFromMetadata(metadata).length,
+        },
+        labels: extractLabelsFromMetadata(metadata),
+        fatalError: `model.json não encontrado (${response.status}).`,
+      }
+    }
+    rawModel = await response.json()
+  } catch {
+    return {
+      diagnostics: {
+        ...createInitialModelDiagnostics(expectedClasses),
+        checked: true,
+        placeholder: Boolean(metadata?.placeholder),
+        labelsCount: extractLabelsFromMetadata(metadata).length,
+      },
+      labels: extractLabelsFromMetadata(metadata),
+      fatalError: 'Falha ao ler model.json do modelo.',
+    }
+  }
+
+  const labels = extractLabelsFromMetadata(metadata)
+  const modelFormat =
+    typeof (rawModel as { format?: unknown }).format === 'string'
+      ? ((rawModel as { format?: string }).format ?? null)
+      : null
+  const outputClasses = extractOutputClassesFromModelJson(rawModel)
+  const warnings: string[] = []
+
+  if (!labels.length) {
+    warnings.push('metadata.json sem labels válidas para mapeamento.')
+  }
+
+  if (outputClasses && labels.length > 0 && outputClasses !== labels.length) {
+    warnings.push(
+      `Classes do modelo (${outputClasses}) divergentes das labels (${labels.length}).`,
+    )
+  }
+
+  const classesForComparison = labels.length || outputClasses || 0
+  if (classesForComparison > 0 && classesForComparison !== expectedClasses) {
+    warnings.push(
+      `Quantidade recomendada para este app: ${expectedClasses} classes (carta + orientação). Atual: ${classesForComparison}.`,
+    )
+  }
+
+  const diagnostics: ModelDiagnostics = {
+    checked: true,
+    placeholder: Boolean(metadata?.placeholder),
+    format: modelFormat,
+    labelsCount: labels.length,
+    outputClasses,
+    expectedClasses,
+    warnings,
+  }
+
+  if (modelFormat !== 'layers-model') {
+    return {
+      diagnostics,
+      labels,
+      fatalError: `Formato inválido em model.json: esperado "layers-model", recebido "${modelFormat || 'desconhecido'}".`,
+    }
+  }
+
+  if (!outputClasses) {
+    return {
+      diagnostics,
+      labels,
+      fatalError: 'Não foi possível identificar a quantidade de classes no model.json.',
+    }
+  }
+
+  return {
+    diagnostics,
+    labels,
+    fatalError: null,
+  }
 }
 
 export const useCardRecognition = ({
@@ -57,10 +286,14 @@ export const useCardRecognition = ({
   minVotes = 3,
   onConfirmed,
 }: UseCardRecognitionOptions) => {
+  const expectedClasses = cards.length * 2
   const [status, setStatus] = useState<RecognitionStatus>('idle')
   const [error, setError] = useState<string | null>(null)
   const [lastResult, setLastResult] = useState<RecognitionResult | null>(null)
   const [modelLabels, setModelLabels] = useState<string[]>([])
+  const [modelDiagnostics, setModelDiagnostics] = useState<ModelDiagnostics>(() =>
+    createInitialModelDiagnostics(expectedClasses),
+  )
   const [localStats, setLocalStats] = useState<LocalCaptureMatcherStats>({
     records: 0,
     cards: 0,
@@ -113,6 +346,8 @@ export const useCardRecognition = ({
       if (!enabled) {
         setStatus('idle')
         setError(null)
+        setModelLabels([])
+        setModelDiagnostics(createInitialModelDiagnostics(expectedClasses))
         setLocalStats({ records: 0, cards: 0, candidates: 0, failedSamples: 0 })
         localMatcherRef.current = null
         return
@@ -120,6 +355,8 @@ export const useCardRecognition = ({
 
       setStatus('loading')
       setError(null)
+      setModelLabels([])
+      setModelDiagnostics(createInitialModelDiagnostics(expectedClasses))
       setLocalStats({ records: 0, cards: 0, candidates: 0, failedSamples: 0 })
       localMatcherRef.current = null
 
@@ -166,19 +403,17 @@ export const useCardRecognition = ({
         }
       }
 
-      const isPlaceholderModel = async () => {
-        try {
-          const response = await fetch(metadataUrl)
-          if (!response.ok) return false
-          const metadata = (await response.json()) as PlaceholderMetadata
-          return Boolean(metadata.placeholder)
-        } catch {
-          return false
-        }
-      }
-
       try {
-        if (await isPlaceholderModel()) {
+        const inspection = await inspectModelArtifacts(
+          modelUrl,
+          metadataUrl,
+          expectedClasses,
+        )
+        if (isMounted) {
+          setModelDiagnostics(inspection.diagnostics)
+        }
+
+        if (inspection.diagnostics.placeholder) {
           const localFallback = await fallbackToLocalMatcher()
           if (!localFallback.enabled && isMounted) {
             setStatus('no-model')
@@ -190,9 +425,27 @@ export const useCardRecognition = ({
           return
         }
 
+        if (inspection.fatalError) {
+          const localFallback = await fallbackToLocalMatcher()
+          if (!localFallback.enabled && isMounted) {
+            const isMissingArtifacts =
+              inspection.fatalError.includes('não encontrado') ||
+              inspection.fatalError.includes('404')
+            setStatus(isMissingArtifacts ? 'no-model' : 'error')
+            setError(localFallback.reason || inspection.fatalError)
+          }
+          return
+        }
+
         await recognizerRef.current.load(modelUrl, metadataUrl)
         if (isMounted) {
-          setModelLabels(recognizerRef.current.getLabels())
+          const loadedLabels = recognizerRef.current.getLabels()
+          const nextLabels = loadedLabels.length ? loadedLabels : inspection.labels
+          setModelLabels(nextLabels)
+          setModelDiagnostics(prev => ({
+            ...prev,
+            labelsCount: nextLabels.length || prev.labelsCount,
+          }))
           setStatus('running')
           setError(null)
         }
@@ -230,7 +483,7 @@ export const useCardRecognition = ({
     return () => {
       isMounted = false
     }
-  }, [cards, enabled, metadataUrl, modelUrl])
+  }, [cards, enabled, expectedClasses, metadataUrl, modelUrl])
 
   useEffect(() => {
     if (!enabled || (status !== 'running' && status !== 'running-local')) return
@@ -359,6 +612,7 @@ export const useCardRecognition = ({
     lastResult,
     resetLastConfirmation,
     labelDiagnostics: labelMappings.diagnostics,
+    modelDiagnostics,
     localDiagnostics: localStats,
   }
 }

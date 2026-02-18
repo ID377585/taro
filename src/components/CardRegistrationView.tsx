@@ -42,7 +42,7 @@ type LocalSyncState = 'idle' | 'saving' | 'saved' | 'error'
 type CloudSyncState = 'idle' | 'syncing' | 'disabled' | 'error'
 type CloudCounterSource = 'metadata' | 'local-queue'
 
-const TARGET_PER_ORIENTATION = 10
+const TARGET_PER_ORIENTATION = 60
 const ACCEPTED_IMAGE_EXTENSIONS = [
   '.heic',
   '.heif',

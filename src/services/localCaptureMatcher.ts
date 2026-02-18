@@ -1,9 +1,13 @@
 import { Card } from '../types'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 import { dbService } from './dbService'
 
 const SIGNATURE_WIDTH = 36
 const SIGNATURE_HEIGHT = 54
 const TARGET_RATIO = 2 / 3
+const DEFAULT_CAPTURE_BUCKET = 'taro-captures'
+const MAX_CLOUD_METADATA_ROWS = 12_000
+const MAX_CLOUD_SAMPLES_PER_ORIENTATION = 6
 
 interface LocalCaptureCandidate {
   cardId: number
@@ -26,8 +30,58 @@ export interface LocalCapturePrediction {
   label: string
 }
 
+interface CloudMatcherConfig {
+  enabled: boolean
+  supabaseUrl: string
+  supabaseAnonKey: string
+  bucket: string
+  metadataTable: string
+}
+
+interface CloudMetadataRow {
+  queue_id?: unknown
+  card_id?: unknown
+  orientation?: unknown
+  storage_path?: unknown
+}
+
+interface CloudLoadResult {
+  records: number
+  cards: number
+  candidates: LocalCaptureCandidate[]
+}
+
+let cloudMatcherClient: SupabaseClient | null = null
+let cloudMatcherClientKey = ''
+
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value))
+
+const getCloudMatcherConfig = (): CloudMatcherConfig => {
+  const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || '').trim()
+  const supabaseAnonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY || '').trim()
+  const metadataTable = (import.meta.env.VITE_SUPABASE_METADATA_TABLE || '').trim()
+  const bucket = (import.meta.env.VITE_SUPABASE_BUCKET || DEFAULT_CAPTURE_BUCKET).trim()
+
+  return {
+    enabled: Boolean(supabaseUrl && supabaseAnonKey && metadataTable),
+    supabaseUrl,
+    supabaseAnonKey,
+    bucket: bucket || DEFAULT_CAPTURE_BUCKET,
+    metadataTable,
+  }
+}
+
+const getCloudMatcherClient = (config: CloudMatcherConfig) => {
+  const key = `${config.supabaseUrl}|${config.supabaseAnonKey}`
+  if (!cloudMatcherClient || cloudMatcherClientKey !== key) {
+    cloudMatcherClient = createClient(config.supabaseUrl, config.supabaseAnonKey, {
+      auth: { persistSession: false },
+    })
+    cloudMatcherClientKey = key
+  }
+  return cloudMatcherClient
+}
 
 const meanAbsoluteDistance = (a: Float32Array, b: Float32Array) => {
   const size = Math.min(a.length, b.length)
@@ -301,12 +355,126 @@ export class LocalCaptureMatcher {
     }
   }
 
+  private isReversedOrientation(orientation: string) {
+    const normalized = orientation.trim().toLowerCase()
+    return (
+      normalized.includes('invert') ||
+      normalized.includes('horiz') ||
+      normalized.includes('revers')
+    )
+  }
+
+  private async loadCloudCandidates(
+    cards: Card[],
+    onSampleError: () => void,
+  ): Promise<CloudLoadResult> {
+    const config = getCloudMatcherConfig()
+    if (!config.enabled) {
+      return { records: 0, cards: 0, candidates: [] }
+    }
+
+    const client = getCloudMatcherClient(config)
+    const { data, error } = await client
+      .from(config.metadataTable)
+      .select('queue_id,card_id,orientation,storage_path')
+      .order('captured_at', { ascending: false })
+      .limit(MAX_CLOUD_METADATA_ROWS)
+
+    if (error) {
+      console.error('Falha ao carregar metadados da nuvem para reconhecimento:', error)
+      return { records: 0, cards: 0, candidates: [] }
+    }
+
+    const rows = (Array.isArray(data) ? data : []) as CloudMetadataRow[]
+    if (!rows.length) {
+      return { records: 0, cards: 0, candidates: [] }
+    }
+
+    const validCardIds = new Set(cards.map(card => card.id))
+    const seenQueueIds = new Set<string>()
+    const grouped = new Map<
+      string,
+      {
+        cardId: number
+        isReversed: boolean
+        paths: string[]
+      }
+    >()
+
+    for (const row of rows) {
+      const cardId = Number(row.card_id)
+      if (!Number.isFinite(cardId) || !validCardIds.has(cardId)) continue
+
+      const path = String(row.storage_path || '').trim()
+      if (!path) continue
+
+      const queueId = String(row.queue_id || '').trim()
+      if (queueId) {
+        if (seenQueueIds.has(queueId)) continue
+        seenQueueIds.add(queueId)
+      }
+
+      const isReversed = this.isReversedOrientation(String(row.orientation || ''))
+      const groupKey = `${cardId}:${isReversed ? 'r' : 'v'}`
+      const currentGroup = grouped.get(groupKey) || {
+        cardId,
+        isReversed,
+        paths: [],
+      }
+
+      if (currentGroup.paths.length >= MAX_CLOUD_SAMPLES_PER_ORIENTATION) continue
+      currentGroup.paths.push(path)
+      grouped.set(groupKey, currentGroup)
+    }
+
+    const candidates: LocalCaptureCandidate[] = []
+    const cardsLoaded = new Set<number>()
+
+    for (const group of grouped.values()) {
+      const signatures: Float32Array[] = []
+
+      for (const path of group.paths) {
+        try {
+          const { data: blob, error: downloadError } = await client.storage
+            .from(config.bucket)
+            .download(path)
+          if (downloadError || !blob) {
+            onSampleError()
+            continue
+          }
+
+          const signature = await this.signatureFromBlob(blob)
+          signatures.push(signature)
+        } catch (error) {
+          onSampleError()
+          console.error('Falha ao processar amostra da nuvem para reconhecimento:', error)
+        }
+      }
+
+      if (!signatures.length) continue
+      cardsLoaded.add(group.cardId)
+      candidates.push({
+        cardId: group.cardId,
+        isReversed: group.isReversed,
+        signatures,
+        samples: signatures.length,
+      })
+    }
+
+    return {
+      records: cardsLoaded.size,
+      cards: cardsLoaded.size,
+      candidates,
+    }
+  }
+
   async load(cards: Card[] = []): Promise<LocalCaptureMatcherStats> {
     await dbService.init()
     const records = await dbService.getAllCardCaptures()
     const nextCandidates: LocalCaptureCandidate[] = []
     let cardsWithCaptures = 0
     let failedSamples = 0
+    let sourceRecords = records.length
 
     for (const record of records) {
       const verticalCandidate = await this.loadOrientationCandidate(
@@ -339,6 +507,18 @@ export class LocalCaptureMatcher {
     }
 
     if (!nextCandidates.length && cards.length) {
+      const cloud = await this.loadCloudCandidates(cards, () => {
+        failedSamples += 1
+      })
+
+      if (cloud.candidates.length) {
+        nextCandidates.push(...cloud.candidates)
+        cardsWithCaptures = cloud.cards
+        sourceRecords = cloud.records
+      }
+    }
+
+    if (!nextCandidates.length && cards.length) {
       const catalog = await this.loadCatalogCandidates(cards, () => {
         failedSamples += 1
       })
@@ -352,7 +532,7 @@ export class LocalCaptureMatcher {
     this.candidates = nextCandidates
 
     return {
-      records: records.length,
+      records: sourceRecords,
       cards: cardsWithCaptures,
       candidates: nextCandidates.length,
       failedSamples,

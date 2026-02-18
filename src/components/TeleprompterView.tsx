@@ -258,6 +258,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
   const [capturingShortcut, setCapturingShortcut] = useState<ShortcutAction | null>(null)
   const [showAdvancedPanel, setShowAdvancedPanel] = useState(false)
   const [isPanelExpanded, setIsPanelExpanded] = useState(false)
+  const [isActionControlsExpanded, setIsActionControlsExpanded] = useState(false)
   const [isExtraControlsExpanded, setIsExtraControlsExpanded] = useState(false)
   const [controlFeedback, setControlFeedback] = useState('')
   const [synthesisText, setSynthesisText] = useState('')
@@ -1269,32 +1270,52 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
               <button onClick={() => setIsScrolling(prev => !prev)}>
                 {isScrolling ? 'Pausar rolagem' : 'Iniciar rolagem'}
               </button>
-              <button className="secondary" onClick={() => adjustWpm(-1)}>
-                -1 WPM
+              <button
+                type="button"
+                className={`secondary tp-action-controls-toggle${
+                  isActionControlsExpanded ? ' active' : ''
+                }`}
+                onClick={() => setIsActionControlsExpanded(prev => !prev)}
+                aria-expanded={isActionControlsExpanded}
+                aria-controls="teleprompter-actions-extra"
+                aria-label={
+                  isActionControlsExpanded ? 'Ocultar ações rápidas' : 'Mostrar ações rápidas'
+                }
+              >
+                ⋯
               </button>
-              <button className="secondary" onClick={() => adjustWpm(1)}>
-                +1 WPM
-              </button>
-              <button className="secondary" onClick={syncToActiveParagraph}>
-                Sincronizar
-              </button>
-              <button className="secondary" onClick={toggleVoiceControl}>
-                Voz: {voiceStatus === 'listening' ? 'ON' : 'OFF'}
-              </button>
-              <button className="secondary" onClick={() => fileInputRef.current?.click()}>
-                Importar TXT/MD
-              </button>
-              <button className="secondary" onClick={handleExportScript}>
-                Exportar roteiro
-              </button>
-              <button className="secondary" onClick={enterFullscreen}>
-                Tela cheia
-              </button>
-              {isFullscreen && (
-                <button className="secondary" onClick={exitFullscreen}>
-                  Sair da tela cheia
+              <div
+                id="teleprompter-actions-extra"
+                className="teleprompter-actions-extra"
+                hidden={!isActionControlsExpanded}
+              >
+                <button className="secondary" onClick={() => adjustWpm(-1)}>
+                  -1 WPM
                 </button>
-              )}
+                <button className="secondary" onClick={() => adjustWpm(1)}>
+                  +1 WPM
+                </button>
+                <button className="secondary" onClick={syncToActiveParagraph}>
+                  Sincronizar
+                </button>
+                <button className="secondary" onClick={toggleVoiceControl}>
+                  Voz: {voiceStatus === 'listening' ? 'ON' : 'OFF'}
+                </button>
+                <button className="secondary" onClick={() => fileInputRef.current?.click()}>
+                  Importar TXT/MD
+                </button>
+                <button className="secondary" onClick={handleExportScript}>
+                  Exportar roteiro
+                </button>
+                <button className="secondary" onClick={enterFullscreen}>
+                  Tela cheia
+                </button>
+                {isFullscreen && (
+                  <button className="secondary" onClick={exitFullscreen}>
+                    Sair da tela cheia
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="wpm-slider-wrap">

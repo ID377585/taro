@@ -343,16 +343,37 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
     [pendingCountsByCard, selectedCard],
   )
 
+  const getMetadataBasedCount = useCallback(
+    (
+      targetOrientation: Orientation,
+      bucketOverride?: CardCaptureBucket,
+      pendingOverride?: UploadedCardCaptureCounts,
+      cloudOverride?: UploadedCardCaptureCounts | null,
+    ) => {
+      const cloudCounts = cloudOverride || selectedCardCloudCounts || EMPTY_CAPTURE_COUNTS
+      const pendingCounts = pendingOverride || localPendingCountForSelectedCard
+      const inMemoryCount = (bucketOverride || currentBucket)[targetOrientation].length
+      const queuedLocalCount = pendingCounts[targetOrientation]
+      return cloudCounts[targetOrientation] + Math.max(queuedLocalCount, inMemoryCount)
+    },
+    [currentBucket, localPendingCountForSelectedCard, selectedCardCloudCounts],
+  )
+
+  const getLocalQueueBasedCount = useCallback(
+    (targetOrientation: Orientation, bucketOverride?: CardCaptureBucket) =>
+      (bucketOverride || currentBucket)[targetOrientation].length +
+      localUploadedCountForSelectedCard[targetOrientation],
+    [currentBucket, localUploadedCountForSelectedCard],
+  )
+
   const currentVerticalCount =
     cloudCounterSource === 'metadata'
-      ? (selectedCardCloudCounts || EMPTY_CAPTURE_COUNTS).vertical +
-        localPendingCountForSelectedCard.vertical
-      : currentBucket.vertical.length + localUploadedCountForSelectedCard.vertical
+      ? getMetadataBasedCount('vertical')
+      : getLocalQueueBasedCount('vertical')
   const currentInvertedCount =
     cloudCounterSource === 'metadata'
-      ? (selectedCardCloudCounts || EMPTY_CAPTURE_COUNTS).invertido +
-        localPendingCountForSelectedCard.invertido
-      : currentBucket.invertido.length + localUploadedCountForSelectedCard.invertido
+      ? getMetadataBasedCount('invertido')
+      : getLocalQueueBasedCount('invertido')
   const isCardReady =
     currentVerticalCount >= TARGET_PER_ORIENTATION &&
     currentInvertedCount >= TARGET_PER_ORIENTATION
@@ -730,9 +751,10 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
     }
   }, [])
 
-  const getCloudCountForOrientation = (targetOrientation: Orientation) =>
-    (selectedCardCloudCounts || EMPTY_CAPTURE_COUNTS)[targetOrientation] +
-    localPendingCountForSelectedCard[targetOrientation]
+  const getCloudCountForOrientation = (
+    targetOrientation: Orientation,
+    bucketOverride?: CardCaptureBucket,
+  ) => getMetadataBasedCount(targetOrientation, bucketOverride)
 
   const saveCapture = (blob: Blob) => {
     if (!selectedCard) return
@@ -743,7 +765,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
         uploadedCountsRef.current[selectedCard.id] || EMPTY_CAPTURE_COUNTS
       const currentCount =
         cloudCounterSource === 'metadata'
-          ? getCloudCountForOrientation(orientation)
+          ? getCloudCountForOrientation(orientation, current)
           : current[orientation].length + uploadedCounts[orientation]
       if (currentCount >= TARGET_PER_ORIENTATION) {
         setFeedback(
@@ -774,7 +796,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
         uploadedCountsRef.current[selectedCard.id] || EMPTY_CAPTURE_COUNTS
       const totalForOrientation =
         cloudCounterSource === 'metadata'
-          ? getCloudCountForOrientation(orientation)
+          ? getCloudCountForOrientation(orientation, current)
           : current[orientation].length + uploadedCounts[orientation]
       const remaining = TARGET_PER_ORIENTATION - totalForOrientation
       if (remaining <= 0) return prev
@@ -807,7 +829,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
         uploadedCountsRef.current[selectedCard.id] || EMPTY_CAPTURE_COUNTS
       const totalForOrientation =
         cloudCounterSource === 'metadata'
-          ? getCloudCountForOrientation(targetOrientation)
+          ? getCloudCountForOrientation(targetOrientation, current)
           : current[targetOrientation].length + uploadedCounts[targetOrientation]
       const remaining = TARGET_PER_ORIENTATION - totalForOrientation
       if (remaining <= 0) return prev

@@ -99,15 +99,18 @@ interface TeleprompterViewProps {
 const SETTINGS_STORAGE_KEY = 'taro.teleprompter.settings.v2'
 const SHORTCUT_STORAGE_KEY = 'taro.teleprompter.shortcuts.v1'
 const DEFAULT_WPM = 89
+const DEFAULT_FONT_SIZE = 24
+const DEFAULT_LINE_HEIGHT = 1.4
+const DEFAULT_MAX_TEXT_WIDTH = 100
 
 const DEFAULT_SETTINGS: TeleprompterSettings = {
   wpm: DEFAULT_WPM,
-  fontSize: 34,
-  lineHeight: 1.55,
+  fontSize: DEFAULT_FONT_SIZE,
+  lineHeight: DEFAULT_LINE_HEIGHT,
   fontFamily: '"Segoe UI", Tahoma, sans-serif',
   textColor: '#ffffff',
   backgroundColor: '#060606',
-  maxTextWidth: 84,
+  maxTextWidth: DEFAULT_MAX_TEXT_WIDTH,
   textAlign: 'left',
   highVisibility: false,
   flipHorizontal: false,
@@ -407,7 +410,14 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
     if (storedSettings) {
       try {
         const parsed = JSON.parse(storedSettings) as Partial<TeleprompterSettings>
-        setSettings(prev => ({ ...prev, ...parsed, wpm: DEFAULT_WPM }))
+        setSettings(prev => ({
+          ...prev,
+          ...parsed,
+          wpm: DEFAULT_WPM,
+          fontSize: DEFAULT_FONT_SIZE,
+          lineHeight: DEFAULT_LINE_HEIGHT,
+          maxTextWidth: DEFAULT_MAX_TEXT_WIDTH,
+        }))
       } catch {
         // no-op
       }

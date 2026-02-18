@@ -63,6 +63,7 @@ const createEmptyBucket = (): CardCaptureBucket => ({
 const EMPTY_CAPTURE_COUNTS: UploadedCardCaptureCounts = { vertical: 0, invertido: 0 }
 const DIRECT_UPLOAD_LOCAL_FALLBACK_MESSAGE =
   'Armazenamento local indisponível neste navegador. Capturas seguem direto para a nuvem.'
+const SHOW_CAPTURE_TECHNICAL_STATUS = false
 
 const isHeifLike = (name: string, mime: string) => {
   const lowerName = name.toLowerCase()
@@ -1421,6 +1422,12 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
     return ''
   }, [lastLocalSyncAt, localPersistenceAvailable, localSyncState])
 
+  const visibleFeedback = useMemo(() => {
+    if (!feedback) return ''
+    if (feedback === DIRECT_UPLOAD_LOCAL_FALLBACK_MESSAGE) return ''
+    return feedback
+  }, [feedback])
+
   const cloudSyncStatusClass = useMemo(() => {
     if (cloudSyncState === 'syncing') return 'saving'
     if (cloudSyncState === 'error') return 'error'
@@ -1608,19 +1615,19 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
               </p>
             )}
 
-            {!isHydratingCaptures && localSyncMessage && (
+            {SHOW_CAPTURE_TECHNICAL_STATUS && !isHydratingCaptures && localSyncMessage && (
               <p className={`registration-local-sync ${localSyncState}`}>
                 {localSyncMessage}
               </p>
             )}
 
-            {!isHydratingCaptures && (
+            {SHOW_CAPTURE_TECHNICAL_STATUS && !isHydratingCaptures && (
               <p className={`registration-cloud-sync ${cloudSyncStatusClass}`}>
                 {cloudSyncStatusMessage}
               </p>
             )}
 
-            {feedback && <p className="registration-feedback">{feedback}</p>}
+            {visibleFeedback && <p className="registration-feedback">{visibleFeedback}</p>}
 
             <div className="preview-grid">
               <div>

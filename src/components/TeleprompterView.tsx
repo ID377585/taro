@@ -437,6 +437,14 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
     }
   }, [autoScript, scriptMode])
 
+  useEffect(() => {
+    if (isPanelExpanded) return
+    setIsReadingInfoExpanded(false)
+    setIsActionControlsExpanded(false)
+    setIsExtraControlsExpanded(false)
+    setShowAdvancedPanel(false)
+  }, [isPanelExpanded])
+
   const registerCard = useCallback(
     (
       card: Card,
@@ -1200,78 +1208,76 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
 
         {isPanelExpanded && (
           <div id="teleprompter-panel-content" className="text-overlay-content">
-            <div
-              id="teleprompter-reading-info"
-              className="teleprompter-reading-info"
-              hidden={!isReadingInfoExpanded}
-            >
-              <div className="teleprompter-topline">
-                <div>
-                  <h2>{currentPosition?.nome || 'Posição'}</h2>
-                  <p className="position-desc">{currentPosition?.descricao}</p>
-                  {consultationSummary && (
-                    <p className="reading-context">{consultationSummary}</p>
-                  )}
-                </div>
-                <div className="topline-meta">
-                  <span>{progressLabel}</span>
-                  <span>WPM: {settings.wpm}</span>
-                  <span>Tempo: {formatTime(elapsedSeconds)}</span>
-                  {countdownRemainingSeconds > 0 && (
-                    <span>Restante: {formatTime(countdownRemainingSeconds)}</span>
-                  )}
-                </div>
-              </div>
-
-              <div className="card-info">
-                <h1>{currentCard?.nome || 'Aguardando carta...'}</h1>
-                <p className="status">
-                  {currentDrawn
-                    ? `Orientação ${currentDrawn.isReversed ? 'Invertida' : 'Vertical'}`
-                    : 'Nenhuma carta registrada nesta posição'}
-                </p>
-                <p className="recognition-hint">{recognitionHint}</p>
-                {currentCard && (
-                  <div className="card-meta">
-                    <p>
-                      <strong>Arcano:</strong> {formatArcanoLabel(currentCard)}{' '}
-                      {currentCard.arcanoDescricao ? `- ${currentCard.arcanoDescricao}` : ''}
-                    </p>
-                    <p>
-                      <strong>Naipe/Elemento:</strong> {formatNaipeElementLabel(currentCard)}
-                      {currentCard.elemento ? ` - ${currentCard.elemento.descricao}` : ''}
-                    </p>
-                    {currentCard.representacao && (
-                      <p>
-                        <strong>Representa:</strong> {currentCard.representacao}
-                      </p>
-                    )}
-                    {currentCard.numerologia && (
-                      <p>
-                        <strong>Numerologia:</strong> {currentCard.numerologia.valor} (
-                        {currentCard.numerologia.titulo}) -{' '}
-                        {currentCard.numerologia.descricao}
-                      </p>
-                    )}
-                    {(currentCard.polaridades?.luz || currentCard.polaridades?.sombra) && (
-                      <p>
-                        <strong>Luz/Sombra:</strong>{' '}
-                        {currentCard.polaridades?.luz || currentCard.significado.vertical.curto}
-                        {' | '}
-                        {currentCard.polaridades?.sombra ||
-                          currentCard.significado.invertido.curto}
-                      </p>
-                    )}
-                    {currentCard.corte && (
-                      <p>
-                        <strong>Corte:</strong> {currentCard.corte.titulo} -{' '}
-                        {currentCard.corte.descricao}
-                      </p>
+            {isReadingInfoExpanded && (
+              <div id="teleprompter-reading-info" className="teleprompter-reading-info">
+                <div className="teleprompter-topline">
+                  <div>
+                    <h2>{currentPosition?.nome || 'Posição'}</h2>
+                    <p className="position-desc">{currentPosition?.descricao}</p>
+                    {consultationSummary && (
+                      <p className="reading-context">{consultationSummary}</p>
                     )}
                   </div>
-                )}
+                  <div className="topline-meta">
+                    <span>{progressLabel}</span>
+                    <span>WPM: {settings.wpm}</span>
+                    <span>Tempo: {formatTime(elapsedSeconds)}</span>
+                    {countdownRemainingSeconds > 0 && (
+                      <span>Restante: {formatTime(countdownRemainingSeconds)}</span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="card-info">
+                  <h1>{currentCard?.nome || 'Aguardando carta...'}</h1>
+                  <p className="status">
+                    {currentDrawn
+                      ? `Orientação ${currentDrawn.isReversed ? 'Invertida' : 'Vertical'}`
+                      : 'Nenhuma carta registrada nesta posição'}
+                  </p>
+                  <p className="recognition-hint">{recognitionHint}</p>
+                  {currentCard && (
+                    <div className="card-meta">
+                      <p>
+                        <strong>Arcano:</strong> {formatArcanoLabel(currentCard)}{' '}
+                        {currentCard.arcanoDescricao ? `- ${currentCard.arcanoDescricao}` : ''}
+                      </p>
+                      <p>
+                        <strong>Naipe/Elemento:</strong> {formatNaipeElementLabel(currentCard)}
+                        {currentCard.elemento ? ` - ${currentCard.elemento.descricao}` : ''}
+                      </p>
+                      {currentCard.representacao && (
+                        <p>
+                          <strong>Representa:</strong> {currentCard.representacao}
+                        </p>
+                      )}
+                      {currentCard.numerologia && (
+                        <p>
+                          <strong>Numerologia:</strong> {currentCard.numerologia.valor} (
+                          {currentCard.numerologia.titulo}) -{' '}
+                          {currentCard.numerologia.descricao}
+                        </p>
+                      )}
+                      {(currentCard.polaridades?.luz || currentCard.polaridades?.sombra) && (
+                        <p>
+                          <strong>Luz/Sombra:</strong>{' '}
+                          {currentCard.polaridades?.luz || currentCard.significado.vertical.curto}
+                          {' | '}
+                          {currentCard.polaridades?.sombra ||
+                            currentCard.significado.invertido.curto}
+                        </p>
+                      )}
+                      {currentCard.corte && (
+                        <p>
+                          <strong>Corte:</strong> {currentCard.corte.titulo} -{' '}
+                          {currentCard.corte.descricao}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="teleprompter-info-toggle-row">
               <button
@@ -1310,38 +1316,36 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
               >
                 ⋯
               </button>
-              <div
-                id="teleprompter-actions-extra"
-                className="teleprompter-actions-extra"
-                hidden={!isActionControlsExpanded}
-              >
-                <button className="secondary" onClick={() => adjustWpm(-1)}>
-                  -1 WPM
-                </button>
-                <button className="secondary" onClick={() => adjustWpm(1)}>
-                  +1 WPM
-                </button>
-                <button className="secondary" onClick={syncToActiveParagraph}>
-                  Sincronizar
-                </button>
-                <button className="secondary" onClick={toggleVoiceControl}>
-                  Voz: {voiceStatus === 'listening' ? 'ON' : 'OFF'}
-                </button>
-                <button className="secondary" onClick={() => fileInputRef.current?.click()}>
-                  Importar TXT/MD
-                </button>
-                <button className="secondary" onClick={handleExportScript}>
-                  Exportar roteiro
-                </button>
-                <button className="secondary" onClick={enterFullscreen}>
-                  Tela cheia
-                </button>
-                {isFullscreen && (
-                  <button className="secondary" onClick={exitFullscreen}>
-                    Sair da tela cheia
+              {isActionControlsExpanded && (
+                <div id="teleprompter-actions-extra" className="teleprompter-actions-extra">
+                  <button className="secondary" onClick={() => adjustWpm(-1)}>
+                    -1 WPM
                   </button>
-                )}
-              </div>
+                  <button className="secondary" onClick={() => adjustWpm(1)}>
+                    +1 WPM
+                  </button>
+                  <button className="secondary" onClick={syncToActiveParagraph}>
+                    Sincronizar
+                  </button>
+                  <button className="secondary" onClick={toggleVoiceControl}>
+                    Voz: {voiceStatus === 'listening' ? 'ON' : 'OFF'}
+                  </button>
+                  <button className="secondary" onClick={() => fileInputRef.current?.click()}>
+                    Importar TXT/MD
+                  </button>
+                  <button className="secondary" onClick={handleExportScript}>
+                    Exportar roteiro
+                  </button>
+                  <button className="secondary" onClick={enterFullscreen}>
+                    Tela cheia
+                  </button>
+                  {isFullscreen && (
+                    <button className="secondary" onClick={exitFullscreen}>
+                      Sair da tela cheia
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="wpm-slider-wrap">

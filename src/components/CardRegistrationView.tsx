@@ -305,6 +305,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
   const [cloudSyncMessage, setCloudSyncMessage] = useState('')
   const [isPanelExpanded, setIsPanelExpanded] = useState(false)
   const [showCaptureGuidance, setShowCaptureGuidance] = useState(true)
+  const [cloudUploadKick, setCloudUploadKick] = useState(0)
   const importInputRef = useRef<HTMLInputElement>(null)
 
   const {
@@ -659,6 +660,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
         } catch (err) {
           console.error('Erro ao sincronizar capturas no IndexedDB:', err)
           setLocalSyncState('error')
+          setFeedback('Falha ao salvar capturas localmente. Verifique espaço do navegador.')
         }
       })()
     }, 250)
@@ -731,7 +733,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
       window.clearInterval(intervalId)
       window.removeEventListener('online', runQueueSafe)
     }
-  }, [cards, dropLocalUploadedSample, isHydratingCaptures])
+  }, [cards, cloudUploadKick, dropLocalUploadedSample, isHydratingCaptures])
 
   useEffect(() => {
     if (!selectedCardId && cards.length > 0) {
@@ -877,6 +879,9 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
       const blob = await captureFromVideo(videoRef.current)
       saveCapture(blob)
       setFeedback('Foto capturada com sucesso.')
+      window.setTimeout(() => {
+        setCloudUploadKick(previous => previous + 1)
+      }, 450)
     } catch (err) {
       console.error(err)
       setFeedback(err instanceof Error ? err.message : 'Falha ao capturar foto.')
@@ -1029,6 +1034,9 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
 
     setFeedback(parts.join(' | '))
     setIsImporting(false)
+    window.setTimeout(() => {
+      setCloudUploadKick(previous => previous + 1)
+    }, 450)
   }
 
   const removeLastCapture = () => {

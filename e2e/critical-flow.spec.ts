@@ -17,6 +17,7 @@ test.describe('Fluxo crítico do app Taro', () => {
 
     await page.getByRole('button', { name: /Uma Carta/ }).click()
     await page.getByRole('button', { name: /Mostrar funções/ }).click()
+    await page.getByRole('button', { name: 'Mostrar controles extras' }).click()
 
     const manualSelect = page.locator('#manual-card')
     await expect(manualSelect).toBeVisible()

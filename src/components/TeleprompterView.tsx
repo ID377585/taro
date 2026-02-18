@@ -1273,7 +1273,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
               </div>
             </div>
 
-            <div className="teleprompter-actions">
+            <div className="teleprompter-info-toggle-row">
               <button
                 type="button"
                 className={`secondary tp-reading-info-toggle${
@@ -1290,6 +1290,9 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
               >
                 ⋯
               </button>
+            </div>
+
+            <div className="teleprompter-actions">
               <button onClick={() => setIsScrolling(prev => !prev)}>
                 {isScrolling ? 'Pausar rolagem' : 'Iniciar rolagem'}
               </button>

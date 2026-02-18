@@ -175,6 +175,11 @@
   margin-bottom: 0.35rem;
 }
 
+.teleprompter-info-toggle-row {
+  display: flex;
+  margin-bottom: 0.35rem;
+}
+
 .teleprompter-actions {
   display: flex;
   gap: 0.5rem;

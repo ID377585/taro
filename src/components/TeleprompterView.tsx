@@ -258,6 +258,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
   const [capturingShortcut, setCapturingShortcut] = useState<ShortcutAction | null>(null)
   const [showAdvancedPanel, setShowAdvancedPanel] = useState(false)
   const [isPanelExpanded, setIsPanelExpanded] = useState(false)
+  const [isReadingInfoExpanded, setIsReadingInfoExpanded] = useState(false)
   const [isActionControlsExpanded, setIsActionControlsExpanded] = useState(false)
   const [isExtraControlsExpanded, setIsExtraControlsExpanded] = useState(false)
   const [controlFeedback, setControlFeedback] = useState('')
@@ -1199,74 +1200,96 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
 
         {isPanelExpanded && (
           <div id="teleprompter-panel-content" className="text-overlay-content">
-            <div className="teleprompter-topline">
-              <div>
-                <h2>{currentPosition?.nome || 'Posição'}</h2>
-                <p className="position-desc">{currentPosition?.descricao}</p>
-                {consultationSummary && (
-                  <p className="reading-context">{consultationSummary}</p>
-                )}
-              </div>
-              <div className="topline-meta">
-                <span>{progressLabel}</span>
-                <span>WPM: {settings.wpm}</span>
-                <span>Tempo: {formatTime(elapsedSeconds)}</span>
-                {countdownRemainingSeconds > 0 && (
-                  <span>Restante: {formatTime(countdownRemainingSeconds)}</span>
-                )}
-              </div>
-            </div>
-
-            <div className="card-info">
-              <h1>{currentCard?.nome || 'Aguardando carta...'}</h1>
-              <p className="status">
-                {currentDrawn
-                  ? `Orientação ${currentDrawn.isReversed ? 'Invertida' : 'Vertical'}`
-                  : 'Nenhuma carta registrada nesta posição'}
-              </p>
-              <p className="recognition-hint">{recognitionHint}</p>
-              {currentCard && (
-                <div className="card-meta">
-                  <p>
-                    <strong>Arcano:</strong> {formatArcanoLabel(currentCard)}{' '}
-                    {currentCard.arcanoDescricao ? `- ${currentCard.arcanoDescricao}` : ''}
-                  </p>
-                  <p>
-                    <strong>Naipe/Elemento:</strong> {formatNaipeElementLabel(currentCard)}
-                    {currentCard.elemento ? ` - ${currentCard.elemento.descricao}` : ''}
-                  </p>
-                  {currentCard.representacao && (
-                    <p>
-                      <strong>Representa:</strong> {currentCard.representacao}
-                    </p>
-                  )}
-                  {currentCard.numerologia && (
-                    <p>
-                      <strong>Numerologia:</strong> {currentCard.numerologia.valor} (
-                      {currentCard.numerologia.titulo}) -{' '}
-                      {currentCard.numerologia.descricao}
-                    </p>
-                  )}
-                  {(currentCard.polaridades?.luz || currentCard.polaridades?.sombra) && (
-                    <p>
-                      <strong>Luz/Sombra:</strong>{' '}
-                      {currentCard.polaridades?.luz || currentCard.significado.vertical.curto}
-                      {' | '}
-                      {currentCard.polaridades?.sombra ||
-                        currentCard.significado.invertido.curto}
-                    </p>
-                  )}
-                  {currentCard.corte && (
-                    <p>
-                      <strong>Corte:</strong> {currentCard.corte.titulo} -{' '}
-                      {currentCard.corte.descricao}
-                    </p>
+            <div
+              id="teleprompter-reading-info"
+              className="teleprompter-reading-info"
+              hidden={!isReadingInfoExpanded}
+            >
+              <div className="teleprompter-topline">
+                <div>
+                  <h2>{currentPosition?.nome || 'Posição'}</h2>
+                  <p className="position-desc">{currentPosition?.descricao}</p>
+                  {consultationSummary && (
+                    <p className="reading-context">{consultationSummary}</p>
                   )}
                 </div>
-              )}
+                <div className="topline-meta">
+                  <span>{progressLabel}</span>
+                  <span>WPM: {settings.wpm}</span>
+                  <span>Tempo: {formatTime(elapsedSeconds)}</span>
+                  {countdownRemainingSeconds > 0 && (
+                    <span>Restante: {formatTime(countdownRemainingSeconds)}</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="card-info">
+                <h1>{currentCard?.nome || 'Aguardando carta...'}</h1>
+                <p className="status">
+                  {currentDrawn
+                    ? `Orientação ${currentDrawn.isReversed ? 'Invertida' : 'Vertical'}`
+                    : 'Nenhuma carta registrada nesta posição'}
+                </p>
+                <p className="recognition-hint">{recognitionHint}</p>
+                {currentCard && (
+                  <div className="card-meta">
+                    <p>
+                      <strong>Arcano:</strong> {formatArcanoLabel(currentCard)}{' '}
+                      {currentCard.arcanoDescricao ? `- ${currentCard.arcanoDescricao}` : ''}
+                    </p>
+                    <p>
+                      <strong>Naipe/Elemento:</strong> {formatNaipeElementLabel(currentCard)}
+                      {currentCard.elemento ? ` - ${currentCard.elemento.descricao}` : ''}
+                    </p>
+                    {currentCard.representacao && (
+                      <p>
+                        <strong>Representa:</strong> {currentCard.representacao}
+                      </p>
+                    )}
+                    {currentCard.numerologia && (
+                      <p>
+                        <strong>Numerologia:</strong> {currentCard.numerologia.valor} (
+                        {currentCard.numerologia.titulo}) -{' '}
+                        {currentCard.numerologia.descricao}
+                      </p>
+                    )}
+                    {(currentCard.polaridades?.luz || currentCard.polaridades?.sombra) && (
+                      <p>
+                        <strong>Luz/Sombra:</strong>{' '}
+                        {currentCard.polaridades?.luz || currentCard.significado.vertical.curto}
+                        {' | '}
+                        {currentCard.polaridades?.sombra ||
+                          currentCard.significado.invertido.curto}
+                      </p>
+                    )}
+                    {currentCard.corte && (
+                      <p>
+                        <strong>Corte:</strong> {currentCard.corte.titulo} -{' '}
+                        {currentCard.corte.descricao}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="teleprompter-actions">
+              <button
+                type="button"
+                className={`secondary tp-reading-info-toggle${
+                  isReadingInfoExpanded ? ' active' : ''
+                }`}
+                onClick={() => setIsReadingInfoExpanded(prev => !prev)}
+                aria-expanded={isReadingInfoExpanded}
+                aria-controls="teleprompter-reading-info"
+                aria-label={
+                  isReadingInfoExpanded
+                    ? 'Ocultar informações da tiragem'
+                    : 'Mostrar informações da tiragem'
+                }
+              >
+                ⋯
+              </button>
               <button onClick={() => setIsScrolling(prev => !prev)}>
                 {isScrolling ? 'Pausar rolagem' : 'Iniciar rolagem'}
               </button>

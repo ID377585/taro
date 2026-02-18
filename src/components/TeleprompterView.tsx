@@ -257,6 +257,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
   const [capturingShortcut, setCapturingShortcut] = useState<ShortcutAction | null>(null)
   const [showAdvancedPanel, setShowAdvancedPanel] = useState(false)
   const [isPanelExpanded, setIsPanelExpanded] = useState(false)
+  const [isExtraControlsExpanded, setIsExtraControlsExpanded] = useState(false)
   const [controlFeedback, setControlFeedback] = useState('')
   const [synthesisText, setSynthesisText] = useState('')
   const [currentPositionIndex, setCurrentPositionIndex] = useState(0)
@@ -1333,411 +1334,430 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
               </div>
             </div>
 
-            <details className="script-editor">
-              <summary>Editor de roteiro e anotações</summary>
-              <p>
-                Use <code>[[texto]]</code> para destaque e <code>((nota))</code> para
-                comentário privado.
-              </p>
-              <textarea
-                value={scriptText}
-                onChange={event => handleScriptChange(event.target.value)}
-              />
-              <div className="script-editor-actions">
-                <button className="secondary" onClick={handleResetAutoScript}>
-                  Usar roteiro automático
-                </button>
-                <button
-                  className="secondary"
-                  onClick={() => {
-                    const container = scriptWindowRef.current
-                    if (container) container.scrollTo({ top: 0, behavior: 'smooth' })
-                  }}
-                >
-                  Ir para início
-                </button>
-                <button
-                  className="secondary"
-                  onClick={() => {
-                    const container = scriptWindowRef.current
-                    if (container) {
-                      container.scrollTo({
-                        top: container.scrollHeight,
-                        behavior: 'smooth',
-                      })
-                    }
-                  }}
-                >
-                  Ir para fim
-                </button>
-              </div>
-            </details>
-
-            <div className="manual-controls">
-              <label htmlFor="manual-card">Selecionar carta manualmente</label>
-              <div className="manual-row">
-                <select
-                  id="manual-card"
-                  value={manualCardId}
-                  onChange={event => setManualCardId(event.target.value)}
-                >
-                  <option value="">Selecione</option>
-                  {cards.map(card => (
-                    <option key={card.id} value={card.id}>
-                      {card.nome}
-                    </option>
-                  ))}
-                </select>
-
-                <button
-                  className={manualIsReversed ? 'secondary active' : 'secondary'}
-                  onClick={() => setManualIsReversed(prev => !prev)}
-                >
-                  {manualIsReversed ? 'Invertida' : 'Vertical'}
-                </button>
-                <button onClick={handleManualConfirm}>Registrar</button>
-              </div>
-            </div>
-
-            <CardRecognizer
-              enabled={recognitionEnabled}
-              onToggle={() => setRecognitionEnabled(prev => !prev)}
-            />
-
-            <div className="controls">
-              <button className="secondary" onClick={goPrevious}>
-                ← Posição anterior
-              </button>
+            <div className="tp-extra-controls-toggle-wrap">
               <button
-                className="secondary"
-                onClick={goNext}
-                disabled={currentPositionIndex >= spread.positions.length - 1}
+                type="button"
+                className={`tp-extra-controls-toggle${
+                  isExtraControlsExpanded ? ' expanded' : ''
+                }`}
+                onClick={() => setIsExtraControlsExpanded(prev => !prev)}
+                aria-expanded={isExtraControlsExpanded}
+                aria-controls="tp-extra-controls"
+                aria-label={
+                  isExtraControlsExpanded ? 'Ocultar controles extras' : 'Mostrar controles extras'
+                }
               >
-                Próxima posição →
-              </button>
-              <button
-                className={autoAdvance ? 'secondary active' : 'secondary'}
-                onClick={() => setAutoAdvance(prev => !prev)}
-              >
-                Autoavanço: {autoAdvance ? 'ON' : 'OFF'}
-              </button>
-              <button
-                className="secondary"
-                onClick={() => setShowAdvancedPanel(prev => !prev)}
-              >
-                Ajustes avançados
-              </button>
-              <button className="secondary" onClick={onBack}>
-                Voltar
+                <span aria-hidden="true">⋯</span>
               </button>
             </div>
 
-            {showAdvancedPanel && (
-              <div className="advanced-panel">
-                <h3>Ajustes Profissionais</h3>
-
-                <div className="advanced-grid">
-                  <label>
-                    Fonte
-                    <select
-                      value={settings.fontFamily}
-                      onChange={event =>
-                        setSettings(prev => ({ ...prev, fontFamily: event.target.value }))
+            <div id="tp-extra-controls" className="tp-extra-controls" hidden={!isExtraControlsExpanded}>
+              <details className="script-editor">
+                <summary>Editor de roteiro e anotações</summary>
+                <p>
+                  Use <code>[[texto]]</code> para destaque e <code>((nota))</code> para
+                  comentário privado.
+                </p>
+                <textarea
+                  value={scriptText}
+                  onChange={event => handleScriptChange(event.target.value)}
+                />
+                <div className="script-editor-actions">
+                  <button className="secondary" onClick={handleResetAutoScript}>
+                    Usar roteiro automático
+                  </button>
+                  <button
+                    className="secondary"
+                    onClick={() => {
+                      const container = scriptWindowRef.current
+                      if (container) container.scrollTo({ top: 0, behavior: 'smooth' })
+                    }}
+                  >
+                    Ir para início
+                  </button>
+                  <button
+                    className="secondary"
+                    onClick={() => {
+                      const container = scriptWindowRef.current
+                      if (container) {
+                        container.scrollTo({
+                          top: container.scrollHeight,
+                          behavior: 'smooth',
+                        })
                       }
-                    >
-                      {FONT_OPTIONS.map(option => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-
-                  <label>
-                    Tamanho da fonte: {settings.fontSize}px
-                    <input
-                      type="range"
-                      min={24}
-                      max={80}
-                      step={1}
-                      value={settings.fontSize}
-                      onChange={event =>
-                        setSettings(prev => ({
-                          ...prev,
-                          fontSize: Number(event.target.value),
-                        }))
-                      }
-                    />
-                  </label>
-
-                  <label>
-                    Espaçamento de linha: {settings.lineHeight.toFixed(2)}
-                    <input
-                      type="range"
-                      min={1.1}
-                      max={2.3}
-                      step={0.01}
-                      value={settings.lineHeight}
-                      onChange={event =>
-                        setSettings(prev => ({
-                          ...prev,
-                          lineHeight: Number(event.target.value),
-                        }))
-                      }
-                    />
-                  </label>
-
-                  <label>
-                    Largura do texto: {settings.maxTextWidth}%
-                    <input
-                      type="range"
-                      min={50}
-                      max={100}
-                      step={1}
-                      value={settings.maxTextWidth}
-                      onChange={event =>
-                        setSettings(prev => ({
-                          ...prev,
-                          maxTextWidth: Number(event.target.value),
-                        }))
-                      }
-                    />
-                  </label>
-
-                  <label>
-                    Alinhamento
-                    <select
-                      value={settings.textAlign}
-                      onChange={event =>
-                        setSettings(prev => ({
-                          ...prev,
-                          textAlign: event.target.value as TextAlignMode,
-                        }))
-                      }
-                    >
-                      <option value="left">Esquerda</option>
-                      <option value="center">Centro</option>
-                      <option value="right">Direita</option>
-                    </select>
-                  </label>
-
-                  <label>
-                    Cor do texto
-                    <input
-                      type="color"
-                      value={settings.textColor}
-                      onChange={event =>
-                        setSettings(prev => ({ ...prev, textColor: event.target.value }))
-                      }
-                    />
-                  </label>
-
-                  <label>
-                    Cor de fundo
-                    <input
-                      type="color"
-                      value={settings.backgroundColor}
-                      onChange={event =>
-                        setSettings(prev => ({
-                          ...prev,
-                          backgroundColor: event.target.value,
-                        }))
-                      }
-                    />
-                  </label>
-
-                  <label>
-                    Resolução da câmera
-                    <select
-                      value={settings.resolutionPreset}
-                      onChange={event =>
-                        setSettings(prev => ({
-                          ...prev,
-                          resolutionPreset: event.target.value as ResolutionPreset,
-                        }))
-                      }
-                    >
-                      <option value="high">Alta (1280x720)</option>
-                      <option value="medium">Média (960x540)</option>
-                      <option value="low">Baixa (640x480)</option>
-                    </select>
-                  </label>
-
-                  <label>
-                    Escala de render: {settings.renderScale.toFixed(2)}
-                    <input
-                      type="range"
-                      min={0.75}
-                      max={1}
-                      step={0.01}
-                      value={settings.renderScale}
-                      onChange={event =>
-                        setSettings(prev => ({
-                          ...prev,
-                          renderScale: Number(event.target.value),
-                        }))
-                      }
-                    />
-                  </label>
-
-                  <label>
-                    Intervalo inferência: {settings.recognitionIntervalMs}ms
-                    <input
-                      type="range"
-                      min={120}
-                      max={700}
-                      step={10}
-                      value={settings.recognitionIntervalMs}
-                      onChange={event =>
-                        setSettings(prev => ({
-                          ...prev,
-                          recognitionIntervalMs: Number(event.target.value),
-                        }))
-                      }
-                    />
-                  </label>
-
-                  <label>
-                    Confiança mínima: {(settings.recognitionThreshold * 100).toFixed(0)}%
-                    <input
-                      type="range"
-                      min={0.5}
-                      max={0.99}
-                      step={0.01}
-                      value={settings.recognitionThreshold}
-                      onChange={event =>
-                        setSettings(prev => ({
-                          ...prev,
-                          recognitionThreshold: Number(event.target.value),
-                        }))
-                      }
-                    />
-                  </label>
-
-                  <label>
-                    Votos mínimos: {settings.recognitionMinVotes}
-                    <input
-                      type="range"
-                      min={1}
-                      max={6}
-                      step={1}
-                      value={settings.recognitionMinVotes}
-                      onChange={event =>
-                        setSettings(prev => ({
-                          ...prev,
-                          recognitionMinVotes: Number(event.target.value),
-                        }))
-                      }
-                    />
-                  </label>
-
-                  <label>
-                    Cronômetro (minutos)
-                    <input
-                      type="number"
-                      min={0}
-                      value={countdownMinutes}
-                      onChange={event => setCountdownMinutes(Number(event.target.value))}
-                    />
-                    <button
-                      className="secondary"
-                      type="button"
-                      onClick={handleApplyCountdown}
-                    >
-                      Aplicar
-                    </button>
-                  </label>
+                    }}
+                  >
+                    Ir para fim
+                  </button>
                 </div>
+              </details>
 
-                <div className="toggle-grid">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={settings.highVisibility}
-                      onChange={event =>
-                        setSettings(prev => ({
-                          ...prev,
-                          highVisibility: event.target.checked,
-                        }))
-                      }
-                    />
-                    Modo alta visibilidade
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={settings.flipHorizontal}
-                      onChange={event =>
-                        setSettings(prev => ({
-                          ...prev,
-                          flipHorizontal: event.target.checked,
-                        }))
-                      }
-                    />
-                    Flip horizontal
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={settings.flipVertical}
-                      onChange={event =>
-                        setSettings(prev => ({
-                          ...prev,
-                          flipVertical: event.target.checked,
-                        }))
-                      }
-                    />
-                    Flip vertical
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={settings.highlightLine}
-                      onChange={event =>
-                        setSettings(prev => ({
-                          ...prev,
-                          highlightLine: event.target.checked,
-                        }))
-                      }
-                    />
-                    Realce da linha atual
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={settings.smoothAcceleration}
-                      onChange={event =>
-                        setSettings(prev => ({
-                          ...prev,
-                          smoothAcceleration: event.target.checked,
-                        }))
-                      }
-                    />
-                    Aceleração suave
-                  </label>
-                </div>
-
-                <div className="shortcut-panel">
-                  <h4>Atalhos (teclado / pedal Bluetooth)</h4>
-                  <div className="shortcut-grid">
-                    {(Object.keys(shortcuts) as ShortcutAction[]).map(action => (
-                      <div key={action} className="shortcut-item">
-                        <span>{action}</span>
-                        <button
-                          className="secondary"
-                          type="button"
-                          onClick={() => setCapturingShortcut(action)}
-                        >
-                          {capturingShortcut === action
-                            ? 'Pressione tecla...'
-                            : formatShortcut(shortcuts[action])}
-                        </button>
-                      </div>
+              <div className="manual-controls">
+                <label htmlFor="manual-card">Selecionar carta manualmente</label>
+                <div className="manual-row">
+                  <select
+                    id="manual-card"
+                    value={manualCardId}
+                    onChange={event => setManualCardId(event.target.value)}
+                  >
+                    <option value="">Selecione</option>
+                    {cards.map(card => (
+                      <option key={card.id} value={card.id}>
+                        {card.nome}
+                      </option>
                     ))}
+                  </select>
+
+                  <button
+                    className={manualIsReversed ? 'secondary active' : 'secondary'}
+                    onClick={() => setManualIsReversed(prev => !prev)}
+                  >
+                    {manualIsReversed ? 'Invertida' : 'Vertical'}
+                  </button>
+                  <button onClick={handleManualConfirm}>Registrar</button>
+                </div>
+              </div>
+
+              <CardRecognizer
+                enabled={recognitionEnabled}
+                onToggle={() => setRecognitionEnabled(prev => !prev)}
+              />
+
+              <div className="controls">
+                <button className="secondary" onClick={goPrevious}>
+                  ← Posição anterior
+                </button>
+                <button
+                  className="secondary"
+                  onClick={goNext}
+                  disabled={currentPositionIndex >= spread.positions.length - 1}
+                >
+                  Próxima posição →
+                </button>
+                <button
+                  className={autoAdvance ? 'secondary active' : 'secondary'}
+                  onClick={() => setAutoAdvance(prev => !prev)}
+                >
+                  Autoavanço: {autoAdvance ? 'ON' : 'OFF'}
+                </button>
+                <button
+                  className="secondary"
+                  onClick={() => setShowAdvancedPanel(prev => !prev)}
+                >
+                  Ajustes avançados
+                </button>
+                <button className="secondary" onClick={onBack}>
+                  Voltar
+                </button>
+              </div>
+
+              {showAdvancedPanel && (
+                <div className="advanced-panel">
+                  <h3>Ajustes Profissionais</h3>
+
+                  <div className="advanced-grid">
+                    <label>
+                      Fonte
+                      <select
+                        value={settings.fontFamily}
+                        onChange={event =>
+                          setSettings(prev => ({ ...prev, fontFamily: event.target.value }))
+                        }
+                      >
+                        {FONT_OPTIONS.map(option => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label>
+                      Tamanho da fonte: {settings.fontSize}px
+                      <input
+                        type="range"
+                        min={24}
+                        max={80}
+                        step={1}
+                        value={settings.fontSize}
+                        onChange={event =>
+                          setSettings(prev => ({
+                            ...prev,
+                            fontSize: Number(event.target.value),
+                          }))
+                        }
+                      />
+                    </label>
+
+                    <label>
+                      Espaçamento de linha: {settings.lineHeight.toFixed(2)}
+                      <input
+                        type="range"
+                        min={1.1}
+                        max={2.3}
+                        step={0.01}
+                        value={settings.lineHeight}
+                        onChange={event =>
+                          setSettings(prev => ({
+                            ...prev,
+                            lineHeight: Number(event.target.value),
+                          }))
+                        }
+                      />
+                    </label>
+
+                    <label>
+                      Largura do texto: {settings.maxTextWidth}%
+                      <input
+                        type="range"
+                        min={50}
+                        max={100}
+                        step={1}
+                        value={settings.maxTextWidth}
+                        onChange={event =>
+                          setSettings(prev => ({
+                            ...prev,
+                            maxTextWidth: Number(event.target.value),
+                          }))
+                        }
+                      />
+                    </label>
+
+                    <label>
+                      Alinhamento
+                      <select
+                        value={settings.textAlign}
+                        onChange={event =>
+                          setSettings(prev => ({
+                            ...prev,
+                            textAlign: event.target.value as TextAlignMode,
+                          }))
+                        }
+                      >
+                        <option value="left">Esquerda</option>
+                        <option value="center">Centro</option>
+                        <option value="right">Direita</option>
+                      </select>
+                    </label>
+
+                    <label>
+                      Cor do texto
+                      <input
+                        type="color"
+                        value={settings.textColor}
+                        onChange={event =>
+                          setSettings(prev => ({ ...prev, textColor: event.target.value }))
+                        }
+                      />
+                    </label>
+
+                    <label>
+                      Cor de fundo
+                      <input
+                        type="color"
+                        value={settings.backgroundColor}
+                        onChange={event =>
+                          setSettings(prev => ({
+                            ...prev,
+                            backgroundColor: event.target.value,
+                          }))
+                        }
+                      />
+                    </label>
+
+                    <label>
+                      Resolução da câmera
+                      <select
+                        value={settings.resolutionPreset}
+                        onChange={event =>
+                          setSettings(prev => ({
+                            ...prev,
+                            resolutionPreset: event.target.value as ResolutionPreset,
+                          }))
+                        }
+                      >
+                        <option value="high">Alta (1280x720)</option>
+                        <option value="medium">Média (960x540)</option>
+                        <option value="low">Baixa (640x480)</option>
+                      </select>
+                    </label>
+
+                    <label>
+                      Escala de render: {settings.renderScale.toFixed(2)}
+                      <input
+                        type="range"
+                        min={0.75}
+                        max={1}
+                        step={0.01}
+                        value={settings.renderScale}
+                        onChange={event =>
+                          setSettings(prev => ({
+                            ...prev,
+                            renderScale: Number(event.target.value),
+                          }))
+                        }
+                      />
+                    </label>
+
+                    <label>
+                      Intervalo inferência: {settings.recognitionIntervalMs}ms
+                      <input
+                        type="range"
+                        min={120}
+                        max={700}
+                        step={10}
+                        value={settings.recognitionIntervalMs}
+                        onChange={event =>
+                          setSettings(prev => ({
+                            ...prev,
+                            recognitionIntervalMs: Number(event.target.value),
+                          }))
+                        }
+                      />
+                    </label>
+
+                    <label>
+                      Confiança mínima: {(settings.recognitionThreshold * 100).toFixed(0)}%
+                      <input
+                        type="range"
+                        min={0.5}
+                        max={0.99}
+                        step={0.01}
+                        value={settings.recognitionThreshold}
+                        onChange={event =>
+                          setSettings(prev => ({
+                            ...prev,
+                            recognitionThreshold: Number(event.target.value),
+                          }))
+                        }
+                      />
+                    </label>
+
+                    <label>
+                      Votos mínimos: {settings.recognitionMinVotes}
+                      <input
+                        type="range"
+                        min={1}
+                        max={6}
+                        step={1}
+                        value={settings.recognitionMinVotes}
+                        onChange={event =>
+                          setSettings(prev => ({
+                            ...prev,
+                            recognitionMinVotes: Number(event.target.value),
+                          }))
+                        }
+                      />
+                    </label>
+
+                    <label>
+                      Cronômetro (minutos)
+                      <input
+                        type="number"
+                        min={0}
+                        value={countdownMinutes}
+                        onChange={event => setCountdownMinutes(Number(event.target.value))}
+                      />
+                      <button
+                        className="secondary"
+                        type="button"
+                        onClick={handleApplyCountdown}
+                      >
+                        Aplicar
+                      </button>
+                    </label>
+                  </div>
+
+                  <div className="toggle-grid">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={settings.highVisibility}
+                        onChange={event =>
+                          setSettings(prev => ({
+                            ...prev,
+                            highVisibility: event.target.checked,
+                          }))
+                        }
+                      />
+                      Modo alta visibilidade
+                    </label>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={settings.flipHorizontal}
+                        onChange={event =>
+                          setSettings(prev => ({
+                            ...prev,
+                            flipHorizontal: event.target.checked,
+                          }))
+                        }
+                      />
+                      Flip horizontal
+                    </label>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={settings.flipVertical}
+                        onChange={event =>
+                          setSettings(prev => ({
+                            ...prev,
+                            flipVertical: event.target.checked,
+                          }))
+                        }
+                      />
+                      Flip vertical
+                    </label>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={settings.highlightLine}
+                        onChange={event =>
+                          setSettings(prev => ({
+                            ...prev,
+                            highlightLine: event.target.checked,
+                          }))
+                        }
+                      />
+                      Realce da linha atual
+                    </label>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={settings.smoothAcceleration}
+                        onChange={event =>
+                          setSettings(prev => ({
+                            ...prev,
+                            smoothAcceleration: event.target.checked,
+                          }))
+                        }
+                      />
+                      Aceleração suave
+                    </label>
+                  </div>
+
+                  <div className="shortcut-panel">
+                    <h4>Atalhos (teclado / pedal Bluetooth)</h4>
+                    <div className="shortcut-grid">
+                      {(Object.keys(shortcuts) as ShortcutAction[]).map(action => (
+                        <div key={action} className="shortcut-item">
+                          <span>{action}</span>
+                          <button
+                            className="secondary"
+                            type="button"
+                            onClick={() => setCapturingShortcut(action)}
+                          >
+                            {capturingShortcut === action
+                              ? 'Pressione tecla...'
+                              : formatShortcut(shortcuts[action])}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             <div className="session-footer">
               <button onClick={handleSaveSession} disabled={isSaving || completion === 0}>

@@ -205,6 +205,36 @@
   transform-origin: top center;
 }
 
+.tp-extra-controls-toggle-wrap {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tp-extra-controls-toggle {
+  width: 2.45rem;
+  height: 2.45rem;
+  border-radius: 999px;
+  border: 2px solid #7c3aed;
+  background-color: transparent;
+  color: #c4b5fd;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.tp-extra-controls-toggle.expanded {
+  background-color: rgba(124, 58, 237, 0.2);
+}
+
+.tp-extra-controls {
+  margin-top: 0.1rem;
+}
+
 .script-window.flip-horizontal .script-content {
   transform: scaleX(-1);
 }

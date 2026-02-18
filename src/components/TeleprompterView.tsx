@@ -509,10 +509,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
   const {
     status,
     error: recognitionError,
-    lastResult,
     resetLastConfirmation,
-    labelDiagnostics,
-    modelDiagnostics,
     localDiagnostics,
   } = useCardRecognition({
     videoRef,
@@ -1403,14 +1400,8 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
             </div>
 
             <CardRecognizer
-              status={status}
-              error={recognitionError}
               enabled={recognitionEnabled}
               onToggle={() => setRecognitionEnabled(prev => !prev)}
-              lastResult={lastResult}
-              labelDiagnostics={labelDiagnostics}
-              modelDiagnostics={modelDiagnostics}
-              localDiagnostics={localDiagnostics}
             />
 
             <div className="controls">

@@ -6,6 +6,10 @@
   background-color: rgba(36, 36, 36, 0.85);
 }
 
+.recognizer-panel--compact {
+  padding: 0.6rem 0.8rem;
+}
+
 .recognizer-header {
   display: flex;
   justify-content: space-between;

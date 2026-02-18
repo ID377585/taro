@@ -3,6 +3,7 @@ import { Card } from '../types'
 import { useCamera } from '../hooks/useCamera'
 import { normalizeLabelValue } from '../services/labelService'
 import {
+  buildCaptureUploadId,
   CardCaptureOrientation,
   dbService,
   PersistedCardCaptureRecord,
@@ -15,6 +16,7 @@ import {
   getCaptureCloudConfigStatus,
   processCaptureUploadQueue,
   enqueueCardCaptureRecordUploads,
+  uploadCaptureBlobDirect,
 } from '../services/captureUploadService'
 import CameraView from './CameraView'
 import './CardRegistrationView.css'
@@ -59,6 +61,8 @@ const createEmptyBucket = (): CardCaptureBucket => ({
   invertido: [],
 })
 const EMPTY_CAPTURE_COUNTS: UploadedCardCaptureCounts = { vertical: 0, invertido: 0 }
+const DIRECT_UPLOAD_LOCAL_FALLBACK_MESSAGE =
+  'Armazenamento local indisponível neste navegador. Capturas seguem direto para a nuvem.'
 
 const isHeifLike = (name: string, mime: string) => {
   const lowerName = name.toLowerCase()
@@ -271,6 +275,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
   const persistedSnapshotRef = useRef<Map<number, string>>(new Map())
   const uploadedCountsRef = useRef<Record<number, UploadedCardCaptureCounts>>({})
   const isProcessingCloudQueueRef = useRef(false)
+  const directUploadedIdsRef = useRef<Set<string>>(new Set())
 
   const [selectedCardId, setSelectedCardId] = useState<string>('')
   const [orientation, setOrientation] = useState<Orientation>('vertical')
@@ -281,6 +286,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
   const [isExporting, setIsExporting] = useState(false)
   const [isImporting, setIsImporting] = useState(false)
   const [isHydratingCaptures, setIsHydratingCaptures] = useState(true)
+  const [localPersistenceAvailable, setLocalPersistenceAvailable] = useState(true)
   const [localSyncState, setLocalSyncState] = useState<LocalSyncState>('idle')
   const [lastLocalSyncAt, setLastLocalSyncAt] = useState<number | null>(null)
   const [uploadedCountsByCard, setUploadedCountsByCard] = useState<
@@ -366,6 +372,129 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
       localUploadedCountForSelectedCard[targetOrientation],
     [currentBucket, localUploadedCountForSelectedCard],
   )
+
+  const uploadCaptureDirect = useCallback(
+    async ({
+      cardId,
+      cardName,
+      targetOrientation,
+      blob,
+      capturedAt,
+    }: {
+      cardId: number
+      cardName: string
+      targetOrientation: Orientation
+      blob: Blob
+      capturedAt: number
+    }) => {
+      const queueId = buildCaptureUploadId(cardId, targetOrientation, capturedAt, blob.size)
+      if (directUploadedIdsRef.current.has(queueId)) return true
+
+      setCloudSyncState('syncing')
+
+      try {
+        const result = await uploadCaptureBlobDirect({
+          cardId,
+          cardName,
+          orientation: targetOrientation,
+          capturedAt,
+          blob,
+          queueId,
+        })
+
+        if (!result.enabled) {
+          setCloudSyncState('disabled')
+          setCloudSyncMessage(result.message)
+          return false
+        }
+
+        if (!result.uploaded) {
+          setCloudSyncState('error')
+          setCloudSyncMessage(result.message)
+          return false
+        }
+
+        directUploadedIdsRef.current.add(queueId)
+        setCapturesByCard(prev => {
+          const bucket = prev[cardId]
+          if (!bucket) return prev
+
+          const list = bucket[targetOrientation]
+          const index = list.findIndex(
+            item => item.capturedAt === capturedAt && item.blob.size === blob.size,
+          )
+          if (index < 0) return prev
+
+          const removed = list[index]
+          URL.revokeObjectURL(removed.objectUrl)
+          const nextList = [...list.slice(0, index), ...list.slice(index + 1)]
+          const nextBucket: CardCaptureBucket = {
+            ...bucket,
+            [targetOrientation]: nextList,
+          }
+
+          if (isBucketEmpty(nextBucket)) {
+            const next = { ...prev }
+            delete next[cardId]
+            return next
+          }
+
+          return {
+            ...prev,
+            [cardId]: nextBucket,
+          }
+        })
+        setCloudSyncState('idle')
+        setCloudSyncMessage(result.message)
+        setCloudCounterSource('metadata')
+
+        if (String(cardId) === selectedCardId) {
+          const remoteCounter = await fetchRemoteCardCaptureCounts(cardId)
+          if (remoteCounter.available) {
+            setSelectedCardCloudCounts(remoteCounter.counts)
+            setCloudCounterHint(remoteCounter.message)
+            setCloudCounterSource('metadata')
+          }
+        }
+
+        return true
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Falha no upload direto.'
+        setCloudSyncState('error')
+        setCloudSyncMessage(message)
+        return false
+      }
+    },
+    [selectedCardId],
+  )
+
+  const uploadAllInMemoryCapturesDirect = useCallback(async () => {
+    const cardNameById = new Map<number, string>(cards.map(card => [card.id, card.nome]))
+    const snapshot = capturesRef.current
+    let uploadedNow = 0
+    let failedNow = 0
+
+    for (const [cardIdText, bucket] of Object.entries(snapshot)) {
+      const cardId = Number(cardIdText)
+      if (!Number.isFinite(cardId)) continue
+      const cardName = cardNameById.get(cardId) || `card-${cardId}`
+
+      for (const targetOrientation of ['vertical', 'invertido'] as const) {
+        for (const item of bucket[targetOrientation]) {
+          const ok = await uploadCaptureDirect({
+            cardId,
+            cardName,
+            targetOrientation,
+            blob: item.blob,
+            capturedAt: item.capturedAt,
+          })
+          if (ok) uploadedNow += 1
+          else failedNow += 1
+        }
+      }
+    }
+    return { uploadedNow, failedNow }
+  }, [cards, uploadCaptureDirect])
 
   const currentVerticalCount =
     cloudCounterSource === 'metadata'
@@ -519,8 +648,13 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
       } catch (err) {
         console.error('Erro ao carregar capturas salvas:', err)
         if (isMounted) {
-          setFeedback('Não foi possível carregar as capturas salvas no dispositivo.')
+          setLocalPersistenceAvailable(false)
+          setFeedback(DIRECT_UPLOAD_LOCAL_FALLBACK_MESSAGE)
           setLocalSyncState('error')
+          setCloudCounterSource('metadata')
+          setCloudSyncMessage(
+            'IndexedDB indisponível neste navegador. Upload direto para Supabase ativo.',
+          )
         }
       } finally {
         if (isMounted) {
@@ -598,6 +732,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
 
   useEffect(() => {
     if (isHydratingCaptures) return
+    if (!localPersistenceAvailable) return
 
     const timerId = window.setTimeout(() => {
       void (async () => {
@@ -659,8 +794,14 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
           }
         } catch (err) {
           console.error('Erro ao sincronizar capturas no IndexedDB:', err)
+          setLocalPersistenceAvailable(false)
           setLocalSyncState('error')
-          setFeedback('Falha ao salvar capturas localmente. Verifique espaço do navegador.')
+          setCloudCounterSource('metadata')
+          setCloudSyncMessage(
+            'IndexedDB indisponível neste navegador. Upload direto para Supabase ativo.',
+          )
+          setFeedback(DIRECT_UPLOAD_LOCAL_FALLBACK_MESSAGE)
+          void uploadAllInMemoryCapturesDirect()
         }
       })()
     }, 250)
@@ -668,7 +809,12 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
     return () => {
       window.clearTimeout(timerId)
     }
-  }, [capturesByCard, isHydratingCaptures])
+  }, [
+    capturesByCard,
+    isHydratingCaptures,
+    localPersistenceAvailable,
+    uploadAllInMemoryCapturesDirect,
+  ])
 
   useEffect(() => {
     if (isHydratingCaptures) return
@@ -733,7 +879,59 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
       window.clearInterval(intervalId)
       window.removeEventListener('online', runQueueSafe)
     }
-  }, [cards, cloudUploadKick, dropLocalUploadedSample, isHydratingCaptures])
+  }, [
+    cards,
+    cloudUploadKick,
+    dropLocalUploadedSample,
+    isHydratingCaptures,
+    localPersistenceAvailable,
+  ])
+
+  useEffect(() => {
+    if (isHydratingCaptures) return
+    if (localPersistenceAvailable) return
+
+    let isMounted = true
+    let isRunning = false
+
+    const runDirectSync = async () => {
+      if (isRunning) return
+      isRunning = true
+      try {
+        setCloudSyncState('syncing')
+        const result = await uploadAllInMemoryCapturesDirect()
+        if (!isMounted) return
+
+        if (result.failedNow > 0) {
+          setCloudSyncState('error')
+          setCloudSyncMessage(
+            previous =>
+              previous ||
+              'Algumas capturas falharam no upload direto. Tente novamente em rede estável.',
+          )
+        } else {
+          setCloudSyncState('idle')
+          setCloudSyncMessage(previous => previous || 'Upload direto para Supabase ativo.')
+        }
+      } finally {
+        isRunning = false
+      }
+    }
+
+    const runDirectSyncSafe = () => {
+      void runDirectSync()
+    }
+
+    runDirectSyncSafe()
+    const intervalId = window.setInterval(runDirectSyncSafe, 4_000)
+    window.addEventListener('online', runDirectSyncSafe)
+
+    return () => {
+      isMounted = false
+      window.clearInterval(intervalId)
+      window.removeEventListener('online', runDirectSyncSafe)
+    }
+  }, [isHydratingCaptures, localPersistenceAvailable, uploadAllInMemoryCapturesDirect])
 
   useEffect(() => {
     if (!selectedCardId && cards.length > 0) {
@@ -758,7 +956,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
     bucketOverride?: CardCaptureBucket,
   ) => getMetadataBasedCount(targetOrientation, bucketOverride)
 
-  const saveCapture = (blob: Blob) => {
+  const saveCapture = (blob: Blob, capturedAt = Date.now()) => {
     if (!selectedCard) return
 
     setCapturesByCard(prev => {
@@ -776,7 +974,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
         return prev
       }
 
-      const nextItem: CaptureItem = createCaptureItemFromBlob(blob)
+      const nextItem: CaptureItem = createCaptureItemFromBlob(blob, capturedAt)
 
       return {
         ...prev,
@@ -877,11 +1075,24 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
     try {
       await waitForVideoReady(videoRef.current)
       const blob = await captureFromVideo(videoRef.current)
-      saveCapture(blob)
-      setFeedback('Foto capturada com sucesso.')
-      window.setTimeout(() => {
-        setCloudUploadKick(previous => previous + 1)
-      }, 450)
+      const capturedAt = Date.now()
+      saveCapture(blob, capturedAt)
+
+      if (localPersistenceAvailable) {
+        setFeedback('Foto capturada com sucesso.')
+        window.setTimeout(() => {
+          setCloudUploadKick(previous => previous + 1)
+        }, 450)
+      } else {
+        setFeedback('Foto capturada. Enviando direto para a nuvem...')
+        void uploadCaptureDirect({
+          cardId: selectedCard.id,
+          cardName: selectedCard.nome,
+          targetOrientation: orientation,
+          blob,
+          capturedAt,
+        })
+      }
     } catch (err) {
       console.error(err)
       setFeedback(err instanceof Error ? err.message : 'Falha ao capturar foto.')
@@ -998,6 +1209,31 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
     const ignoredCount = Math.max(0, normalizedBlobs.length - addedCount)
     const zipVerticalIgnored = Math.max(0, zipVerticalBlobs.length - zipVerticalAdded)
     const zipInvertedIgnored = Math.max(0, zipInvertedBlobs.length - zipInvertedAdded)
+
+    if (!localPersistenceAvailable && selectedCard) {
+      const directUploadPlan: Array<{ targetOrientation: Orientation; blob: Blob }> = []
+      normalizedBlobs
+        .slice(0, addedCount)
+        .forEach(blob => directUploadPlan.push({ targetOrientation: orientation, blob }))
+      zipVerticalBlobs
+        .slice(0, zipVerticalAdded)
+        .forEach(blob => directUploadPlan.push({ targetOrientation: 'vertical', blob }))
+      zipInvertedBlobs
+        .slice(0, zipInvertedAdded)
+        .forEach(blob => directUploadPlan.push({ targetOrientation: 'invertido', blob }))
+
+      let timestampSeed = Date.now()
+      for (const plan of directUploadPlan) {
+        await uploadCaptureDirect({
+          cardId: selectedCard.id,
+          cardName: selectedCard.nome,
+          targetOrientation: plan.targetOrientation,
+          blob: plan.blob,
+          capturedAt: timestampSeed,
+        })
+        timestampSeed += 1
+      }
+    }
 
     const parts: string[] = []
     if (normalizedBlobs.length > 0) {
@@ -1166,6 +1402,9 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
   }
 
   const localSyncMessage = useMemo(() => {
+    if (!localPersistenceAvailable) {
+      return DIRECT_UPLOAD_LOCAL_FALLBACK_MESSAGE
+    }
     if (localSyncState === 'saving') return 'Sincronizando no armazenamento local...'
     if (localSyncState === 'saved') {
       if (!lastLocalSyncAt) return 'Salvo localmente.'
@@ -1180,7 +1419,7 @@ const CardRegistrationView: FC<CardRegistrationViewProps> = ({ cards, onBack }) 
       return 'Falha ao salvar localmente. Tente novamente.'
     }
     return ''
-  }, [lastLocalSyncAt, localSyncState])
+  }, [lastLocalSyncAt, localPersistenceAvailable, localSyncState])
 
   const cloudSyncStatusClass = useMemo(() => {
     if (cloudSyncState === 'syncing') return 'saving'

@@ -47,6 +47,23 @@ export interface CaptureUploadProcessResult {
   message: string
 }
 
+export interface DirectCaptureUploadInput {
+  cardId: number
+  cardName: string
+  orientation: CardCaptureOrientation
+  capturedAt: number
+  blob: Blob
+  queueId?: string
+}
+
+export interface DirectCaptureUploadResult {
+  enabled: boolean
+  uploaded: boolean
+  queueId: string
+  remotePath: string | null
+  message: string
+}
+
 export interface RemoteCardCaptureCountsResult {
   available: boolean
   counts: UploadedCardCaptureCounts
@@ -88,6 +105,7 @@ interface MetadataTableValidationResult {
 
 let supabaseClient: SupabaseClient | null = null
 let supabaseClientKey = ''
+const metadataSchemaCache: Record<string, MetadataTableValidationResult> = {}
 
 const REQUIRED_METADATA_COLUMNS = [
   'queue_id',
@@ -225,6 +243,32 @@ const validateMetadataTableSchema = async (
     valid: true,
     message: `Tabela ${tableName} validada para metadados de captura.`,
   }
+}
+
+const validateMetadataTableSchemaCached = async (
+  client: SupabaseClient,
+  config: CaptureCloudConfig,
+): Promise<MetadataTableValidationResult> => {
+  if (!config.metadataTable) {
+    return {
+      valid: true,
+      message: 'Tabela de metadata não configurada.',
+    }
+  }
+
+  const cacheKey = `${config.supabaseUrl}|${config.metadataTable}`
+  const cached = metadataSchemaCache[cacheKey]
+  if (cached?.valid) {
+    return cached
+  }
+
+  const validation = await validateMetadataTableSchema(client, config.metadataTable)
+  if (validation.valid) {
+    metadataSchemaCache[cacheKey] = validation
+  } else {
+    delete metadataSchemaCache[cacheKey]
+  }
+  return validation
 }
 
 const upsertCaptureMetadata = async (
@@ -385,7 +429,7 @@ export const processCaptureUploadQueue = async ({
   let metadataValidation: MetadataTableValidationResult | null = null
 
   if (config.metadataTable) {
-    metadataValidation = await validateMetadataTableSchema(client, config.metadataTable)
+    metadataValidation = await validateMetadataTableSchemaCached(client, config)
     if (!metadataValidation.valid) {
       return {
         enabled: true,
@@ -473,6 +517,99 @@ export const processCaptureUploadQueue = async ({
     message: uploadedNow
       ? `${uploadedNow} captura(s) enviada(s) para a nuvem.${metadataValidation ? ` ${metadataValidation.message}` : ''}`
       : `Nenhuma captura enviada nesta rodada.${metadataValidation ? ` ${metadataValidation.message}` : ''}`,
+  }
+}
+
+export const uploadCaptureBlobDirect = async ({
+  cardId,
+  cardName,
+  orientation,
+  capturedAt,
+  blob,
+  queueId,
+}: DirectCaptureUploadInput): Promise<DirectCaptureUploadResult> => {
+  const config = getConfig()
+  const finalQueueId =
+    queueId || buildCaptureUploadId(cardId, orientation, capturedAt, blob.size)
+
+  if (!config.enabled) {
+    return {
+      enabled: false,
+      uploaded: false,
+      queueId: finalQueueId,
+      remotePath: null,
+      message:
+        'Sincronização em nuvem desativada. Configure VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY.',
+    }
+  }
+
+  const client = getSupabaseClient(config)
+  const metadataValidation = await validateMetadataTableSchemaCached(client, config)
+  if (!metadataValidation.valid) {
+    return {
+      enabled: true,
+      uploaded: false,
+      queueId: finalQueueId,
+      remotePath: null,
+      message: metadataValidation.message,
+    }
+  }
+
+  const remotePath = buildRemotePath(
+    config,
+    {
+      id: finalQueueId,
+      cardId,
+      orientation,
+      capturedAt,
+      byteSize: blob.size,
+      mimeType: blob.type || 'image/jpeg',
+      status: 'pending',
+      attempts: 0,
+      nextAttemptAt: capturedAt,
+      createdAt: capturedAt,
+      updatedAt: capturedAt,
+      lastError: null,
+      remotePath: null,
+    },
+    cardName,
+  )
+
+  const { error: uploadError } = await client.storage
+    .from(config.bucket)
+    .upload(remotePath, blob, {
+      upsert: true,
+      contentType: blob.type || 'image/jpeg',
+    })
+  if (uploadError) {
+    return {
+      enabled: true,
+      uploaded: false,
+      queueId: finalQueueId,
+      remotePath: null,
+      message: `Falha no upload para o bucket ${config.bucket}: ${uploadError.message}`,
+    }
+  }
+
+  if (config.metadataTable) {
+    await upsertCaptureMetadata(client, config.metadataTable, {
+      queue_id: finalQueueId,
+      card_id: cardId,
+      orientation,
+      captured_at: new Date(capturedAt).toISOString(),
+      byte_size: blob.size,
+      mime_type: blob.type || 'image/jpeg',
+      storage_path: remotePath,
+      uploaded_at: new Date().toISOString(),
+    })
+  }
+
+  return {
+    enabled: true,
+    uploaded: true,
+    queueId: finalQueueId,
+    remotePath,
+    message: `Captura enviada para nuvem (${config.bucket}/${config.folderPrefix}).`,
   }
 }
 

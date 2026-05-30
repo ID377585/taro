@@ -520,6 +520,42 @@ export class DBService {
     })
   }
 
+  async pruneUploadedCaptureUploads(olderThanMs = 30 * 24 * 60 * 60 * 1000): Promise<number> {
+    if (!this.db) await this.init()
+    const cutoff = Date.now() - olderThanMs
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([CAPTURE_UPLOAD_QUEUE_STORE_NAME], 'readwrite')
+      const store = transaction.objectStore(CAPTURE_UPLOAD_QUEUE_STORE_NAME)
+      const request = store.getAll()
+
+      request.onerror = () => reject(request.error)
+      request.onsuccess = () => {
+        const rows = request.result as CaptureUploadQueueRecord[]
+        const staleRows = rows.filter(
+          row => row.status === 'uploaded' && row.updatedAt > 0 && row.updatedAt < cutoff,
+        )
+
+        if (!staleRows.length) {
+          resolve(0)
+          return
+        }
+
+        let completed = 0
+        staleRows.forEach(row => {
+          const deleteRequest = store.delete(row.id)
+          deleteRequest.onerror = () => reject(deleteRequest.error)
+          deleteRequest.onsuccess = () => {
+            completed += 1
+            if (completed === staleRows.length) {
+              resolve(staleRows.length)
+            }
+          }
+        })
+      }
+    })
+  }
+
   async getCaptureUploadCountsByCard(
     statuses: CaptureUploadStatus[],
   ): Promise<Record<number, UploadedCardCaptureCounts>> {

@@ -17,6 +17,27 @@ interface HistoryRecordsViewProps {
 const formatDate = (timestamp: number) =>
   new Date(timestamp).toLocaleString('pt-BR')
 
+const normalizeText = (value: string) =>
+  value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+
+const getPrimaryClientName = (session: SpreadingSession) =>
+  session.intake?.pessoa1.nomeCompleto || 'Sem nome cadastrado'
+
+const getSecondaryClientName = (session: SpreadingSession) =>
+  session.intake?.tipo === 'sobre-outra-pessoa'
+    ? session.intake.pessoa2?.nomeCompleto || 'Pessoa 2'
+    : ''
+
+const getIntakeDisplayName = (session: SpreadingSession) => {
+  const first = getPrimaryClientName(session)
+  const second = getSecondaryClientName(session)
+  return second ? `${first} + ${second}` : first
+}
+
 const downloadTextFile = (content: string, fileName: string, mimeType: string) => {
   const blob = new Blob([content], { type: mimeType })
   const url = URL.createObjectURL(blob)
@@ -51,6 +72,8 @@ const HistoryRecordsView: FC<HistoryRecordsViewProps> = ({
     sessions[0]?.id || null,
   )
   const [copyFeedback, setCopyFeedback] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [clientFilter, setClientFilter] = useState('all')
   const copyTimerRef = useRef<number | null>(null)
   const reportRef = useRef<HTMLTextAreaElement>(null)
 
@@ -60,13 +83,77 @@ const HistoryRecordsView: FC<HistoryRecordsViewProps> = ({
     [spreads],
   )
 
+  const clientSummaries = useMemo(() => {
+    const map = new Map<string, {
+      name: string
+      normalizedName: string
+      sessions: SpreadingSession[]
+      lastTimestamp: number
+      topics: Set<string>
+    }>()
+
+    sessions.forEach(session => {
+      const name = getPrimaryClientName(session)
+      const normalizedName = normalizeText(name)
+      const key = normalizedName || 'sem-nome'
+      const current = map.get(key) || {
+        name,
+        normalizedName,
+        sessions: [],
+        lastTimestamp: 0,
+        topics: new Set<string>(),
+      }
+
+      current.sessions.push(session)
+      current.lastTimestamp = Math.max(current.lastTimestamp, session.timestamp)
+      if (session.intake?.situacaoPrincipal) {
+        current.topics.add(session.intake.situacaoPrincipal)
+      }
+      map.set(key, current)
+    })
+
+    return Array.from(map.values()).sort((a, b) => b.lastTimestamp - a.lastTimestamp)
+  }, [sessions])
+
+  const filteredSessions = useMemo(() => {
+    const normalizedSearch = normalizeText(searchTerm)
+
+    return sessions.filter(session => {
+      const primary = getPrimaryClientName(session)
+      const secondary = getSecondaryClientName(session)
+      const searchable = normalizeText([
+        primary,
+        secondary,
+        session.spreadName,
+        session.intake?.situacaoPrincipal || '',
+        new Date(session.timestamp).toLocaleDateString('pt-BR'),
+      ].join(' '))
+
+      const matchesSearch = !normalizedSearch || searchable.includes(normalizedSearch)
+      const matchesClient = clientFilter === 'all' || normalizeText(primary) === clientFilter
+
+      return matchesSearch && matchesClient
+    })
+  }, [clientFilter, searchTerm, sessions])
+
   const selectedSession = useMemo(
-    () => sessions.find(session => session.id === selectedSessionId) || sessions[0] || null,
-    [selectedSessionId, sessions],
+    () =>
+      filteredSessions.find(session => session.id === selectedSessionId) ||
+      sessions.find(session => session.id === selectedSessionId) ||
+      filteredSessions[0] ||
+      sessions[0] ||
+      null,
+    [filteredSessions, selectedSessionId, sessions],
   )
 
   const selectedSpread = selectedSession
     ? spreadById.get(selectedSession.spreadId) || null
+    : null
+
+  const selectedClientSummary = selectedSession
+    ? clientSummaries.find(
+        summary => summary.normalizedName === normalizeText(getPrimaryClientName(selectedSession)),
+      ) || null
     : null
 
   const reportText = useMemo(() => {
@@ -95,11 +182,11 @@ const HistoryRecordsView: FC<HistoryRecordsViewProps> = ({
       return
     }
 
-    const exists = sessions.some(session => session.id === selectedSessionId)
+    const exists = filteredSessions.some(session => session.id === selectedSessionId)
     if (!exists) {
-      setSelectedSessionId(sessions[0].id)
+      setSelectedSessionId(filteredSessions[0]?.id || sessions[0].id)
     }
-  }, [selectedSessionId, sessions])
+  }, [filteredSessions, selectedSessionId, sessions])
 
   useEffect(() => {
     return () => {
@@ -194,51 +281,119 @@ const HistoryRecordsView: FC<HistoryRecordsViewProps> = ({
       )}
 
       {sessions.length > 0 && (
-        <div className="history-records-layout">
-          <aside className="history-records-list">
-            {sessions.map(session => {
-              const isActive = session.id === selectedSession?.id
-              const intakeName =
-                session.intake?.tipo === 'pessoal'
-                  ? session.intake.pessoa1.nomeCompleto
-                  : session.intake
-                    ? `${session.intake.pessoa1.nomeCompleto} + ${session.intake.pessoa2?.nomeCompleto || 'Pessoa 2'}`
-                    : 'Sem nome cadastrado'
+        <>
+          <div className="history-crm-summary">
+            <article>
+              <span>Consulentes</span>
+              <strong>{clientSummaries.length}</strong>
+            </article>
+            <article>
+              <span>Consultas salvas</span>
+              <strong>{sessions.length}</strong>
+            </article>
+            <article>
+              <span>Consultas filtradas</span>
+              <strong>{filteredSessions.length}</strong>
+            </article>
+            <article>
+              <span>Última consulta</span>
+              <strong>{formatDate(sessions[0].timestamp).split(',')[0]}</strong>
+            </article>
+          </div>
 
-              return (
-                <button
-                  key={session.id}
-                  className={`history-record-item${isActive ? ' active' : ''}`}
-                  onClick={() => setSelectedSessionId(session.id)}
-                >
-                  <strong>{session.spreadName}</strong>
-                  <small>{formatDate(session.timestamp)}</small>
-                  <span>{intakeName}</span>
+          <div className="history-filters">
+            <label>
+              Buscar
+              <input
+                value={searchTerm}
+                onChange={event => setSearchTerm(event.target.value)}
+                placeholder="Nome, situação, tiragem ou data"
+              />
+            </label>
+            <label>
+              Consulente
+              <select
+                value={clientFilter}
+                onChange={event => setClientFilter(event.target.value)}
+              >
+                <option value="all">Todos</option>
+                {clientSummaries.map(summary => (
+                  <option key={summary.normalizedName || 'sem-nome'} value={summary.normalizedName}>
+                    {summary.name} ({summary.sessions.length})
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          {selectedClientSummary && (
+            <section className="client-profile-card">
+              <div>
+                <span>Perfil do consulente</span>
+                <h3>{selectedClientSummary.name}</h3>
+                <p>
+                  {selectedClientSummary.sessions.length} consulta(s) registrada(s). Última em{' '}
+                  {formatDate(selectedClientSummary.lastTimestamp)}.
+                </p>
+              </div>
+              <div className="client-topic-list">
+                {Array.from(selectedClientSummary.topics).slice(0, 4).map(topic => (
+                  <small key={topic}>{topic}</small>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <div className="history-records-layout">
+            <aside className="history-records-list">
+              {filteredSessions.map(session => {
+                const isActive = session.id === selectedSession?.id
+                const intakeName = getIntakeDisplayName(session)
+
+                return (
+                  <button
+                    key={session.id}
+                    className={`history-record-item${isActive ? ' active' : ''}`}
+                    onClick={() => setSelectedSessionId(session.id)}
+                  >
+                    <strong>{session.spreadName}</strong>
+                    <small>{formatDate(session.timestamp)}</small>
+                    <span>{intakeName}</span>
+                    {session.intake?.situacaoPrincipal && (
+                      <em>{session.intake.situacaoPrincipal}</em>
+                    )}
+                  </button>
+                )
+              })}
+            </aside>
+
+            <section className="history-records-detail">
+              <div className="history-records-detail-actions">
+                <button onClick={() => void handleCopyAll()}>
+                  Copiar texto
                 </button>
-              )
-            })}
-          </aside>
+                <button onClick={handleOpenPrintable}>
+                  Abrir PDF/Impressão
+                </button>
+                <button onClick={handleDownloadHtml}>
+                  Baixar HTML
+                </button>
+                <button onClick={() => void handleShareText()}>
+                  Compartilhar
+                </button>
+                {copyFeedback && <span>{copyFeedback}</span>}
+              </div>
 
-          <section className="history-records-detail">
-            <div className="history-records-detail-actions">
-              <button onClick={() => void handleCopyAll()}>
-                Copiar texto
-              </button>
-              <button onClick={handleOpenPrintable}>
-                Abrir PDF/Impressão
-              </button>
-              <button onClick={handleDownloadHtml}>
-                Baixar HTML
-              </button>
-              <button onClick={() => void handleShareText()}>
-                Compartilhar
-              </button>
-              {copyFeedback && <span>{copyFeedback}</span>}
-            </div>
-
-            <textarea ref={reportRef} value={reportText} readOnly />
-          </section>
-        </div>
+              {filteredSessions.length === 0 ? (
+                <div className="history-records-empty">
+                  <p>Nenhuma leitura encontrada para os filtros atuais.</p>
+                </div>
+              ) : (
+                <textarea ref={reportRef} value={reportText} readOnly />
+              )}
+            </section>
+          </div>
+        </>
       )}
     </div>
   )

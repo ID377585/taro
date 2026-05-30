@@ -11,6 +11,7 @@ import {
   ConsultationIntake,
 } from './types'
 import { useIndexedDB } from './hooks/useIndexedDB'
+import { dbService, CaptureUploadQueueStats } from './services/dbService'
 
 const TeleprompterView = lazy(() => import('./components/TeleprompterView'))
 const HistoryRecordsView = lazy(() => import('./components/HistoryRecordsView'))
@@ -31,6 +32,7 @@ type FlowStep =
   | 'history'
   | 'register-cards'
   | 'diagnostics'
+  | 'operations'
   | 'reading'
 
 interface PersistedFlowState {
@@ -46,6 +48,7 @@ interface DiagnosticItem {
 }
 
 const FLOW_STORAGE_KEY = 'taro.flow.state.v1'
+const TARGET_PER_ORIENTATION = 60
 const toUppercaseDisplay = (value: string) => value.toLocaleUpperCase('pt-BR')
 
 const fetchJson = async <T,>(url: string): Promise<T> => {
@@ -111,18 +114,22 @@ function App() {
   const [showIntakeForm, setShowIntakeForm] = useState(false)
   const [showHistoryRecords, setShowHistoryRecords] = useState(false)
   const [showDiagnostics, setShowDiagnostics] = useState(false)
+  const [showOperations, setShowOperations] = useState(false)
   const [isRegisteringCards, setIsRegisteringCards] = useState(false)
   const [consultationIntake, setConsultationIntake] =
     useState<ConsultationIntake | null>(null)
   const [cards, setCards] = useState<Card[]>([])
   const [spreads, setSpreads] = useState<Spread[]>([])
   const [sessions, setSessions] = useState<SpreadingSession[]>([])
+  const [queueStats, setQueueStats] = useState<CaptureUploadQueueStats | null>(null)
+  const [captureTotals, setCaptureTotals] = useState({ cardsWithSamples: 0, localSamples: 0 })
+  const [operationsError, setOperationsError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [loadErrorDetail, setLoadErrorDetail] = useState<string | null>(null)
   const hasRestoredFlowRef = useRef(false)
 
-  const { isReady, saveSession, getAllSessions } = useIndexedDB()
+  const { isReady, error: indexedDbError, saveSession, getAllSessions } = useIndexedDB()
 
   useEffect(() => {
     const loadBaseData = async () => {
@@ -165,9 +172,33 @@ function App() {
     setSessions(sorted)
   }, [getAllSessions, isReady])
 
+  const refreshOperations = useCallback(async () => {
+    if (!isReady) return
+    try {
+      setOperationsError(null)
+      const [stats, captures] = await Promise.all([
+        dbService.getCaptureUploadQueueStats(),
+        dbService.getAllCardCaptures(),
+      ])
+      const localSamples = captures.reduce(
+        (total, record) => total + record.vertical.length + record.invertido.length,
+        0,
+      )
+      setQueueStats(stats)
+      setCaptureTotals({ cardsWithSamples: captures.length, localSamples })
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Falha ao carregar painel operacional.'
+      setOperationsError(message)
+    }
+  }, [isReady])
+
   useEffect(() => {
     void refreshSessions()
   }, [refreshSessions])
+
+  useEffect(() => {
+    void refreshOperations()
+  }, [refreshOperations])
 
   useEffect(() => {
     if (loading || hasRestoredFlowRef.current) return
@@ -220,6 +251,11 @@ function App() {
         return
       }
 
+      if (parsed.step === 'operations') {
+        setShowOperations(true)
+        return
+      }
+
       if (parsed.step === 'diagnostics') {
         setShowDiagnostics(true)
         return
@@ -240,15 +276,17 @@ function App() {
       ? 'reading'
       : isRegisteringCards
         ? 'register-cards'
-        : showDiagnostics
-          ? 'diagnostics'
-          : showHistoryRecords
-            ? 'history'
-            : showSpreadSelector
-              ? 'spread-selector'
-              : showIntakeForm
-                ? 'intake'
-                : 'home'
+        : showOperations
+          ? 'operations'
+          : showDiagnostics
+            ? 'diagnostics'
+            : showHistoryRecords
+              ? 'history'
+              : showSpreadSelector
+                ? 'spread-selector'
+                : showIntakeForm
+                  ? 'intake'
+                  : 'home'
 
     const state: PersistedFlowState = {
       step,
@@ -265,6 +303,7 @@ function App() {
     showDiagnostics,
     showHistoryRecords,
     showIntakeForm,
+    showOperations,
     showSpreadSelector,
   ])
 
@@ -295,7 +334,7 @@ function App() {
         detail: hasIndexedDb
           ? isReady
             ? 'Histórico e capturas locais disponíveis.'
-            : 'Banco local detectado, ainda inicializando.'
+            : indexedDbError || 'Banco local detectado, ainda inicializando.'
           : 'Este navegador não oferece IndexedDB.',
       },
       {
@@ -329,12 +368,26 @@ function App() {
           : 'A tela pode apagar conforme configuração do aparelho.',
       },
       {
+        label: 'Fila de uploads',
+        status: queueStats?.failed ? 'warning' : 'ok',
+        detail: queueStats
+          ? `${queueStats.pending} pendente(s), ${queueStats.failed} falha(s), ${queueStats.uploaded} enviado(s).`
+          : 'Aguardando leitura da fila local.',
+      },
+      {
         label: 'Modelo de IA',
         status: 'warning',
         detail: 'Verifique em Registrar/Leitura se public/model contém o modelo final de 156 classes.',
       },
     ]
-  }, [cards.length, isReady, spreads.length])
+  }, [cards.length, indexedDbError, isReady, queueStats, spreads.length])
+
+  const operationalCardsTarget = cards.length * TARGET_PER_ORIENTATION * 2
+  const uploadedSamples = queueStats?.uploaded || 0
+  const totalKnownSamples = uploadedSamples + captureTotals.localSamples
+  const progressPercent = operationalCardsTarget
+    ? Math.min(100, Math.round((totalKnownSamples / operationalCardsTarget) * 100))
+    : 0
 
   const closeAllViews = () => {
     setSelectedSpread(null)
@@ -342,7 +395,19 @@ function App() {
     setShowSpreadSelector(false)
     setShowHistoryRecords(false)
     setShowDiagnostics(false)
+    setShowOperations(false)
     setIsRegisteringCards(false)
+  }
+
+  const handlePruneUploaded = async () => {
+    try {
+      setOperationsError(null)
+      await dbService.pruneUploadedCaptureUploads()
+      await refreshOperations()
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Falha ao limpar uploads antigos.'
+      setOperationsError(message)
+    }
   }
 
   const handleSaveSession = async (drawnCards: DrawnCard[]) => {
@@ -384,7 +449,8 @@ function App() {
           !showSpreadSelector &&
           !showIntakeForm &&
           !showHistoryRecords &&
-          !showDiagnostics && (
+          !showDiagnostics &&
+          !showOperations && (
           <>
             <div className="home-menu">
               <h1>Leituras de Tarot</h1>
@@ -411,6 +477,16 @@ function App() {
                   className="secondary"
                   onClick={() => {
                     closeAllViews()
+                    void refreshOperations()
+                    setShowOperations(true)
+                  }}
+                >
+                  Painel Operacional
+                </button>
+                <button
+                  className="secondary"
+                  onClick={() => {
+                    closeAllViews()
                     setShowDiagnostics(true)
                   }}
                 >
@@ -426,6 +502,87 @@ function App() {
               }}
             />
           </>
+        )}
+
+        {!loading && !loadError && !selectedSpread && showOperations && (
+          <section className="diagnostics-panel operations-panel">
+            <div className="diagnostics-header">
+              <div>
+                <h2>Painel Operacional</h2>
+                <p>Acompanhe progresso de treinamento, histórico e fila local de upload.</p>
+              </div>
+              <div className="home-actions home-actions--compact">
+                <button className="secondary" onClick={() => void refreshOperations()}>Atualizar</button>
+                <button className="secondary" onClick={closeAllViews}>Voltar</button>
+              </div>
+            </div>
+
+            {operationsError && <p className="error">{operationsError}</p>}
+
+            <div className="operations-summary">
+              <article>
+                <span>Progresso estimado</span>
+                <strong>{progressPercent}%</strong>
+                <p>{totalKnownSamples} de {operationalCardsTarget} amostras esperadas</p>
+              </article>
+              <article>
+                <span>Cartas com amostras locais</span>
+                <strong>{captureTotals.cardsWithSamples}</strong>
+                <p>de {cards.length} cartas cadastradas</p>
+              </article>
+              <article>
+                <span>Histórico de consultas</span>
+                <strong>{sessions.length}</strong>
+                <p>sessões salvas neste navegador</p>
+              </article>
+              <article>
+                <span>Uploads com falha</span>
+                <strong>{queueStats?.failed || 0}</strong>
+                <p>revise a conexão ou a configuração Supabase</p>
+              </article>
+            </div>
+
+            <div className="progress-bar" aria-label={`Progresso ${progressPercent}%`}>
+              <div style={{ width: `${progressPercent}%` }} />
+            </div>
+
+            <div className="diagnostics-grid">
+              <article className="diagnostic-card diagnostic-card--ok">
+                <span>Local</span>
+                <h3>Amostras no aparelho</h3>
+                <p>{captureTotals.localSamples} imagem(ns) ainda armazenada(s) localmente.</p>
+              </article>
+              <article className="diagnostic-card diagnostic-card--ok">
+                <span>Nuvem</span>
+                <h3>Uploads enviados</h3>
+                <p>{queueStats?.uploaded || 0} registro(s) marcados como enviados.</p>
+              </article>
+              <article className={`diagnostic-card diagnostic-card--${queueStats?.pending ? 'warning' : 'ok'}`}>
+                <span>Fila</span>
+                <h3>Uploads pendentes</h3>
+                <p>{queueStats?.pending || 0} aguardando processamento.</p>
+              </article>
+              <article className={`diagnostic-card diagnostic-card--${queueStats?.failed ? 'warning' : 'ok'}`}>
+                <span>Retry</span>
+                <h3>Uploads falhos</h3>
+                <p>{queueStats?.failed || 0} serão reenviados automaticamente quando possível.</p>
+              </article>
+            </div>
+
+            <div className="home-actions">
+              <button className="secondary" onClick={() => void handlePruneUploaded()}>
+                Limpar enviados antigos
+              </button>
+              <button
+                onClick={() => {
+                  closeAllViews()
+                  setIsRegisteringCards(true)
+                }}
+              >
+                Continuar registro de cartas
+              </button>
+            </div>
+          </section>
         )}
 
         {!loading && !loadError && !selectedSpread && showDiagnostics && (

@@ -1,13 +1,27 @@
 import { SpreadingSession } from '../types'
 
 const DB_NAME = 'TaroAppDB'
-const DB_VERSION = 3
+const DB_VERSION = 4
 const SESSIONS_STORE_NAME = 'sessions'
 const CARD_CAPTURES_STORE_NAME = 'card-captures'
 const CAPTURE_UPLOAD_QUEUE_STORE_NAME = 'capture-upload-queue'
+const CLIENTS_STORE_NAME = 'clients'
 
 export type CardCaptureOrientation = 'vertical' | 'invertido'
 export type CaptureUploadStatus = 'pending' | 'uploading' | 'failed' | 'uploaded'
+
+export interface PersistedClientProfile {
+  id: string
+  normalizedName: string
+  nomeCompleto: string
+  telefone?: string
+  whatsapp?: string
+  email?: string
+  dataNascimento?: string
+  observacoes?: string
+  createdAt: number
+  updatedAt: number
+}
 
 export interface PersistedCardCaptureItem {
   blob: Blob
@@ -49,6 +63,16 @@ export interface UploadedCardCaptureCounts {
   vertical: number
   invertido: number
 }
+
+export const normalizeClientName = (value: string) =>
+  value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim()
+
+export const buildClientId = (name: string) => normalizeClientName(name) || crypto.randomUUID()
 
 export const buildCaptureUploadId = (
   cardId: number,
@@ -95,6 +119,74 @@ export class DBService {
           store.createIndex('cardId', 'cardId', { unique: false })
           store.createIndex('updatedAt', 'updatedAt', { unique: false })
         }
+
+        if (!db.objectStoreNames.contains(CLIENTS_STORE_NAME)) {
+          const store = db.createObjectStore(CLIENTS_STORE_NAME, { keyPath: 'id' })
+          store.createIndex('normalizedName', 'normalizedName', { unique: true })
+          store.createIndex('updatedAt', 'updatedAt', { unique: false })
+        }
+      }
+    })
+  }
+
+  async saveClientProfile(profile: PersistedClientProfile): Promise<void> {
+    if (!this.db) await this.init()
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([CLIENTS_STORE_NAME], 'readwrite')
+      const store = transaction.objectStore(CLIENTS_STORE_NAME)
+      const request = store.put(profile)
+
+      request.onerror = () => reject(request.error)
+      request.onsuccess = () => resolve()
+    })
+  }
+
+  async getAllClientProfiles(): Promise<PersistedClientProfile[]> {
+    if (!this.db) await this.init()
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([CLIENTS_STORE_NAME], 'readonly')
+      const store = transaction.objectStore(CLIENTS_STORE_NAME)
+      const request = store.getAll()
+
+      request.onerror = () => reject(request.error)
+      request.onsuccess = () => resolve(request.result as PersistedClientProfile[])
+    })
+  }
+
+  async upsertClientProfileFromSession(session: SpreadingSession): Promise<void> {
+    const person = session.intake?.pessoa1
+    if (!person?.nomeCompleto) return
+    if (!this.db) await this.init()
+
+    const normalizedName = normalizeClientName(person.nomeCompleto)
+    const id = buildClientId(person.nomeCompleto)
+    const now = Date.now()
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([CLIENTS_STORE_NAME], 'readwrite')
+      const store = transaction.objectStore(CLIENTS_STORE_NAME)
+      const getRequest = store.get(id)
+
+      getRequest.onerror = () => reject(getRequest.error)
+      getRequest.onsuccess = () => {
+        const existing = getRequest.result as PersistedClientProfile | undefined
+        const next: PersistedClientProfile = {
+          id,
+          normalizedName,
+          nomeCompleto: person.nomeCompleto,
+          dataNascimento: existing?.dataNascimento || person.dataNascimento,
+          telefone: existing?.telefone,
+          whatsapp: existing?.whatsapp,
+          email: existing?.email,
+          observacoes: existing?.observacoes,
+          createdAt: existing?.createdAt || now,
+          updatedAt: now,
+        }
+        const putRequest = store.put(next)
+        putRequest.onerror = () => reject(putRequest.error)
+        putRequest.onsuccess = () => resolve()
       }
     })
   }
@@ -109,7 +201,7 @@ export class DBService {
 
       request.onerror = () => reject(request.error)
       request.onsuccess = () => resolve()
-    })
+    }).then(() => this.upsertClientProfileFromSession(session))
   }
 
   async getSession(id: string): Promise<SpreadingSession | null> {

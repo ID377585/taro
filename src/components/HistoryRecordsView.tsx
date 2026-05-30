@@ -1,6 +1,10 @@
 import { FC, useEffect, useMemo, useRef, useState } from 'react'
 import { Card, SpreadingSession, Spread } from '../types'
-import { buildSessionFullReport } from '../services/sessionReportService'
+import {
+  buildSessionFullReport,
+  buildSessionHtmlReport,
+  buildSessionReportFileName,
+} from '../services/sessionReportService'
 import './HistoryRecordsView.css'
 
 interface HistoryRecordsViewProps {
@@ -12,6 +16,30 @@ interface HistoryRecordsViewProps {
 
 const formatDate = (timestamp: number) =>
   new Date(timestamp).toLocaleString('pt-BR')
+
+const downloadTextFile = (content: string, fileName: string, mimeType: string) => {
+  const blob = new Blob([content], { type: mimeType })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = fileName
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+  URL.revokeObjectURL(url)
+}
+
+const openHtmlReport = (html: string) => {
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const win = window.open(url, '_blank', 'noopener,noreferrer')
+
+  if (!win) {
+    downloadTextFile(html, 'relatorio-leitura.html', 'text/html;charset=utf-8')
+  }
+
+  window.setTimeout(() => URL.revokeObjectURL(url), 60_000)
+}
 
 const HistoryRecordsView: FC<HistoryRecordsViewProps> = ({
   sessions,
@@ -37,6 +65,10 @@ const HistoryRecordsView: FC<HistoryRecordsViewProps> = ({
     [selectedSessionId, sessions],
   )
 
+  const selectedSpread = selectedSession
+    ? spreadById.get(selectedSession.spreadId) || null
+    : null
+
   const reportText = useMemo(() => {
     if (!selectedSession) return ''
 
@@ -46,6 +78,16 @@ const HistoryRecordsView: FC<HistoryRecordsViewProps> = ({
       cardById: cardsById,
     })
   }, [cardsById, selectedSession, spreadById])
+
+  const htmlReport = useMemo(() => {
+    if (!selectedSession) return ''
+
+    return buildSessionHtmlReport({
+      session: selectedSession,
+      spread: selectedSpread,
+      cardById: cardsById,
+    })
+  }, [cardsById, selectedSession, selectedSpread])
 
   useEffect(() => {
     if (sessions.length === 0) {
@@ -67,6 +109,16 @@ const HistoryRecordsView: FC<HistoryRecordsViewProps> = ({
     }
   }, [])
 
+  const showFeedback = (message: string) => {
+    setCopyFeedback(message)
+    if (copyTimerRef.current) {
+      window.clearTimeout(copyTimerRef.current)
+    }
+    copyTimerRef.current = window.setTimeout(() => {
+      setCopyFeedback('')
+    }, 2400)
+  }
+
   const handleCopyAll = async () => {
     if (!reportText) return
 
@@ -78,18 +130,46 @@ const HistoryRecordsView: FC<HistoryRecordsViewProps> = ({
 
     try {
       await navigator.clipboard.writeText(reportText)
-      setCopyFeedback('Texto copiado')
+      showFeedback('Texto copiado')
     } catch {
-      setCopyFeedback('Falha ao copiar texto')
+      showFeedback('Falha ao copiar texto')
     }
+  }
 
-    if (copyTimerRef.current) {
-      window.clearTimeout(copyTimerRef.current)
+  const handleOpenPrintable = () => {
+    if (!htmlReport) return
+    openHtmlReport(htmlReport)
+    showFeedback('Relatório aberto para impressão/PDF')
+  }
+
+  const handleDownloadHtml = () => {
+    if (!htmlReport || !selectedSession) return
+    downloadTextFile(
+      htmlReport,
+      buildSessionReportFileName(selectedSession),
+      'text/html;charset=utf-8',
+    )
+    showFeedback('Arquivo HTML baixado')
+  }
+
+  const handleShareText = async () => {
+    if (!reportText) return
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: 'Relatório de leitura de tarô',
+          text: reportText,
+        })
+        showFeedback('Compartilhamento iniciado')
+        return
+      }
+
+      await navigator.clipboard.writeText(reportText)
+      showFeedback('Compartilhamento indisponível; texto copiado')
+    } catch {
+      showFeedback('Não foi possível compartilhar')
     }
-
-    copyTimerRef.current = window.setTimeout(() => {
-      setCopyFeedback('')
-    }, 2000)
   }
 
   return (
@@ -142,7 +222,16 @@ const HistoryRecordsView: FC<HistoryRecordsViewProps> = ({
           <section className="history-records-detail">
             <div className="history-records-detail-actions">
               <button onClick={() => void handleCopyAll()}>
-                Selecionar e copiar texto completo
+                Copiar texto
+              </button>
+              <button onClick={handleOpenPrintable}>
+                Abrir PDF/Impressão
+              </button>
+              <button onClick={handleDownloadHtml}>
+                Baixar HTML
+              </button>
+              <button onClick={() => void handleShareText()}>
+                Compartilhar
               </button>
               {copyFeedback && <span>{copyFeedback}</span>}
             </div>

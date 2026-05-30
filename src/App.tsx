@@ -1,4 +1,4 @@
-import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import './App.css'
 import SpreadSelector from './components/SpreadSelector'
 import HistoryPanel from './components/HistoryPanel'
@@ -30,6 +30,7 @@ type FlowStep =
   | 'spread-selector'
   | 'history'
   | 'register-cards'
+  | 'diagnostics'
   | 'reading'
 
 interface PersistedFlowState {
@@ -38,8 +39,22 @@ interface PersistedFlowState {
   selectedSpreadId: string | null
 }
 
+interface DiagnosticItem {
+  label: string
+  status: 'ok' | 'warning' | 'error'
+  detail: string
+}
+
 const FLOW_STORAGE_KEY = 'taro.flow.state.v1'
 const toUppercaseDisplay = (value: string) => value.toLocaleUpperCase('pt-BR')
+
+const fetchJson = async <T,>(url: string): Promise<T> => {
+  const response = await fetch(url)
+  if (!response.ok) {
+    throw new Error(`Falha ao carregar ${url}: HTTP ${response.status}`)
+  }
+  return response.json() as Promise<T>
+}
 
 const formatBirthDate = (raw?: string) => {
   if (!raw) return null
@@ -95,6 +110,7 @@ function App() {
   const [showSpreadSelector, setShowSpreadSelector] = useState(false)
   const [showIntakeForm, setShowIntakeForm] = useState(false)
   const [showHistoryRecords, setShowHistoryRecords] = useState(false)
+  const [showDiagnostics, setShowDiagnostics] = useState(false)
   const [isRegisteringCards, setIsRegisteringCards] = useState(false)
   const [consultationIntake, setConsultationIntake] =
     useState<ConsultationIntake | null>(null)
@@ -103,6 +119,7 @@ function App() {
   const [sessions, setSessions] = useState<SpreadingSession[]>([])
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
+  const [loadErrorDetail, setLoadErrorDetail] = useState<string | null>(null)
   const hasRestoredFlowRef = useRef(false)
 
   const { isReady, saveSession, getAllSessions } = useIndexedDB()
@@ -111,20 +128,28 @@ function App() {
     const loadBaseData = async () => {
       setLoading(true)
       setLoadError(null)
+      setLoadErrorDetail(null)
 
       try {
         const [cardsData, spreadsData] = await Promise.all([
-          fetch('/data/cards.json').then(res => res.json() as Promise<CardsDataResponse>),
-          fetch('/data/spreads.json').then(
-            res => res.json() as Promise<SpreadsDataResponse>,
-          ),
+          fetchJson<CardsDataResponse>('/data/cards.json'),
+          fetchJson<SpreadsDataResponse>('/data/spreads.json'),
         ])
+
+        if (!Array.isArray(cardsData.cards) || cardsData.cards.length === 0) {
+          throw new Error('Arquivo /data/cards.json sem lista de cartas valida.')
+        }
+        if (!Array.isArray(spreadsData.spreads) || spreadsData.spreads.length === 0) {
+          throw new Error('Arquivo /data/spreads.json sem lista de tiragens valida.')
+        }
 
         setCards(cardsData.cards)
         setSpreads(spreadsData.spreads)
       } catch (err) {
+        const message = err instanceof Error ? err.message : 'Erro desconhecido.'
         console.error('Erro ao carregar dados:', err)
         setLoadError('Não foi possível carregar os dados de cartas e tiragens.')
+        setLoadErrorDetail(message)
       } finally {
         setLoading(false)
       }
@@ -195,6 +220,11 @@ function App() {
         return
       }
 
+      if (parsed.step === 'diagnostics') {
+        setShowDiagnostics(true)
+        return
+      }
+
       if (parsed.step === 'history') {
         setShowHistoryRecords(true)
       }
@@ -210,13 +240,15 @@ function App() {
       ? 'reading'
       : isRegisteringCards
         ? 'register-cards'
-        : showHistoryRecords
-          ? 'history'
-          : showSpreadSelector
-            ? 'spread-selector'
-            : showIntakeForm
-              ? 'intake'
-              : 'home'
+        : showDiagnostics
+          ? 'diagnostics'
+          : showHistoryRecords
+            ? 'history'
+            : showSpreadSelector
+              ? 'spread-selector'
+              : showIntakeForm
+                ? 'intake'
+                : 'home'
 
     const state: PersistedFlowState = {
       step,
@@ -230,10 +262,88 @@ function App() {
     isRegisteringCards,
     loading,
     selectedSpread,
+    showDiagnostics,
     showHistoryRecords,
     showIntakeForm,
     showSpreadSelector,
   ])
+
+  const diagnostics = useMemo<DiagnosticItem[]>(() => {
+    const secureContext = window.isSecureContext
+    const hasCameraApi = Boolean(navigator.mediaDevices?.getUserMedia)
+    const hasIndexedDb = Boolean(window.indexedDB)
+    const hasServiceWorker = 'serviceWorker' in navigator
+    const hasSpeechRecognition =
+      'SpeechRecognition' in window || 'webkitSpeechRecognition' in window
+    const hasWakeLock = 'wakeLock' in navigator
+
+    return [
+      {
+        label: 'Base de cartas',
+        status: cards.length > 0 ? 'ok' : 'error',
+        detail: cards.length > 0 ? `${cards.length} cartas carregadas.` : 'Cartas não carregadas.',
+      },
+      {
+        label: 'Tiragens',
+        status: spreads.length > 0 ? 'ok' : 'error',
+        detail:
+          spreads.length > 0 ? `${spreads.length} tiragens carregadas.` : 'Tiragens não carregadas.',
+      },
+      {
+        label: 'IndexedDB',
+        status: hasIndexedDb && isReady ? 'ok' : hasIndexedDb ? 'warning' : 'error',
+        detail: hasIndexedDb
+          ? isReady
+            ? 'Histórico e capturas locais disponíveis.'
+            : 'Banco local detectado, ainda inicializando.'
+          : 'Este navegador não oferece IndexedDB.',
+      },
+      {
+        label: 'Câmera',
+        status: secureContext && hasCameraApi ? 'ok' : hasCameraApi ? 'warning' : 'error',
+        detail: secureContext
+          ? hasCameraApi
+            ? 'API de câmera disponível neste contexto seguro.'
+            : 'API de câmera indisponível neste navegador.'
+          : 'Use HTTPS para liberar a câmera em produção.',
+      },
+      {
+        label: 'PWA / Service Worker',
+        status: hasServiceWorker ? 'ok' : 'warning',
+        detail: hasServiceWorker
+          ? 'Navegador compatível com instalação/cache offline.'
+          : 'Service Worker indisponível neste navegador.',
+      },
+      {
+        label: 'Comandos de voz',
+        status: hasSpeechRecognition ? 'ok' : 'warning',
+        detail: hasSpeechRecognition
+          ? 'Reconhecimento de voz suportado pelo navegador.'
+          : 'Navegador sem suporte a reconhecimento de voz.',
+      },
+      {
+        label: 'Wake lock',
+        status: hasWakeLock ? 'ok' : 'warning',
+        detail: hasWakeLock
+          ? 'Pode manter a tela ativa durante a leitura.'
+          : 'A tela pode apagar conforme configuração do aparelho.',
+      },
+      {
+        label: 'Modelo de IA',
+        status: 'warning',
+        detail: 'Verifique em Registrar/Leitura se public/model contém o modelo final de 156 classes.',
+      },
+    ]
+  }, [cards.length, isReady, spreads.length])
+
+  const closeAllViews = () => {
+    setSelectedSpread(null)
+    setShowIntakeForm(false)
+    setShowSpreadSelector(false)
+    setShowHistoryRecords(false)
+    setShowDiagnostics(false)
+    setIsRegisteringCards(false)
+  }
 
   const handleSaveSession = async (drawnCards: DrawnCard[]) => {
     if (!selectedSpread) return
@@ -260,7 +370,12 @@ function App() {
       >
         {loading && <p className="loading">Carregando conteúdo...</p>}
 
-        {!loading && loadError && <p className="error">{loadError}</p>}
+        {!loading && loadError && (
+          <div className="error error-card">
+            <strong>{loadError}</strong>
+            {loadErrorDetail && <small>Detalhe técnico: {loadErrorDetail}</small>}
+          </div>
+        )}
 
         {!loading &&
           !loadError &&
@@ -268,17 +383,17 @@ function App() {
           !isRegisteringCards &&
           !showSpreadSelector &&
           !showIntakeForm &&
-          !showHistoryRecords && (
+          !showHistoryRecords &&
+          !showDiagnostics && (
           <>
             <div className="home-menu">
               <h1>Leituras de Tarot</h1>
+              <p>Teleprompter, registro de cartas e histórico local para atendimentos.</p>
               <div className="home-actions">
                 <button
                   onClick={() => {
-                    setIsRegisteringCards(false)
-                    setShowSpreadSelector(false)
+                    closeAllViews()
                     setShowIntakeForm(true)
-                    setShowHistoryRecords(false)
                   }}
                 >
                   Iniciar Tiragem
@@ -286,26 +401,52 @@ function App() {
                 <button
                   className="secondary"
                   onClick={() => {
-                    setShowIntakeForm(false)
-                    setShowSpreadSelector(false)
+                    closeAllViews()
                     setIsRegisteringCards(true)
-                    setShowHistoryRecords(false)
                   }}
                 >
                   Registrar Cartas
+                </button>
+                <button
+                  className="secondary"
+                  onClick={() => {
+                    closeAllViews()
+                    setShowDiagnostics(true)
+                  }}
+                >
+                  Diagnóstico
                 </button>
               </div>
             </div>
             <HistoryPanel
               sessions={sessions}
               onOpenAll={() => {
-                setShowIntakeForm(false)
-                setShowSpreadSelector(false)
-                setIsRegisteringCards(false)
+                closeAllViews()
                 setShowHistoryRecords(true)
               }}
             />
           </>
+        )}
+
+        {!loading && !loadError && !selectedSpread && showDiagnostics && (
+          <section className="diagnostics-panel">
+            <div className="diagnostics-header">
+              <div>
+                <h2>Diagnóstico do sistema</h2>
+                <p>Confira rapidamente se o navegador está pronto para atendimento.</p>
+              </div>
+              <button className="secondary" onClick={closeAllViews}>Voltar</button>
+            </div>
+            <div className="diagnostics-grid">
+              {diagnostics.map(item => (
+                <article className={`diagnostic-card diagnostic-card--${item.status}`} key={item.label}>
+                  <span>{item.status === 'ok' ? 'OK' : item.status === 'warning' ? 'Atenção' : 'Erro'}</span>
+                  <h3>{item.label}</h3>
+                  <p>{item.detail}</p>
+                </article>
+              ))}
+            </div>
+          </section>
         )}
 
         {!loading && !loadError && !selectedSpread && showHistoryRecords && (

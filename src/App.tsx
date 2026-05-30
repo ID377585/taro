@@ -127,7 +127,8 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [loadErrorDetail, setLoadErrorDetail] = useState<string | null>(null)
-  const hasRestoredFlowRef = useRef(false)
+  const [savedFlow, setSavedFlow] = useState<PersistedFlowState | null>(null)
+  const hasInitializedFlowRef = useRef(false)
 
   const { isReady, error: indexedDbError, saveSession, getAllSessions } = useIndexedDB()
 
@@ -201,76 +202,29 @@ function App() {
   }, [refreshOperations])
 
   useEffect(() => {
-    if (loading || hasRestoredFlowRef.current) return
+    if (loading || hasInitializedFlowRef.current) return
+    hasInitializedFlowRef.current = true
 
-    hasRestoredFlowRef.current = true
     try {
       const raw = localStorage.getItem(FLOW_STORAGE_KEY)
       if (!raw) return
-
       const parsed = JSON.parse(raw) as PersistedFlowState
       const normalizedIntake = normalizeConsultationIntake(parsed.consultationIntake)
-      const hasIntake = Boolean(normalizedIntake)
-
-      if (normalizedIntake) {
-        setConsultationIntake(normalizedIntake)
+      const storedState: PersistedFlowState = {
+        step: parsed.step,
+        consultationIntake: normalizedIntake,
+        selectedSpreadId: parsed.selectedSpreadId || null,
       }
-
-      if (parsed.step === 'reading') {
-        if (!hasIntake) {
-          setShowIntakeForm(true)
-          return
-        }
-        if (parsed.selectedSpreadId) {
-          const spread = spreads.find(item => item.id === parsed.selectedSpreadId)
-          if (spread) {
-            setSelectedSpread(spread)
-            return
-          }
-        }
-        setShowSpreadSelector(true)
-        return
-      }
-
-      if (parsed.step === 'spread-selector') {
-        if (hasIntake) {
-          setShowSpreadSelector(true)
-        } else {
-          setShowIntakeForm(true)
-        }
-        return
-      }
-
-      if (parsed.step === 'intake') {
-        setShowIntakeForm(true)
-        return
-      }
-
-      if (parsed.step === 'register-cards') {
-        setIsRegisteringCards(true)
-        return
-      }
-
-      if (parsed.step === 'operations') {
-        setShowOperations(true)
-        return
-      }
-
-      if (parsed.step === 'diagnostics') {
-        setShowDiagnostics(true)
-        return
-      }
-
-      if (parsed.step === 'history') {
-        setShowHistoryRecords(true)
-      }
+      setSavedFlow(storedState)
+      if (normalizedIntake) setConsultationIntake(normalizedIntake)
     } catch (error) {
-      console.error('Falha ao restaurar fluxo:', error)
+      console.error('Falha ao ler fluxo salvo:', error)
+      localStorage.removeItem(FLOW_STORAGE_KEY)
     }
-  }, [loading, spreads])
+  }, [loading])
 
   useEffect(() => {
-    if (loading || !hasRestoredFlowRef.current) return
+    if (loading || !hasInitializedFlowRef.current) return
 
     const step: FlowStep = selectedSpread
       ? 'reading'
@@ -389,6 +343,8 @@ function App() {
     ? Math.min(100, Math.round((totalKnownSamples / operationalCardsTarget) * 100))
     : 0
 
+  const hasSavedFlow = Boolean(savedFlow && savedFlow.step !== 'home')
+
   const closeAllViews = () => {
     setSelectedSpread(null)
     setShowIntakeForm(false)
@@ -397,6 +353,71 @@ function App() {
     setShowDiagnostics(false)
     setShowOperations(false)
     setIsRegisteringCards(false)
+  }
+
+  const clearSavedFlow = () => {
+    localStorage.removeItem(FLOW_STORAGE_KEY)
+    setSavedFlow(null)
+    setConsultationIntake(null)
+    closeAllViews()
+  }
+
+  const continueSavedFlow = () => {
+    if (!savedFlow) return
+    closeAllViews()
+
+    const normalizedIntake = normalizeConsultationIntake(savedFlow.consultationIntake)
+    const hasIntake = Boolean(normalizedIntake)
+    if (normalizedIntake) setConsultationIntake(normalizedIntake)
+
+    if (savedFlow.step === 'reading') {
+      if (!hasIntake) {
+        setShowIntakeForm(true)
+        return
+      }
+      if (savedFlow.selectedSpreadId) {
+        const spread = spreads.find(item => item.id === savedFlow.selectedSpreadId)
+        if (spread) {
+          setSelectedSpread(spread)
+          return
+        }
+      }
+      setShowSpreadSelector(true)
+      return
+    }
+
+    if (savedFlow.step === 'spread-selector') {
+      if (hasIntake) {
+        setShowSpreadSelector(true)
+      } else {
+        setShowIntakeForm(true)
+      }
+      return
+    }
+
+    if (savedFlow.step === 'intake') {
+      setShowIntakeForm(true)
+      return
+    }
+
+    if (savedFlow.step === 'register-cards') {
+      setIsRegisteringCards(true)
+      return
+    }
+
+    if (savedFlow.step === 'operations') {
+      setShowOperations(true)
+      return
+    }
+
+    if (savedFlow.step === 'diagnostics') {
+      setShowDiagnostics(true)
+      return
+    }
+
+    if (savedFlow.step === 'history') {
+      setShowHistoryRecords(true)
+    }
   }
 
   const handlePruneUploaded = async () => {
@@ -455,6 +476,18 @@ function App() {
             <div className="home-menu">
               <h1>Leituras de Tarot</h1>
               <p>Teleprompter, registro de cartas e histórico local para atendimentos.</p>
+              {hasSavedFlow && (
+                <div className="resume-card">
+                  <div>
+                    <strong>Existe uma atividade salva neste navegador.</strong>
+                    <p>O app sempre inicia na página inicial. Continue manualmente quando quiser retomar.</p>
+                  </div>
+                  <div className="home-actions home-actions--compact">
+                    <button onClick={continueSavedFlow}>Continuar atividade</button>
+                    <button className="secondary" onClick={clearSavedFlow}>Descartar</button>
+                  </div>
+                </div>
+              )}
               <div className="home-actions">
                 <button
                   onClick={() => {

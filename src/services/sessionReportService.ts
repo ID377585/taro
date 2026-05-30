@@ -23,6 +23,28 @@ const formatNumerology = (card: Card) => {
   return `${card.numerologia.valor} (${card.numerologia.titulo}) - ${card.numerologia.descricao}`
 }
 
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+
+const slugify = (value: string) =>
+  value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '') || 'leitura'
+
+export const buildSessionReportFileName = (session: SpreadingSession) => {
+  const date = new Date(session.timestamp).toISOString().slice(0, 10)
+  const person = session.intake?.pessoa1.nomeCompleto || session.spreadName || 'leitura'
+  return `leitura-taro-${date}-${slugify(person)}.html`
+}
+
 const sortDrawnCards = (drawnCards: DrawnCard[], spread: Spread | null) => {
   if (!spread) {
     return [...drawnCards].sort((a, b) => a.position - b.position)
@@ -156,4 +178,129 @@ export const buildSessionFullReport = ({
     'BLOCO 3 - SÍNTESE FINAL',
     synthesis,
   ].join('\n')
+}
+
+export const buildSessionHtmlReport = (input: BuildSessionReportInput) => {
+  const report = buildSessionFullReport(input)
+  const title = `Relatório de Leitura - ${input.session.spreadName}`
+  const paragraphs = report
+    .split('\n')
+    .map(line => line.trim())
+    .map(line => {
+      if (!line) return '<br />'
+      if (line.startsWith('BLOCO ') || line === 'RELATÓRIO COMPLETO DE LEITURA') {
+        return `<h2>${escapeHtml(line)}</h2>`
+      }
+      if (line.startsWith('Carta ') || line === 'Síntese Final da Tiragem') {
+        return `<h3>${escapeHtml(line)}</h3>`
+      }
+      return `<p>${escapeHtml(line)}</p>`
+    })
+    .join('\n')
+
+  return `<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>${escapeHtml(title)}</title>
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #f5f2ec;
+      color: #1f1a17;
+      font-family: Georgia, 'Times New Roman', serif;
+      line-height: 1.58;
+    }
+    main {
+      width: min(920px, calc(100% - 32px));
+      margin: 32px auto;
+      background: #fffdf8;
+      border: 1px solid #d8c8aa;
+      border-radius: 18px;
+      padding: 44px;
+      box-shadow: 0 18px 50px rgba(31, 26, 23, 0.12);
+    }
+    header {
+      border-bottom: 2px solid #8a6a2f;
+      margin-bottom: 28px;
+      padding-bottom: 18px;
+    }
+    header small {
+      color: #755d2c;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-family: Arial, sans-serif;
+      font-weight: 700;
+    }
+    h1, h2, h3 { line-height: 1.2; }
+    h1 {
+      margin: 8px 0 0;
+      font-size: 2.2rem;
+      color: #3b2719;
+    }
+    h2 {
+      margin: 30px 0 12px;
+      padding-top: 12px;
+      color: #5d3e18;
+      border-top: 1px solid #eadfc9;
+      font-size: 1.35rem;
+    }
+    h2:first-of-type { border-top: none; }
+    h3 {
+      margin: 22px 0 8px;
+      color: #2c1f18;
+      font-size: 1.08rem;
+    }
+    p {
+      margin: 6px 0;
+      white-space: pre-wrap;
+    }
+    footer {
+      margin-top: 36px;
+      border-top: 1px solid #eadfc9;
+      padding-top: 16px;
+      color: #755d2c;
+      font-size: 0.92rem;
+      text-align: center;
+    }
+    .actions {
+      margin: 0 auto 18px;
+      width: min(920px, calc(100% - 32px));
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    button {
+      border: 0;
+      border-radius: 999px;
+      background: #5d3e18;
+      color: white;
+      padding: 10px 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    @media print {
+      body { background: #fff; }
+      main { width: 100%; margin: 0; border: 0; border-radius: 0; box-shadow: none; padding: 0; }
+      .actions { display: none; }
+      h2 { break-after: avoid; }
+      h3, p { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="actions"><button onclick="window.print()">Salvar como PDF / Imprimir</button></div>
+  <main>
+    <header>
+      <small>Relatório profissional de tarô</small>
+      <h1>${escapeHtml(input.session.spreadName)}</h1>
+    </header>
+    ${paragraphs}
+    <footer>Documento gerado automaticamente pelo Tarô Teleprompter.</footer>
+  </main>
+</body>
+</html>`
 }

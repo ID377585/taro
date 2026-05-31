@@ -26,7 +26,7 @@ interface HomeDashboardProps {
 
 const formatLastSessionDate = (sessions: SpreadingSession[]) => {
   const last = sessions[0]
-  if (!last) return 'Nenhuma ainda'
+  if (!last) return 'Nenhuma consulta registrada'
   return new Date(last.timestamp).toLocaleDateString('pt-BR')
 }
 
@@ -48,22 +48,37 @@ const HomeDashboard: FC<HomeDashboardProps> = ({
   return (
     <div className="home-dashboard">
       <section className="home-menu">
-        <span className="home-kicker">Tarot profissional</span>
-        <h1>Centro de atendimento e leituras</h1>
+        <div className="home-oracle-mark" aria-hidden="true">
+          ✦
+        </div>
+
+        <span className="home-kicker">Tarólogo Patrick Fernandez</span>
+
+        <h1>Sistema profissional de leituras espirituais</h1>
+
         <p>
-          Conduza consultas com teleprompter, histórico local, relatórios profissionais,
-          cadastro de consulentes e recursos de reconhecimento de cartas.
+          Organize consultas, acompanhe consulentes, registre tiragens, gere relatórios
+          profissionais e conduza atendimentos com uma experiência clara, elegante e acolhedora.
         </p>
+
+        <div className="home-primary-actions">
+          <button onClick={onStartReading}>Iniciar nova consulta</button>
+          <button className="secondary" onClick={onOpenHistory}>
+            Ver histórico
+          </button>
+        </div>
 
         <div className="home-hero-stats">
           <article>
             <strong>{sessions.length}</strong>
             <span>consultas salvas</span>
           </article>
+
           <article>
             <strong>{spreadsCount}</strong>
             <span>tiragens disponíveis</span>
           </article>
+
           <article>
             <strong>{cardsCount}</strong>
             <span>cartas no catálogo</span>
@@ -74,11 +89,17 @@ const HomeDashboard: FC<HomeDashboardProps> = ({
           <div className="resume-card">
             <div>
               <strong>Atividade salva encontrada</strong>
-              <p>Continue a última atividade apenas quando quiser. Nada abre automaticamente.</p>
+              <p>
+                Existe uma atividade anterior neste navegador. Você pode continuar manualmente
+                quando desejar.
+              </p>
             </div>
+
             <div className="home-actions home-actions--compact">
               <button onClick={savedFlow.onContinue}>Continuar atividade</button>
-              <button className="secondary" onClick={savedFlow.onClear}>Descartar</button>
+              <button className="secondary" onClick={savedFlow.onClear}>
+                Descartar
+              </button>
             </div>
           </div>
         )}
@@ -97,54 +118,90 @@ const HomeDashboard: FC<HomeDashboardProps> = ({
           <em>📚</em>
           <span>
             <strong>Histórico</strong>
-            <span>Consulte leituras salvas, exporte PDF e acompanhe recorrências.</span>
+            <span>Consulte leituras salvas, exporte relatórios e acompanhe recorrências.</span>
           </span>
         </button>
 
         <button className="home-action-card" onClick={onRegisterCards}>
-          <em>📸</em>
+          <em>🌙</em>
           <span>
-            <strong>Registrar cartas</strong>
-            <span>Cadastre imagens e organize a base visual para reconhecimento.</span>
+            <strong>Registro de cartas</strong>
+            <span>Cadastre imagens e fortaleça a base visual para reconhecimento.</span>
           </span>
         </button>
 
         <button className="home-action-card" onClick={onOpenOperations}>
-          <em>⚙️</em>
+          <em>⚜️</em>
           <span>
-            <strong>Operações</strong>
-            <span>Veja progresso, fila local, sincronização e saúde operacional.</span>
+            <strong>Painel operacional</strong>
+            <span>Veja progresso, fila local, sincronização e saúde do sistema.</span>
           </span>
         </button>
       </section>
 
-      <section className="home-section-card">
-        <h2>Status do sistema</h2>
-        <p>Resumo rápido para saber se o app está pronto para atendimento no aparelho atual.</p>
-        <div className="home-hero-stats">
-          <article>
-            <strong>{isReady ? 'OK' : '...'}</strong>
-            <span>banco local</span>
+      <section className="home-section-card home-section-card--status">
+        <div>
+          <span className="section-eyebrow">Pronto para atendimento</span>
+          <h2>Status do sistema</h2>
+          <p>
+            Verifique rapidamente se o app está preparado para uso no aparelho atual antes de
+            iniciar uma consulta.
+          </p>
+        </div>
+
+        <div className="home-status-grid">
+          <article className={isReady ? 'status-ok' : 'status-warning'}>
+            <strong>{isReady ? 'Ativo' : 'Carregando'}</strong>
+            <span>Banco local</span>
           </article>
-          <article>
-            <strong>{hasCameraApi ? 'OK' : 'Indisp.'}</strong>
-            <span>câmera</span>
+
+          <article className={hasCameraApi ? 'status-ok' : 'status-warning'}>
+            <strong>{hasCameraApi ? 'Disponível' : 'Indisponível'}</strong>
+            <span>Câmera</span>
           </article>
+
           <article>
             <strong>{progressPercent}%</strong>
-            <span>treinamento estimado</span>
+            <span>Treinamento estimado</span>
           </article>
         </div>
+
         <div className="home-actions">
-          <button className="secondary" onClick={onOpenDiagnostics}>Abrir diagnóstico</button>
-          <button className="secondary" onClick={onOpenOperations}>Ver painel operacional</button>
+          <button className="secondary" onClick={onOpenDiagnostics}>
+            Abrir diagnóstico
+          </button>
+          <button className="secondary" onClick={onOpenOperations}>
+            Ver operações
+          </button>
         </div>
       </section>
 
-      <section className="home-section-card">
-        <h3>Resumo recente</h3>
-        <p>Última consulta: {formatLastSessionDate(sessions)}</p>
-        <p>{hasServiceWorker ? 'Modo PWA disponível neste navegador.' : 'PWA indisponível neste navegador.'}</p>
+      <section className="home-section-card home-recent-card">
+        <div>
+          <span className="section-eyebrow">Resumo recente</span>
+          <h3>Últimos movimentos</h3>
+        </div>
+
+        <div className="recent-list">
+          <article>
+            <strong>Última consulta</strong>
+            <span>{formatLastSessionDate(sessions)}</span>
+          </article>
+
+          <article>
+            <strong>Modo aplicativo</strong>
+            <span>
+              {hasServiceWorker
+                ? 'PWA disponível neste navegador'
+                : 'PWA indisponível neste navegador'}
+            </span>
+          </article>
+
+          <article>
+            <strong>Relatórios</strong>
+            <span>Histórico preparado para exportação profissional</span>
+          </article>
+        </div>
       </section>
 
       <HistoryPanel sessions={sessions} onOpenAll={onOpenHistory} />

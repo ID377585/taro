@@ -132,13 +132,13 @@ export class DBService {
   async saveClientProfile(profile: PersistedClientProfile): Promise<void> {
     if (!this.db) await this.init()
 
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const transaction = this.db!.transaction([CLIENTS_STORE_NAME], 'readwrite')
       const store = transaction.objectStore(CLIENTS_STORE_NAME)
       const request = store.put(profile)
 
       request.onerror = () => reject(request.error)
-      request.onsuccess = () => resolve()
+      request.onsuccess = () => resolve(undefined)
     })
   }
 
@@ -186,7 +186,7 @@ export class DBService {
         }
         const putRequest = store.put(next)
         putRequest.onerror = () => reject(putRequest.error)
-        putRequest.onsuccess = () => resolve()
+        putRequest.onsuccess = () => resolve(undefined)
       }
     })
   }
@@ -200,7 +200,7 @@ export class DBService {
       const request = store.put(session)
 
       request.onerror = () => reject(request.error)
-      request.onsuccess = () => resolve()
+      request.onsuccess = () => resolve(undefined)
     }).then(() => this.upsertClientProfileFromSession(session))
   }
 
@@ -239,7 +239,7 @@ export class DBService {
       const request = store.delete(id)
 
       request.onerror = () => reject(request.error)
-      request.onsuccess = () => resolve()
+      request.onsuccess = () => resolve(undefined)
     })
   }
 
@@ -252,7 +252,7 @@ export class DBService {
       const request = store.put(record)
 
       request.onerror = () => reject(request.error)
-      request.onsuccess = () => resolve()
+      request.onsuccess = () => resolve(undefined)
     })
   }
 
@@ -291,7 +291,7 @@ export class DBService {
       const request = store.delete(cardId)
 
       request.onerror = () => reject(request.error)
-      request.onsuccess = () => resolve()
+      request.onsuccess = () => resolve(undefined)
     })
   }
 
@@ -545,7 +545,7 @@ export class DBService {
         }
         const putRequest = store.put(nextRow)
         putRequest.onerror = () => reject(putRequest.error)
-        putRequest.onsuccess = () => resolve()
+        putRequest.onsuccess = () => resolve(undefined)
       }
     })
   }
@@ -580,7 +580,7 @@ export class DBService {
         }
         const putRequest = store.put(nextRow)
         putRequest.onerror = () => reject(putRequest.error)
-        putRequest.onsuccess = () => resolve()
+        putRequest.onsuccess = () => resolve(undefined)
       }
     })
   }

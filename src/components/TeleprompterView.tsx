@@ -13,7 +13,6 @@ import { CameraResolution, useCamera } from '../hooks/useCamera'
 import { useCardRecognition } from '../hooks/useCardRecognition'
 import { generateAdvancedSpreadSynthesis } from '../services/advancedReadingService'
 import CameraView from './CameraView'
-import CardRecognizer from './CardRecognizer'
 import './TeleprompterView.css'
 
 interface WakeLockSentinelLike {
@@ -627,7 +626,20 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
   return (
     <div className="teleprompter-view" style={rootStyle}>
       <CameraView videoRef={videoRef} devices={devices} currentDeviceId={currentDeviceId} isActive={isActive} isStarting={isStarting} error={cameraError} onStart={() => void handleStartCamera()} onSwitch={deviceId => void handleSwitchCamera(deviceId)} toolbarActions={<button className="camera-btn" onClick={() => { setRecognitionEnabled(false); stopCamera() }}>{isActive ? 'Desligar câmera' : 'Câmera desligada'}</button>}>
-        {isActive && <CardRecognizer status={status} currentCard={currentCard} confidence={currentDrawn?.confidence} isReversed={Boolean(currentDrawn?.isReversed)} hint={recognitionHint} />}
+        {isActive && (
+          <div className="recognition-status-card">
+            <strong>{currentCard ? currentCard.nome : 'Reconhecimento ativo'}</strong>
+            <span>
+              {currentDrawn
+                ? `${currentDrawn.isReversed ? 'Invertida' : 'Vertical'}${
+                    currentDrawn.confidence
+                      ? ` • ${(currentDrawn.confidence * 100).toFixed(1)}%`
+                      : ''
+                  }`
+                : recognitionHint}
+            </span>
+          </div>
+        )}
       </CameraView>
 
       <div className={`text-overlay ${isPanelExpanded ? 'expanded' : 'collapsed'}`}>

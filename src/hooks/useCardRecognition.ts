@@ -3,6 +3,7 @@ import { Card, RecognitionResult } from '../types'
 import { LocalCaptureMatcherStats } from '../services/localCaptureMatcher'
 import { createCardLookup } from '../services/labelService'
 import { detectTarotVisionMarkFromVideo } from '../services/detectCardFromImage'
+import { matchOfficialDeckFromVideo } from '../services/officialDeckMatcher'
 
 interface UseCardRecognitionOptions {
   videoRef: RefObject<HTMLVideoElement>
@@ -111,11 +112,14 @@ export const useCardRecognition = ({
     setModelDiagnostics({
       checked: true,
       placeholder: false,
-      format: 'tarot-vision-mark-only',
+      format: 'tarot-vision-mark-plus-official-deck-template',
       labelsCount: cards.length,
       outputClasses: cards.length,
       expectedClasses,
-      warnings: ['Modelo antigo e capturas locais desativados. Leitura aceita somente por Tarot Vision Mark.'],
+      warnings: [
+        'Modelo antigo e capturas locais desativados.',
+        'Leitura principal por Tarot Vision Mark; fallback determinístico pelo baralho oficial dourado.',
+      ],
     })
     setLocalStats({ records: 0, cards: cards.length, candidates: 0, failedSamples: 0 })
     votesRef.current = null
@@ -125,7 +129,7 @@ export const useCardRecognition = ({
   useEffect(() => {
     if (!enabled || status !== 'running-marker') return
 
-    const timer = window.setInterval(() => {
+    const timer = window.setInterval(async () => {
       if (isPredictingRef.current) return
 
       const video = videoRef.current
@@ -134,48 +138,59 @@ export const useCardRecognition = ({
       isPredictingRef.current = true
 
       try {
+        const confirmResult = (result: RecognitionResult, requiredVotes: number) => {
+          const voteKey = `${result.card.id}:${result.isReversed ? 'r' : 'v'}`
+          const currentVote = votesRef.current
+
+          if (!currentVote || currentVote.key !== voteKey) {
+            votesRef.current = { key: voteKey, count: 1 }
+            return
+          }
+
+          votesRef.current = { key: voteKey, count: currentVote.count + 1 }
+          if (votesRef.current.count < requiredVotes) return
+          if (lastConfirmedKeyRef.current === voteKey) return
+
+          lastConfirmedKeyRef.current = voteKey
+          setLastResult(result)
+          onConfirmed?.(result)
+        }
+
         const markerPrediction = detectTarotVisionMarkFromVideo(video)
-        if (!markerPrediction || markerPrediction.confidence < 0.55) {
+        if (markerPrediction && markerPrediction.confidence >= 0.55) {
+          const card = cardLookup.get(`${markerPrediction.cardId}`) || null
+
+          if (card) {
+            confirmResult({
+              card,
+              isReversed: markerPrediction.isReversed,
+              confidence: markerPrediction.confidence,
+              label: `tarot-vision-mark-${markerPrediction.cardId}`,
+            }, Math.max(2, Math.min(minVotes, 3)))
+
+            isPredictingRef.current = false
+            return
+          }
+        }
+
+        const templateMatch = await matchOfficialDeckFromVideo(video, cards)
+        if (!templateMatch) {
           isPredictingRef.current = false
           return
         }
 
-        const card = cardLookup.get(`${markerPrediction.cardId}`) || null
+        const card = cardLookup.get(`${templateMatch.cardId}`) || null
         if (!card) {
           isPredictingRef.current = false
           return
         }
 
-        const result: RecognitionResult = {
+        confirmResult({
           card,
-          isReversed: markerPrediction.isReversed,
-          confidence: markerPrediction.confidence,
-          label: `tarot-vision-mark-${markerPrediction.cardId}`,
-        }
-
-        const voteKey = `${card.id}:${markerPrediction.isReversed ? 'r' : 'v'}`
-        const currentVote = votesRef.current
-        if (!currentVote || currentVote.key !== voteKey) {
-          votesRef.current = { key: voteKey, count: 1 }
-          isPredictingRef.current = false
-          return
-        }
-
-        const requiredVotes = Math.max(2, Math.min(minVotes, 3))
-        votesRef.current = { key: voteKey, count: currentVote.count + 1 }
-        if (votesRef.current.count < requiredVotes) {
-          isPredictingRef.current = false
-          return
-        }
-
-        if (lastConfirmedKeyRef.current === voteKey) {
-          isPredictingRef.current = false
-          return
-        }
-
-        lastConfirmedKeyRef.current = voteKey
-        setLastResult(result)
-        onConfirmed?.(result)
+          isReversed: false,
+          confidence: templateMatch.confidence,
+          label: `official-deck-template-${templateMatch.cardId}`,
+        }, Math.max(2, minVotes))
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err)
         setError(message)

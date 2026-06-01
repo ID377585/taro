@@ -1,4 +1,5 @@
 import { Card } from '../types'
+import { expandCropVariants, locateLargestBrightComponent, scaleCropBox } from './brightComponentCrop'
 
 type FeatureTemplate = {
   cardId: number
@@ -10,22 +11,22 @@ export type OfficialDeckMatch = {
   cardId: number
   confidence: number
   score: number
+  isReversed: boolean
   source: 'official-deck-template'
 }
 
-type CropBox = { sx: number; sy: number; sw: number; sh: number; confidence: number }
 type Roi = { x: number; y: number; w: number; h: number; weight: number; includeColor: boolean }
+type CapturedFeatureVector = { data: Float32Array; cropConfidence: number; isReversed: boolean }
 
-const TARGET_WIDTH = 120
-const TARGET_HEIGHT = 180
+const TARGET_WIDTH = 144
+const TARGET_HEIGHT = 216
 const TARGET_RATIO = 2 / 3
 
-// Evita comparar a moldura inteira, porque ela é quase igual nas 78 cartas.
-// O peso maior fica no desenho central e no título inferior, que diferenciam as cartas.
 const ROIS: Roi[] = [
-  { x: 0.12, y: 0.15, w: 0.76, h: 0.62, weight: 1.6, includeColor: true },
-  { x: 0.14, y: 0.79, w: 0.72, h: 0.15, weight: 2.2, includeColor: false },
-  { x: 0.34, y: 0.03, w: 0.32, h: 0.12, weight: 1.1, includeColor: false },
+  { x: 0.12, y: 0.14, w: 0.76, h: 0.6, weight: 1.75, includeColor: true },
+  { x: 0.15, y: 0.78, w: 0.7, h: 0.16, weight: 2.55, includeColor: false },
+  { x: 0.33, y: 0.03, w: 0.34, h: 0.12, weight: 1, includeColor: false },
+  { x: 0.24, y: 0.53, w: 0.52, h: 0.14, weight: 1.15, includeColor: true },
 ]
 
 let templatesPromise: Promise<FeatureTemplate[]> | null = null
@@ -46,8 +47,8 @@ const normalizeArray = (values: number[]) => {
     const diff = value - mean
     varianceSum += diff * diff
   }
-  const variance = Math.sqrt(varianceSum / values.length) || 1
 
+  const variance = Math.sqrt(varianceSum / values.length) || 1
   const normalized = new Float32Array(values.length)
   for (let i = 0; i < values.length; i += 1) {
     normalized[i] = (values[i] - mean) / variance
@@ -61,12 +62,13 @@ const createCanvas = (width: number, height: number) => {
   canvas.height = height
   const context = canvas.getContext('2d', { willReadFrequently: true })
   if (!context) throw new Error('Canvas indisponível para reconhecimento do baralho oficial.')
+  context.imageSmoothingEnabled = true
+  context.imageSmoothingQuality = 'high'
   return { canvas, context }
 }
 
 const drawImageToCardCanvas = (image: CanvasImageSource, sourceWidth: number, sourceHeight: number) => {
   const { canvas, context } = createCanvas(TARGET_WIDTH, TARGET_HEIGHT)
-
   const sourceRatio = sourceWidth / sourceHeight
   let sx = 0
   let sy = 0
@@ -105,22 +107,18 @@ const canvasToFeatureVector = (canvas: HTMLCanvasElement) => {
         const g = imageData.data[offset + 1] / 255
         const b = imageData.data[offset + 2] / 255
         const lum = luminance(imageData.data[offset], imageData.data[offset + 1], imageData.data[offset + 2])
-
-        // Estrutura de luz/sombra.
-        values.push(lum * roi.weight)
-
-        // Gradiente simples para reforçar contornos do desenho e letras.
         const nextX = Math.min(canvas.width - 1, x + 1)
         const nextY = Math.min(canvas.height - 1, y + 1)
         const offsetX = (y * canvas.width + nextX) * 4
         const offsetY = (nextY * canvas.width + x) * 4
         const lumX = luminance(imageData.data[offsetX], imageData.data[offsetX + 1], imageData.data[offsetX + 2])
         const lumY = luminance(imageData.data[offsetY], imageData.data[offsetY + 1], imageData.data[offsetY + 2])
+
+        values.push(lum * roi.weight)
         values.push(Math.abs(lum - lumX) * roi.weight * 2)
         values.push(Math.abs(lum - lumY) * roi.weight * 2)
 
         if (roi.includeColor) {
-          // Cores relativas ajudam a diferenciar roupa/cavalo/céu sem depender do brilho absoluto.
           values.push((r - g) * roi.weight * 0.85)
           values.push((b - (r + g) / 2) * roi.weight * 0.85)
         }
@@ -166,84 +164,58 @@ export const preloadOfficialDeckTemplates = (cards: Card[]) => {
   void ensureTemplates(cards).catch(() => undefined)
 }
 
-const locateBrightCardCrop = (video: HTMLVideoElement): CropBox | null => {
+const rotateCanvas180 = (source: HTMLCanvasElement) => {
+  const { canvas, context } = createCanvas(source.width, source.height)
+  context.translate(source.width, source.height)
+  context.rotate(Math.PI)
+  context.drawImage(source, 0, 0)
+  return canvas
+}
+
+const captureVideoFeatureVectors = (video: HTMLVideoElement): CapturedFeatureVector[] => {
   const sourceWidth = video.videoWidth
   const sourceHeight = video.videoHeight
-  if (sourceWidth <= 0 || sourceHeight <= 0) return null
+  if (sourceWidth <= 0 || sourceHeight <= 0) return []
 
   const probeWidth = 360
   const probeHeight = Math.max(1, Math.round(probeWidth * (sourceHeight / sourceWidth)))
   const { canvas: probeCanvas, context: probeContext } = createCanvas(probeWidth, probeHeight)
+
   probeContext.drawImage(video, 0, 0, probeCanvas.width, probeCanvas.height)
-  const imageData = probeContext.getImageData(0, 0, probeCanvas.width, probeCanvas.height)
-  const { data } = imageData
+  const probeImage = probeContext.getImageData(0, 0, probeCanvas.width, probeCanvas.height)
+  const probeCrop = locateLargestBrightComponent(probeImage, {
+    targetRatio: TARGET_RATIO,
+    brightnessThreshold: 0.46,
+    chromaThreshold: 0.58,
+    cellSize: 3,
+    minHits: 30,
+    padRatio: 0.022,
+  })
 
-  let minX = probeWidth
-  let minY = probeHeight
-  let maxX = -1
-  let maxY = -1
-  let hits = 0
+  if (!probeCrop) return []
 
-  for (let y = 0; y < probeHeight; y += 2) {
-    for (let x = 0; x < probeWidth; x += 2) {
-      const offset = (y * probeWidth + x) * 4
-      const r = data[offset]
-      const g = data[offset + 1]
-      const b = data[offset + 2]
-      const lum = luminance(r, g, b)
-      const chroma = (Math.max(r, g, b) - Math.min(r, g, b)) / 255
+  const scaledBaseCrop = scaleCropBox(probeCrop, sourceWidth / probeWidth, sourceHeight / probeHeight)
+  const outputs: CapturedFeatureVector[] = []
 
-      if (lum > 0.48 && chroma < 0.52) {
-        minX = Math.min(minX, x)
-        minY = Math.min(minY, y)
-        maxX = Math.max(maxX, x)
-        maxY = Math.max(maxY, y)
-        hits += 1
-      }
-    }
+  for (const crop of expandCropVariants(scaledBaseCrop, sourceWidth, sourceHeight)) {
+    const { canvas, context } = createCanvas(TARGET_WIDTH, TARGET_HEIGHT)
+    context.drawImage(video, crop.sx, crop.sy, crop.sw, crop.sh, 0, 0, TARGET_WIDTH, TARGET_HEIGHT)
+
+    outputs.push({
+      data: canvasToFeatureVector(canvas),
+      cropConfidence: crop.confidence,
+      isReversed: false,
+    })
+
+    const rotated = rotateCanvas180(canvas)
+    outputs.push({
+      data: canvasToFeatureVector(rotated),
+      cropConfidence: crop.confidence * 0.98,
+      isReversed: true,
+    })
   }
 
-  if (hits < 140 || maxX <= minX || maxY <= minY) return null
-
-  const scaleX = sourceWidth / probeWidth
-  const scaleY = sourceHeight / probeHeight
-  const padX = (maxX - minX) * 0.015
-  const padY = (maxY - minY) * 0.015
-
-  let sx = clamp((minX - padX) * scaleX, 0, sourceWidth - 1)
-  let sy = clamp((minY - padY) * scaleY, 0, sourceHeight - 1)
-  let sw = clamp((maxX - minX + padX * 2) * scaleX, 1, sourceWidth - sx)
-  let sh = clamp((maxY - minY + padY * 2) * scaleY, 1, sourceHeight - sy)
-
-  const ratio = sw / sh
-  if (ratio > TARGET_RATIO) {
-    const nextWidth = sh * TARGET_RATIO
-    sx += (sw - nextWidth) / 2
-    sw = nextWidth
-  } else {
-    const nextHeight = sw / TARGET_RATIO
-    sy += (sh - nextHeight) / 2
-    sh = nextHeight
-  }
-
-  const area = (sw * sh) / (sourceWidth * sourceHeight)
-  const ratioConfidence = clamp(1 - Math.abs(sw / sh - TARGET_RATIO) / 0.35, 0, 1)
-  const areaConfidence = clamp(area / 0.2, 0, 1)
-
-  return { sx, sy, sw, sh, confidence: ratioConfidence * 0.65 + areaConfidence * 0.35 }
-}
-
-const captureVideoFeatureVector = (video: HTMLVideoElement) => {
-  const crop = locateBrightCardCrop(video)
-  if (!crop || crop.confidence < 0.25) return null
-
-  const { canvas, context } = createCanvas(TARGET_WIDTH, TARGET_HEIGHT)
-  context.drawImage(video, crop.sx, crop.sy, crop.sw, crop.sh, 0, 0, TARGET_WIDTH, TARGET_HEIGHT)
-
-  return {
-    data: canvasToFeatureVector(canvas),
-    cropConfidence: crop.confidence,
-  }
+  return outputs
 }
 
 const similarityScore = (a: Float32Array, b: Float32Array) => {
@@ -260,34 +232,59 @@ export async function matchOfficialDeckFromVideo(video: HTMLVideoElement, cards:
   const templates = await ensureTemplates(cards)
   if (!templates.length) return null
 
-  const captured = captureVideoFeatureVector(video)
-  if (!captured) return null
+  const captures = captureVideoFeatureVectors(video)
+  if (!captures.length) return null
 
-  let best: { template: FeatureTemplate; score: number } | null = null
-  let secondBestScore = 0
+  let bestMatch: {
+    template: FeatureTemplate
+    score: number
+    margin: number
+    confidence: number
+    isReversed: boolean
+  } | null = null
 
-  for (const template of templates) {
-    const score = similarityScore(captured.data, template.data)
-    if (!best || score > best.score) {
-      secondBestScore = best?.score ?? 0
-      best = { template, score }
-    } else if (score > secondBestScore) {
-      secondBestScore = score
+  for (const captured of captures) {
+    let best: { template: FeatureTemplate; score: number } | null = null
+    let secondBestScore = 0
+
+    for (const template of templates) {
+      const score = similarityScore(captured.data, template.data)
+      if (!best || score > best.score) {
+        secondBestScore = best?.score ?? 0
+        best = { template, score }
+      } else if (score > secondBestScore) {
+        secondBestScore = score
+      }
+    }
+
+    if (!best) continue
+
+    const margin = best.score - secondBestScore
+    const confidence = clamp(captured.cropConfidence * 0.28 + (best.score - 0.58) / 0.18 + margin * 2.2, 0, 1)
+
+    if (
+      !bestMatch ||
+      confidence > bestMatch.confidence ||
+      (Math.abs(confidence - bestMatch.confidence) < 0.0001 && best.score > bestMatch.score)
+    ) {
+      bestMatch = {
+        template: best.template,
+        score: best.score,
+        margin,
+        confidence,
+        isReversed: captured.isReversed,
+      }
     }
   }
 
-  if (!best) return null
-
-  const margin = best.score - secondBestScore
-  const confidence = clamp(captured.cropConfidence * 0.25 + (best.score - 0.60) / 0.18 + margin * 2.4, 0, 1)
-
-  // Thresholds mais conservadores para evitar falso positivo. Se não tiver certeza, não confirma.
-  if (best.score < 0.69 || margin < 0.028 || confidence < 0.55) return null
+  if (!bestMatch) return null
+  if (bestMatch.score < 0.64 || bestMatch.margin < 0.018 || bestMatch.confidence < 0.46) return null
 
   return {
-    cardId: best.template.cardId,
-    confidence,
-    score: best.score,
+    cardId: bestMatch.template.cardId,
+    confidence: bestMatch.confidence,
+    score: bestMatch.score,
+    isReversed: bestMatch.isReversed,
     source: 'official-deck-template',
   }
 }

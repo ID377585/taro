@@ -47,6 +47,12 @@ interface VoteState {
   count: number
 }
 
+const MARKER_USABLE_CONFIDENCE = 0.48
+const MARKER_DIRECT_CONFIDENCE = 0.66
+const MARKER_FAST_CONFIDENCE = 0.72
+const TEMPLATE_PREFERS_OVER_MARKER_CONFIDENCE = 0.56
+const TEMPLATE_PREFERS_OVER_MARKER_MARGIN = 0.05
+
 const createInitialModelDiagnostics = (expectedClasses: number): ModelDiagnostics => ({
   checked: false,
   placeholder: false,
@@ -65,7 +71,9 @@ export const useCardRecognition = ({
   minVotes = 2,
   onConfirmed,
 }: UseCardRecognitionOptions) => {
-  const expectedClasses = cards.length * 2
+  const cardsKey = useMemo(() => cards.map(card => `${card.id}:${card.imagemUrl}`).join('|'), [cards])
+  const cardsCount = cards.length
+  const expectedClasses = cardsCount
   const [status, setStatus] = useState<RecognitionStatus>('idle')
   const [error, setError] = useState<string | null>(null)
   const [lastResult, setLastResult] = useState<RecognitionResult | null>(null)
@@ -82,13 +90,19 @@ export const useCardRecognition = ({
   const votesRef = useRef<VoteState | null>(null)
   const lastConfirmedKeyRef = useRef<string>('')
   const isPredictingRef = useRef(false)
-  const cardLookup = useMemo(() => createCardLookup(cards), [cards])
+  const cardsRef = useRef(cards)
+  const cardLookupRef = useRef(createCardLookup(cards))
 
   const labelDiagnostics = useMemo<LabelDiagnostics>(() => ({
     totalLabels: 0,
     mappedLabels: 0,
     unmappedLabels: [],
   }), [])
+
+  useEffect(() => {
+    cardsRef.current = cards
+    cardLookupRef.current = createCardLookup(cards)
+  }, [cards])
 
   useEffect(() => {
     if (!enabled) {
@@ -102,6 +116,7 @@ export const useCardRecognition = ({
       return
     }
 
+    const currentCards = cardsRef.current
     setStatus('running-marker')
     setError(null)
     setLastResult(null)
@@ -109,19 +124,19 @@ export const useCardRecognition = ({
       checked: true,
       placeholder: false,
       format: 'tarot-vision-mark-plus-official-deck-template',
-      labelsCount: cards.length,
-      outputClasses: cards.length,
+      labelsCount: currentCards.length,
+      outputClasses: currentCards.length,
       expectedClasses,
       warnings: [
         'Modelo antigo e capturas locais desativados.',
         'Leitura principal por Tarot Vision Mark; fallback determinístico pelo baralho oficial dourado.',
       ],
     })
-    setLocalStats({ records: 0, cards: cards.length, candidates: 0, failedSamples: 0 })
-    preloadOfficialDeckTemplates(cards)
+    setLocalStats({ records: 0, cards: currentCards.length, candidates: 0, failedSamples: 0 })
+    preloadOfficialDeckTemplates(currentCards)
     votesRef.current = null
     lastConfirmedKeyRef.current = ''
-  }, [cards, cards.length, enabled, expectedClasses])
+  }, [cardsKey, cardsCount, enabled, expectedClasses])
 
   useEffect(() => {
     if (!enabled || status !== 'running-marker') return
@@ -155,12 +170,15 @@ export const useCardRecognition = ({
           onConfirmed?.(result)
         }
 
+        const currentCards = cardsRef.current
+        const currentCardLookup = cardLookupRef.current
         const markerPrediction = detectTarotVisionMarkFromVideo(video)
-        const markerIsUsable = Boolean(markerPrediction && markerPrediction.confidence >= 0.55)
-        const markerIsStrong = Boolean(markerPrediction && markerPrediction.confidence >= 0.8)
+        const markerIsUsable = Boolean(markerPrediction && markerPrediction.confidence >= MARKER_USABLE_CONFIDENCE)
+        const markerIsDirect = Boolean(markerPrediction && markerPrediction.confidence >= MARKER_DIRECT_CONFIDENCE)
+        const markerIsFast = Boolean(markerPrediction && markerPrediction.confidence >= MARKER_FAST_CONFIDENCE)
 
-        if (markerPrediction && markerIsStrong) {
-          const card = cardLookup.get(`${markerPrediction.cardId}`) || null
+        if (markerPrediction && markerIsDirect) {
+          const card = currentCardLookup.get(`${markerPrediction.cardId}`) || null
           if (card) {
             confirmResult(
               {
@@ -169,7 +187,7 @@ export const useCardRecognition = ({
                 confidence: markerPrediction.confidence,
                 label: `tarot-vision-mark-${markerPrediction.cardId}`,
               },
-              Math.max(2, Math.min(minVotes, 2)),
+              markerIsFast ? Math.max(2, Math.min(minVotes, 2)) : Math.max(2, Math.min(minVotes + 1, 3)),
             )
 
             isPredictingRef.current = false
@@ -177,7 +195,7 @@ export const useCardRecognition = ({
           }
         }
 
-        const templateMatch = await matchOfficialDeckFromVideo(video, cards)
+        const templateMatch = await matchOfficialDeckFromVideo(video, currentCards)
         if (!templateMatch && !markerIsUsable) {
           isPredictingRef.current = false
           return
@@ -188,10 +206,10 @@ export const useCardRecognition = ({
           (!markerPrediction ||
             !markerIsUsable ||
             (templateMatch.cardId !== markerPrediction.cardId &&
-              (templateMatch.confidence >= 0.62 ||
-                templateMatch.confidence > markerPrediction.confidence + 0.08)))
+              (templateMatch.confidence >= TEMPLATE_PREFERS_OVER_MARKER_CONFIDENCE ||
+                templateMatch.confidence > markerPrediction.confidence + TEMPLATE_PREFERS_OVER_MARKER_MARGIN)))
         const selectedCardId = shouldPreferTemplate ? templateMatch.cardId : markerPrediction?.cardId
-        const card = selectedCardId !== undefined ? cardLookup.get(`${selectedCardId}`) || null : null
+        const card = selectedCardId !== undefined ? currentCardLookup.get(`${selectedCardId}`) || null : null
         if (!card) {
           isPredictingRef.current = false
           return
@@ -201,7 +219,7 @@ export const useCardRecognition = ({
           confirmResult(
             {
               card,
-              isReversed: false,
+              isReversed: templateMatch.isReversed,
               confidence: templateMatch.confidence,
               label: `official-deck-template-${templateMatch.cardId}`,
             },
@@ -229,7 +247,7 @@ export const useCardRecognition = ({
     return () => {
       window.clearInterval(timer)
     }
-  }, [cards, enabled, status, videoRef, cardLookup, intervalMs, minVotes, onConfirmed])
+  }, [cardsKey, enabled, status, videoRef, intervalMs, minVotes, onConfirmed])
 
   const resetLastConfirmation = useCallback(() => {
     lastConfirmedKeyRef.current = ''

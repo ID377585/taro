@@ -1,4 +1,5 @@
 import { decodeTarotVisionMark, TarotVisionBits } from './tarotVisionMark'
+import { BrightCropBox, expandCropVariants, locateLargestBrightComponent } from './brightComponentCrop'
 
 export interface TarotVisionDetection {
   cardId: number
@@ -12,7 +13,6 @@ export interface TarotVisionDetection {
 }
 
 type SamplePoint = { x: number; y: number }
-type CropBox = { sx: number; sy: number; sw: number; sh: number; confidence: number }
 
 const TARGET_WIDTH = 420
 const TARGET_HEIGHT = 630
@@ -82,70 +82,12 @@ const darknessRatio = (imageData: ImageData, px: number, py: number, radius = 5)
   return total ? dark / total : 0
 }
 
-const locateCardCrop = (imageData: ImageData): CropBox | null => {
-  const { width, height, data } = imageData
-  const step = Math.max(2, Math.floor(Math.min(width, height) / 260))
-  let minX = width
-  let minY = height
-  let maxX = -1
-  let maxY = -1
-  let hits = 0
-
-  for (let y = 0; y < height; y += step) {
-    for (let x = 0; x < width; x += step) {
-      const offset = (y * width + x) * 4
-      const lum = luminance(data[offset], data[offset + 1], data[offset + 2])
-      const r = data[offset]
-      const g = data[offset + 1]
-      const b = data[offset + 2]
-      const chroma = (Math.max(r, g, b) - Math.min(r, g, b)) / 255
-
-      // As cartas têm fundo branco/marfim. Esta etapa localiza a área clara da carta
-      // dentro do frame da câmera, em vez de presumir que a carta preenche todo o vídeo.
-      if (lum > 0.52 && chroma < 0.56) {
-        minX = Math.min(minX, x)
-        minY = Math.min(minY, y)
-        maxX = Math.max(maxX, x)
-        maxY = Math.max(maxY, y)
-        hits += 1
-      }
-    }
-  }
-
-  if (hits < 80 || maxX <= minX || maxY <= minY) return null
-
-  const padX = Math.round((maxX - minX) * 0.01)
-  const padY = Math.round((maxY - minY) * 0.01)
-  const sx = clamp(minX - padX, 0, width - 1)
-  const sy = clamp(minY - padY, 0, height - 1)
-  const ex = clamp(maxX + padX, 0, width - 1)
-  const ey = clamp(maxY + padY, 0, height - 1)
-  const sw = ex - sx
-  const sh = ey - sy
-  if (sw <= 0 || sh <= 0) return null
-
-  const ratio = sw / sh
-  const ratioError = Math.abs(ratio - TARGET_RATIO) / TARGET_RATIO
-
-  // Rejeita enquadramentos parciais. A câmera precisa ver a carta inteira.
-  if (ratioError > 0.38) return null
-  if (sw < width * 0.18 || sh < height * 0.35) return null
-
-  return {
-    sx,
-    sy,
-    sw,
-    sh,
-    confidence: clamp(1 - ratioError / 0.38, 0, 1),
-  }
-}
-
 const drawCropToTarget = (
   sourceWidth: number,
   sourceHeight: number,
   context: CanvasRenderingContext2D,
   draw: (sx: number, sy: number, sw: number, sh: number) => void,
-  crop?: CropBox | null,
+  crop?: BrightCropBox | null,
 ) => {
   if (!sourceWidth || !sourceHeight) return
 
@@ -208,7 +150,7 @@ const sampleSlot = (imageData: ImageData, point: SamplePoint, reversed: boolean)
     }
   }
 
-  const active = best.center < 0.64 && best.localDarkness > 0.16 && best.confidence > 0.32
+  const active = best.center < 0.68 && best.localDarkness > 0.12 && best.confidence > 0.26
   const inactiveConfidence = best.center >= 0.50 ? clamp((best.center - 0.50) / 0.34, 0, 1) : 0
 
   return {
@@ -238,13 +180,13 @@ const readCandidate = (
   const orientationScore = orientation.filter(sample => sample.active).length / orientation.length
   const orientationConfidence = orientation.reduce((sum, sample) => sum + sample.confidence, 0) / orientation.length
 
-  if (orientationScore < 0.75 || orientationConfidence < 0.35) return null
+  if (orientationScore < 0.5 || orientationConfidence < 0.28) return null
 
   const id = readBits(imageData, markPoints.id, reversed)
   const group = readBits(imageData, markPoints.group, reversed)
   const checksum = readBits(imageData, markPoints.checksum, reversed)
 
-  if (id.confidence < 0.18 || group.confidence < 0.18 || checksum.confidence < 0.18) return null
+  if (id.confidence < 0.14 || group.confidence < 0.14 || checksum.confidence < 0.14) return null
 
   const bits: TarotVisionBits = {
     idBits: id.bits,
@@ -281,6 +223,7 @@ const createMarkerCanvas = () => {
   canvas.height = TARGET_HEIGHT
   const context = canvas.getContext('2d', { willReadFrequently: true })
   if (!context) throw new Error('Não foi possível inicializar canvas do Tarot Vision Mark.')
+  context.imageSmoothingEnabled = false
   return { canvas, context }
 }
 
@@ -292,24 +235,42 @@ export function detectTarotVisionMarkFromVideo(video: HTMLVideoElement): TarotVi
   rawCanvas.height = video.videoHeight
   const rawContext = rawCanvas.getContext('2d', { willReadFrequently: true })
   if (!rawContext) return null
+
   rawContext.drawImage(video, 0, 0, rawCanvas.width, rawCanvas.height)
   const rawImage = rawContext.getImageData(0, 0, rawCanvas.width, rawCanvas.height)
-  const crop = locateCardCrop(rawImage)
-  if (!crop) return null
+  const baseCrop = locateLargestBrightComponent(rawImage, {
+    targetRatio: TARGET_RATIO,
+    brightnessThreshold: 0.5,
+    chromaThreshold: 0.62,
+    cellSize: Math.max(2, Math.floor(Math.min(rawCanvas.width, rawCanvas.height) / 220)),
+    minHits: 48,
+    padRatio: 0.022,
+  })
+  if (!baseCrop) return null
 
   const { canvas, context } = createMarkerCanvas()
-  context.clearRect(0, 0, canvas.width, canvas.height)
-  drawCropToTarget(video.videoWidth, video.videoHeight, context, (sx, sy, sw, sh) => {
-    context.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height)
-  }, crop)
+  let best: TarotVisionDetection | null = null
 
-  const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
-  const cardRatio = crop.sw / crop.sh
-  const upright = readCandidate(imageData, false, crop.confidence, cardRatio)
-  const reversed = readCandidate(imageData, true, crop.confidence, cardRatio)
+  for (const crop of expandCropVariants(baseCrop, video.videoWidth, video.videoHeight)) {
+    context.clearRect(0, 0, canvas.width, canvas.height)
+    drawCropToTarget(video.videoWidth, video.videoHeight, context, (sx, sy, sw, sh) => {
+      context.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height)
+    }, crop)
 
-  if (upright && reversed) return upright.confidence >= reversed.confidence ? upright : reversed
-  return upright || reversed
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
+    const cardRatio = crop.sw / crop.sh
+    const upright = readCandidate(imageData, false, crop.confidence, cardRatio)
+    const reversed = readCandidate(imageData, true, crop.confidence, cardRatio)
+    const candidate = upright && reversed
+      ? (upright.confidence >= reversed.confidence ? upright : reversed)
+      : (upright || reversed)
+
+    if (candidate && (!best || candidate.confidence > best.confidence)) {
+      best = candidate
+    }
+  }
+
+  return best
 }
 
 export async function detectTarotVisionMarkFromBlob(blob: Blob): Promise<TarotVisionDetection | null> {

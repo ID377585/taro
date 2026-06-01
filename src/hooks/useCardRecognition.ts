@@ -3,7 +3,7 @@ import { Card, RecognitionResult } from '../types'
 import { LocalCaptureMatcherStats } from '../services/localCaptureMatcher'
 import { createCardLookup } from '../services/labelService'
 import { detectTarotVisionMarkFromVideo } from '../services/detectCardFromImage'
-import { matchOfficialDeckFromVideo } from '../services/officialDeckMatcher'
+import { matchOfficialDeckFromVideo, preloadOfficialDeckTemplates } from '../services/officialDeckMatcher'
 
 interface UseCardRecognitionOptions {
   videoRef: RefObject<HTMLVideoElement>
@@ -61,8 +61,8 @@ export const useCardRecognition = ({
   videoRef,
   cards,
   enabled,
-  intervalMs = 300,
-  minVotes = 3,
+  intervalMs = 160,
+  minVotes = 2,
   onConfirmed,
 }: UseCardRecognitionOptions) => {
   const expectedClasses = cards.length * 2
@@ -118,9 +118,10 @@ export const useCardRecognition = ({
       ],
     })
     setLocalStats({ records: 0, cards: cards.length, candidates: 0, failedSamples: 0 })
+    preloadOfficialDeckTemplates(cards)
     votesRef.current = null
     lastConfirmedKeyRef.current = ''
-  }, [cards.length, enabled, expectedClasses])
+  }, [cards, cards.length, enabled, expectedClasses])
 
   useEffect(() => {
     if (!enabled || status !== 'running-marker') return
@@ -155,16 +156,21 @@ export const useCardRecognition = ({
         }
 
         const markerPrediction = detectTarotVisionMarkFromVideo(video)
-        if (markerPrediction && markerPrediction.confidence >= 0.55) {
-          const card = cardLookup.get(`${markerPrediction.cardId}`) || null
+        const markerIsUsable = Boolean(markerPrediction && markerPrediction.confidence >= 0.55)
+        const markerIsStrong = Boolean(markerPrediction && markerPrediction.confidence >= 0.8)
 
+        if (markerPrediction && markerIsStrong) {
+          const card = cardLookup.get(`${markerPrediction.cardId}`) || null
           if (card) {
-            confirmResult({
-              card,
-              isReversed: markerPrediction.isReversed,
-              confidence: markerPrediction.confidence,
-              label: `tarot-vision-mark-${markerPrediction.cardId}`,
-            }, Math.max(2, Math.min(minVotes, 3)))
+            confirmResult(
+              {
+                card,
+                isReversed: markerPrediction.isReversed,
+                confidence: markerPrediction.confidence,
+                label: `tarot-vision-mark-${markerPrediction.cardId}`,
+              },
+              Math.max(2, Math.min(minVotes, 2)),
+            )
 
             isPredictingRef.current = false
             return
@@ -172,23 +178,46 @@ export const useCardRecognition = ({
         }
 
         const templateMatch = await matchOfficialDeckFromVideo(video, cards)
-        if (!templateMatch) {
+        if (!templateMatch && !markerIsUsable) {
           isPredictingRef.current = false
           return
         }
 
-        const card = cardLookup.get(`${templateMatch.cardId}`) || null
+        const shouldPreferTemplate =
+          templateMatch &&
+          (!markerPrediction ||
+            !markerIsUsable ||
+            (templateMatch.cardId !== markerPrediction.cardId &&
+              (templateMatch.confidence >= 0.62 ||
+                templateMatch.confidence > markerPrediction.confidence + 0.08)))
+        const selectedCardId = shouldPreferTemplate ? templateMatch.cardId : markerPrediction?.cardId
+        const card = selectedCardId !== undefined ? cardLookup.get(`${selectedCardId}`) || null : null
         if (!card) {
           isPredictingRef.current = false
           return
         }
 
-        confirmResult({
-          card,
-          isReversed: false,
-          confidence: templateMatch.confidence,
-          label: `official-deck-template-${templateMatch.cardId}`,
-        }, Math.max(2, minVotes))
+        if (shouldPreferTemplate && templateMatch) {
+          confirmResult(
+            {
+              card,
+              isReversed: false,
+              confidence: templateMatch.confidence,
+              label: `official-deck-template-${templateMatch.cardId}`,
+            },
+            Math.max(2, minVotes),
+          )
+        } else if (markerPrediction) {
+          confirmResult(
+            {
+              card,
+              isReversed: markerPrediction.isReversed,
+              confidence: markerPrediction.confidence,
+              label: `tarot-vision-mark-${markerPrediction.cardId}`,
+            },
+            Math.max(2, Math.min(minVotes + 1, 3)),
+          )
+        }
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err)
         setError(message)

@@ -141,19 +141,16 @@ const loadImage = (url: string) =>
 
 const loadTemplates = async (cards: Card[]): Promise<FeatureTemplate[]> => {
   const cardsWithImages = cards.filter(card => card.imagemUrl && card.imagemUrl.includes('/cards/tarot-gold-v2/'))
-  const templates: FeatureTemplate[] = []
 
-  for (const card of cardsWithImages) {
+  return Promise.all(cardsWithImages.map(async card => {
     const image = await loadImage(card.imagemUrl)
     const canvas = drawImageToCardCanvas(image, image.naturalWidth, image.naturalHeight)
-    templates.push({
+    return {
       cardId: card.id,
       url: card.imagemUrl,
       data: canvasToFeatureVector(canvas),
-    })
-  }
-
-  return templates
+    }
+  }))
 }
 
 const ensureTemplates = (cards: Card[]) => {
@@ -163,6 +160,10 @@ const ensureTemplates = (cards: Card[]) => {
     templatesPromise = loadTemplates(cards)
   }
   return templatesPromise
+}
+
+export const preloadOfficialDeckTemplates = (cards: Card[]) => {
+  void ensureTemplates(cards).catch(() => undefined)
 }
 
 const locateBrightCardCrop = (video: HTMLVideoElement): CropBox | null => {

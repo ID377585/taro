@@ -95,7 +95,7 @@ interface TeleprompterViewProps {
   onSaveSession: (drawnCards: DrawnCard[]) => Promise<void>
 }
 
-const SETTINGS_STORAGE_KEY = 'taro.teleprompter.settings.v2'
+const SETTINGS_STORAGE_KEY = 'taro.teleprompter.settings.v3'
 const SHORTCUT_STORAGE_KEY = 'taro.teleprompter.shortcuts.v1'
 const DEFAULT_WPM = 89
 const DEFAULT_FONT_SIZE = 24
@@ -116,9 +116,9 @@ const DEFAULT_SETTINGS: TeleprompterSettings = {
   flipVertical: false,
   highlightLine: true,
   smoothAcceleration: true,
-  recognitionIntervalMs: 300,
+  recognitionIntervalMs: 160,
   recognitionThreshold: 0.84,
-  recognitionMinVotes: 3,
+  recognitionMinVotes: 2,
   resolutionPreset: 'high',
   renderScale: 1,
 }
@@ -237,6 +237,8 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
   const scrollAnimationRef = useRef<number | null>(null)
   const lastFrameRef = useRef<number | null>(null)
   const speedPxRef = useRef(0)
+  const scrollPositionRef = useRef(0)
+  const lastActiveParagraphUpdateRef = useRef(0)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const voiceRecognitionRef = useRef<SpeechRecognitionLike | null>(null)
   const voiceEnabledRef = useRef(false)
@@ -516,28 +518,57 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
   useEffect(() => {
     const container = scriptWindowRef.current
     if (!container) return
-    const handleScroll = () => updateActiveParagraphFromScroll()
+    const handleScroll = () => {
+      scrollPositionRef.current = container.scrollTop
+      if (!isScrolling) updateActiveParagraphFromScroll()
+    }
     container.addEventListener('scroll', handleScroll)
     return () => container.removeEventListener('scroll', handleScroll)
-  }, [updateActiveParagraphFromScroll])
+  }, [isScrolling, updateActiveParagraphFromScroll])
 
   useEffect(() => {
-    if (!isScrolling) { if (scrollAnimationRef.current) cancelAnimationFrame(scrollAnimationRef.current); scrollAnimationRef.current = null; lastFrameRef.current = null; speedPxRef.current = 0; return }
+    if (!isScrolling) {
+      if (scrollAnimationRef.current) cancelAnimationFrame(scrollAnimationRef.current)
+      scrollAnimationRef.current = null
+      lastFrameRef.current = null
+      speedPxRef.current = 0
+      lastActiveParagraphUpdateRef.current = 0
+      return
+    }
+
+    const initialContainer = scriptWindowRef.current
+    if (initialContainer) scrollPositionRef.current = initialContainer.scrollTop
+
     const tick = (timestamp: number) => {
       const container = scriptWindowRef.current
       if (!container) { setIsScrolling(false); return }
       if (lastFrameRef.current === null) lastFrameRef.current = timestamp
-      const deltaSeconds = (timestamp - lastFrameRef.current) / 1000
+      const deltaSeconds = Math.min((timestamp - lastFrameRef.current) / 1000, 0.05)
       lastFrameRef.current = timestamp
       const targetSpeed = estimateTargetSpeed()
-      speedPxRef.current = settings.smoothAcceleration ? speedPxRef.current + (targetSpeed - speedPxRef.current) * Math.min(1, deltaSeconds * 5) : targetSpeed
-      container.scrollTop += speedPxRef.current * deltaSeconds
-      updateActiveParagraphFromScroll()
-      if (container.scrollTop >= container.scrollHeight - container.clientHeight - 1) { setIsScrolling(false); return }
+      speedPxRef.current = settings.smoothAcceleration ? speedPxRef.current + (targetSpeed - speedPxRef.current) * Math.min(1, deltaSeconds * 3.8) : targetSpeed
+
+      const maxScrollTop = Math.max(0, container.scrollHeight - container.clientHeight)
+      const nextScrollTop = Math.min(maxScrollTop, scrollPositionRef.current + speedPxRef.current * deltaSeconds)
+      scrollPositionRef.current = nextScrollTop
+      container.scrollTop = nextScrollTop
+
+      if (timestamp - lastActiveParagraphUpdateRef.current > 180) {
+        lastActiveParagraphUpdateRef.current = timestamp
+        updateActiveParagraphFromScroll()
+      }
+
+      if (nextScrollTop >= maxScrollTop - 0.5) { setIsScrolling(false); return }
       scrollAnimationRef.current = requestAnimationFrame(tick)
     }
     scrollAnimationRef.current = requestAnimationFrame(tick)
-    return () => { if (scrollAnimationRef.current) cancelAnimationFrame(scrollAnimationRef.current); scrollAnimationRef.current = null; lastFrameRef.current = null; speedPxRef.current = 0 }
+    return () => {
+      if (scrollAnimationRef.current) cancelAnimationFrame(scrollAnimationRef.current)
+      scrollAnimationRef.current = null
+      lastFrameRef.current = null
+      speedPxRef.current = 0
+      lastActiveParagraphUpdateRef.current = 0
+    }
   }, [estimateTargetSpeed, isScrolling, settings.smoothAcceleration, updateActiveParagraphFromScroll])
 
   useEffect(() => {

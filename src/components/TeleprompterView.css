@@ -256,9 +256,13 @@
   height: min(36dvh, 420px);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scroll-behavior: auto;
+  scrollbar-gutter: stable;
   background: var(--tp-bg-color);
-  transform: scale(var(--tp-render-scale));
-  transform-origin: top center;
+  transform: translateZ(0);
+  will-change: scroll-position;
+  contain: paint;
 }
 
 .tp-extra-controls-toggle-wrap {
@@ -292,11 +296,15 @@
 }
 
 .script-window.flip-horizontal .script-content {
-  transform: scaleX(-1);
+  transform: scale(var(--tp-render-scale)) scaleX(-1);
 }
 
 .script-window.flip-vertical .script-content {
-  transform: scaleY(-1);
+  transform: scale(var(--tp-render-scale)) scaleY(-1);
+}
+
+.script-window.flip-horizontal.flip-vertical .script-content {
+  transform: scale(var(--tp-render-scale)) scale(-1, -1);
 }
 
 .script-content {
@@ -307,6 +315,8 @@
   font-size: var(--tp-font-size);
   line-height: var(--tp-line-height);
   text-align: var(--tp-text-align);
+  transform: scale(var(--tp-render-scale));
+  transform-origin: top center;
 }
 
 .script-content p {

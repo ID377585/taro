@@ -12,6 +12,7 @@ import {
 } from './types'
 import { useIndexedDB } from './hooks/useIndexedDB'
 import { dbService, CaptureUploadQueueStats } from './services/dbService'
+import { applyCardDisplayNames } from './services/cardDisplayName'
 
 const TeleprompterView = lazy(() => import('./components/TeleprompterView'))
 const HistoryRecordsView = lazy(() => import('./components/HistoryRecordsView'))
@@ -151,7 +152,7 @@ function App() {
           throw new Error('Arquivo /data/spreads.json sem lista de tiragens valida.')
         }
 
-        setCards(cardsData.cards)
+        setCards(applyCardDisplayNames(cardsData.cards))
         setSpreads(spreadsData.spreads)
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Erro desconhecido.'

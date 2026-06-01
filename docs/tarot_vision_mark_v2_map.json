@@ -1,0 +1,4936 @@
+{
+  "name": "Tarot Vision Mark",
+  "version": "2.0-visible-camera",
+  "description": "Camada técnica aplicada por código sobre a arte final. Marcadores mais visíveis para leitura por câmera, mantendo aparência decorativa.",
+  "encoding": {
+    "orientation": "4 fixed dark dots in an L shape plus a small dark star near top-left corner",
+    "card_id": "7-bit binary, MSB left-to-right, located at top-right corner",
+    "group": "3-bit binary, MSB left-to-right, located at bottom-left corner",
+    "checksum": "4-bit binary, MSB left-to-right, checksum=(id ^ (group << 1) ^ 0xA) & 0xF, located at bottom-right corner",
+    "active_slot": "gold-ringed dot with matte dark-brown center",
+    "inactive_slot": "gold-ringed dot with no dark center"
+  },
+  "groups": {
+    "0": "arcanos_maiores",
+    "1": "copas",
+    "2": "ouros",
+    "3": "espadas",
+    "4": "paus"
+  },
+  "cards": [
+    {
+      "id": 0,
+      "title_pt": "O Louco",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 1,
+      "slot_index": 0,
+      "row": 1,
+      "col": 1,
+      "checksum_decimal": 10,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 50,
+            "y": 48,
+            "active": true
+          },
+          {
+            "x": 64,
+            "y": 48,
+            "active": true
+          },
+          {
+            "x": 50,
+            "y": 62,
+            "active": true
+          },
+          {
+            "x": 50,
+            "y": 76,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 14,
+        "bbox_px": [
+          26,
+          22,
+          348,
+          511
+        ]
+      }
+    },
+    {
+      "id": 1,
+      "title_pt": "O Mago",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 1,
+      "slot_index": 1,
+      "row": 1,
+      "col": 2,
+      "checksum_decimal": 11,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 415,
+            "y": 48,
+            "active": true
+          },
+          {
+            "x": 429,
+            "y": 48,
+            "active": true
+          },
+          {
+            "x": 415,
+            "y": 62,
+            "active": true
+          },
+          {
+            "x": 415,
+            "y": 76,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 14,
+        "bbox_px": [
+          391,
+          22,
+          717,
+          511
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title_pt": "A Sacerdotisa",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 1,
+      "slot_index": 2,
+      "row": 1,
+      "col": 3,
+      "checksum_decimal": 8,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 770,
+            "y": 48,
+            "active": true
+          },
+          {
+            "x": 784,
+            "y": 48,
+            "active": true
+          },
+          {
+            "x": 770,
+            "y": 62,
+            "active": true
+          },
+          {
+            "x": 770,
+            "y": 76,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "slot_radius_px": 6,
+        "slot_spacing_px": 14,
+        "bbox_px": [
+          745,
+          22,
+          1079,
+          511
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title_pt": "A Imperatriz",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 1,
+      "slot_index": 3,
+      "row": 1,
+      "col": 4,
+      "checksum_decimal": 9,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 1143,
+            "y": 48,
+            "active": true
+          },
+          {
+            "x": 1157,
+            "y": 48,
+            "active": true
+          },
+          {
+            "x": 1143,
+            "y": 62,
+            "active": true
+          },
+          {
+            "x": 1143,
+            "y": 76,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 14,
+        "bbox_px": [
+          1119,
+          22,
+          1445,
+          511
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "title_pt": "O Imperador",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 1,
+      "slot_index": 4,
+      "row": 2,
+      "col": 1,
+      "checksum_decimal": 14,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 50,
+            "y": 565,
+            "active": true
+          },
+          {
+            "x": 64,
+            "y": 565,
+            "active": true
+          },
+          {
+            "x": 50,
+            "y": 579,
+            "active": true
+          },
+          {
+            "x": 50,
+            "y": 593,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 14,
+        "bbox_px": [
+          26,
+          538,
+          348,
+          1037
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "title_pt": "O Hierofante",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 1,
+      "slot_index": 5,
+      "row": 2,
+      "col": 2,
+      "checksum_decimal": 15,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 415,
+            "y": 565,
+            "active": true
+          },
+          {
+            "x": 429,
+            "y": 565,
+            "active": true
+          },
+          {
+            "x": 415,
+            "y": 579,
+            "active": true
+          },
+          {
+            "x": 415,
+            "y": 593,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 14,
+        "bbox_px": [
+          391,
+          538,
+          717,
+          1037
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "title_pt": "Os Enamorados",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 1,
+      "slot_index": 6,
+      "row": 2,
+      "col": 3,
+      "checksum_decimal": 12,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 770,
+            "y": 565,
+            "active": true
+          },
+          {
+            "x": 784,
+            "y": 565,
+            "active": true
+          },
+          {
+            "x": 770,
+            "y": 579,
+            "active": true
+          },
+          {
+            "x": 770,
+            "y": 593,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          1,
+          0,
+          0
+        ],
+        "slot_radius_px": 6,
+        "slot_spacing_px": 14,
+        "bbox_px": [
+          745,
+          538,
+          1079,
+          1037
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "title_pt": "O Carro",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 1,
+      "slot_index": 7,
+      "row": 2,
+      "col": 4,
+      "checksum_decimal": 13,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 1143,
+            "y": 565,
+            "active": true
+          },
+          {
+            "x": 1157,
+            "y": 565,
+            "active": true
+          },
+          {
+            "x": 1143,
+            "y": 579,
+            "active": true
+          },
+          {
+            "x": 1143,
+            "y": 593,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          1,
+          0,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 14,
+        "bbox_px": [
+          1119,
+          538,
+          1445,
+          1037
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "title_pt": "A Força",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 2,
+      "slot_index": 0,
+      "row": 1,
+      "col": 1,
+      "checksum_decimal": 2,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 53,
+            "y": 48,
+            "active": true
+          },
+          {
+            "x": 66,
+            "y": 48,
+            "active": true
+          },
+          {
+            "x": 53,
+            "y": 61,
+            "active": true
+          },
+          {
+            "x": 53,
+            "y": 74,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          32,
+          22,
+          323,
+          502
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "title_pt": "O Eremita",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 2,
+      "slot_index": 1,
+      "row": 1,
+      "col": 2,
+      "checksum_decimal": 3,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 399,
+            "y": 48,
+            "active": true
+          },
+          {
+            "x": 412,
+            "y": 48,
+            "active": true
+          },
+          {
+            "x": 399,
+            "y": 61,
+            "active": true
+          },
+          {
+            "x": 399,
+            "y": 74,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          378,
+          22,
+          666,
+          502
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "title_pt": "A Roda da Fortuna",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 2,
+      "slot_index": 2,
+      "row": 1,
+      "col": 3,
+      "checksum_decimal": 0,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 752,
+            "y": 48,
+            "active": true
+          },
+          {
+            "x": 765,
+            "y": 48,
+            "active": true
+          },
+          {
+            "x": 752,
+            "y": 61,
+            "active": true
+          },
+          {
+            "x": 752,
+            "y": 74,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          731,
+          22,
+          1017,
+          502
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "title_pt": "A Justiça",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 2,
+      "slot_index": 3,
+      "row": 1,
+      "col": 4,
+      "checksum_decimal": 1,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 1104,
+            "y": 48,
+            "active": true
+          },
+          {
+            "x": 1117,
+            "y": 48,
+            "active": true
+          },
+          {
+            "x": 1104,
+            "y": 61,
+            "active": true
+          },
+          {
+            "x": 1104,
+            "y": 74,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          1083,
+          22,
+          1370,
+          502
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "title_pt": "O Enforcado",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 2,
+      "slot_index": 4,
+      "row": 2,
+      "col": 1,
+      "checksum_decimal": 6,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 53,
+            "y": 558,
+            "active": true
+          },
+          {
+            "x": 66,
+            "y": 558,
+            "active": true
+          },
+          {
+            "x": 53,
+            "y": 571,
+            "active": true
+          },
+          {
+            "x": 53,
+            "y": 584,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          32,
+          532,
+          323,
+          1015
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "title_pt": "A Morte",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 2,
+      "slot_index": 5,
+      "row": 2,
+      "col": 2,
+      "checksum_decimal": 7,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 399,
+            "y": 558,
+            "active": true
+          },
+          {
+            "x": 412,
+            "y": 558,
+            "active": true
+          },
+          {
+            "x": 399,
+            "y": 571,
+            "active": true
+          },
+          {
+            "x": 399,
+            "y": 584,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          378,
+          532,
+          666,
+          1015
+        ]
+      }
+    },
+    {
+      "id": 14,
+      "title_pt": "A Temperança",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 2,
+      "slot_index": 6,
+      "row": 2,
+      "col": 3,
+      "checksum_decimal": 4,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 752,
+            "y": 558,
+            "active": true
+          },
+          {
+            "x": 765,
+            "y": 558,
+            "active": true
+          },
+          {
+            "x": 752,
+            "y": 571,
+            "active": true
+          },
+          {
+            "x": 752,
+            "y": 584,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          731,
+          532,
+          1017,
+          1015
+        ]
+      }
+    },
+    {
+      "id": 15,
+      "title_pt": "O Diabo",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 2,
+      "slot_index": 7,
+      "row": 2,
+      "col": 4,
+      "checksum_decimal": 5,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 1104,
+            "y": 558,
+            "active": true
+          },
+          {
+            "x": 1117,
+            "y": 558,
+            "active": true
+          },
+          {
+            "x": 1104,
+            "y": 571,
+            "active": true
+          },
+          {
+            "x": 1104,
+            "y": 584,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          1083,
+          532,
+          1370,
+          1015
+        ]
+      }
+    },
+    {
+      "id": 16,
+      "title_pt": "A Torre",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 3,
+      "slot_index": 0,
+      "row": 1,
+      "col": 1,
+      "checksum_decimal": 10,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 50,
+            "y": 47,
+            "active": true
+          },
+          {
+            "x": 64,
+            "y": 47,
+            "active": true
+          },
+          {
+            "x": 50,
+            "y": 61,
+            "active": true
+          },
+          {
+            "x": 50,
+            "y": 75,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 14,
+        "bbox_px": [
+          26,
+          21,
+          348,
+          511
+        ]
+      }
+    },
+    {
+      "id": 17,
+      "title_pt": "A Estrela",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 3,
+      "slot_index": 1,
+      "row": 1,
+      "col": 2,
+      "checksum_decimal": 11,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 414,
+            "y": 47,
+            "active": true
+          },
+          {
+            "x": 428,
+            "y": 47,
+            "active": true
+          },
+          {
+            "x": 414,
+            "y": 61,
+            "active": true
+          },
+          {
+            "x": 414,
+            "y": 75,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 14,
+        "bbox_px": [
+          390,
+          21,
+          716,
+          511
+        ]
+      }
+    },
+    {
+      "id": 18,
+      "title_pt": "A Lua",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 3,
+      "slot_index": 2,
+      "row": 1,
+      "col": 3,
+      "checksum_decimal": 8,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 769,
+            "y": 47,
+            "active": true
+          },
+          {
+            "x": 783,
+            "y": 47,
+            "active": true
+          },
+          {
+            "x": 769,
+            "y": 61,
+            "active": true
+          },
+          {
+            "x": 769,
+            "y": 75,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "slot_radius_px": 6,
+        "slot_spacing_px": 14,
+        "bbox_px": [
+          744,
+          21,
+          1079,
+          511
+        ]
+      }
+    },
+    {
+      "id": 19,
+      "title_pt": "O Sol",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 3,
+      "slot_index": 4,
+      "row": 2,
+      "col": 1,
+      "checksum_decimal": 9,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 50,
+            "y": 565,
+            "active": true
+          },
+          {
+            "x": 64,
+            "y": 565,
+            "active": true
+          },
+          {
+            "x": 50,
+            "y": 579,
+            "active": true
+          },
+          {
+            "x": 50,
+            "y": 593,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 14,
+        "bbox_px": [
+          26,
+          538,
+          348,
+          1039
+        ]
+      }
+    },
+    {
+      "id": 20,
+      "title_pt": "O Julgamento",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 3,
+      "slot_index": 5,
+      "row": 2,
+      "col": 2,
+      "checksum_decimal": 14,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 414,
+            "y": 565,
+            "active": true
+          },
+          {
+            "x": 428,
+            "y": 565,
+            "active": true
+          },
+          {
+            "x": 414,
+            "y": 579,
+            "active": true
+          },
+          {
+            "x": 414,
+            "y": 593,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 14,
+        "bbox_px": [
+          390,
+          538,
+          716,
+          1039
+        ]
+      }
+    },
+    {
+      "id": 21,
+      "title_pt": "O Mundo",
+      "group": "arcanos_maiores",
+      "group_id": 0,
+      "page": 3,
+      "slot_index": 6,
+      "row": 2,
+      "col": 3,
+      "checksum_decimal": 15,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 769,
+            "y": 565,
+            "active": true
+          },
+          {
+            "x": 783,
+            "y": 565,
+            "active": true
+          },
+          {
+            "x": 769,
+            "y": 579,
+            "active": true
+          },
+          {
+            "x": 769,
+            "y": 593,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "slot_radius_px": 6,
+        "slot_spacing_px": 14,
+        "bbox_px": [
+          744,
+          538,
+          1079,
+          1039
+        ]
+      }
+    },
+    {
+      "id": 22,
+      "title_pt": "Ás de Copas",
+      "group": "copas",
+      "group_id": 1,
+      "page": 4,
+      "slot_index": 0,
+      "row": 1,
+      "col": 1,
+      "checksum_decimal": 14,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 123,
+            "y": 58,
+            "active": true
+          },
+          {
+            "x": 136,
+            "y": 58,
+            "active": true
+          },
+          {
+            "x": 123,
+            "y": 71,
+            "active": true
+          },
+          {
+            "x": 123,
+            "y": 84,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          0,
+          1,
+          1,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          104,
+          32,
+          360,
+          511
+        ]
+      }
+    },
+    {
+      "id": 23,
+      "title_pt": "Dois de Copas",
+      "group": "copas",
+      "group_id": 1,
+      "page": 4,
+      "slot_index": 1,
+      "row": 1,
+      "col": 2,
+      "checksum_decimal": 15,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 435,
+            "y": 58,
+            "active": true
+          },
+          {
+            "x": 448,
+            "y": 58,
+            "active": true
+          },
+          {
+            "x": 435,
+            "y": 71,
+            "active": true
+          },
+          {
+            "x": 435,
+            "y": 84,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          0,
+          1,
+          1,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          415,
+          32,
+          694,
+          511
+        ]
+      }
+    },
+    {
+      "id": 24,
+      "title_pt": "Três de Copas",
+      "group": "copas",
+      "group_id": 1,
+      "page": 4,
+      "slot_index": 2,
+      "row": 1,
+      "col": 3,
+      "checksum_decimal": 0,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 769,
+            "y": 58,
+            "active": true
+          },
+          {
+            "x": 782,
+            "y": 58,
+            "active": true
+          },
+          {
+            "x": 769,
+            "y": 71,
+            "active": true
+          },
+          {
+            "x": 769,
+            "y": 84,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          748,
+          32,
+          1029,
+          511
+        ]
+      }
+    },
+    {
+      "id": 25,
+      "title_pt": "Quatro de Copas",
+      "group": "copas",
+      "group_id": 1,
+      "page": 4,
+      "slot_index": 3,
+      "row": 1,
+      "col": 4,
+      "checksum_decimal": 1,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 1105,
+            "y": 58,
+            "active": true
+          },
+          {
+            "x": 1118,
+            "y": 58,
+            "active": true
+          },
+          {
+            "x": 1105,
+            "y": 71,
+            "active": true
+          },
+          {
+            "x": 1105,
+            "y": 84,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          1084,
+          32,
+          1365,
+          511
+        ]
+      }
+    },
+    {
+      "id": 26,
+      "title_pt": "Cinco de Copas",
+      "group": "copas",
+      "group_id": 1,
+      "page": 4,
+      "slot_index": 4,
+      "row": 2,
+      "col": 1,
+      "checksum_decimal": 2,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 123,
+            "y": 576,
+            "active": true
+          },
+          {
+            "x": 136,
+            "y": 576,
+            "active": true
+          },
+          {
+            "x": 123,
+            "y": 589,
+            "active": true
+          },
+          {
+            "x": 123,
+            "y": 602,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          1,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          104,
+          550,
+          360,
+          1026
+        ]
+      }
+    },
+    {
+      "id": 27,
+      "title_pt": "Seis de Copas",
+      "group": "copas",
+      "group_id": 1,
+      "page": 4,
+      "slot_index": 5,
+      "row": 2,
+      "col": 2,
+      "checksum_decimal": 3,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 435,
+            "y": 576,
+            "active": true
+          },
+          {
+            "x": 448,
+            "y": 576,
+            "active": true
+          },
+          {
+            "x": 435,
+            "y": 589,
+            "active": true
+          },
+          {
+            "x": 435,
+            "y": 602,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          1,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          415,
+          550,
+          694,
+          1026
+        ]
+      }
+    },
+    {
+      "id": 28,
+      "title_pt": "Sete de Copas",
+      "group": "copas",
+      "group_id": 1,
+      "page": 4,
+      "slot_index": 6,
+      "row": 2,
+      "col": 3,
+      "checksum_decimal": 4,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 769,
+            "y": 576,
+            "active": true
+          },
+          {
+            "x": 782,
+            "y": 576,
+            "active": true
+          },
+          {
+            "x": 769,
+            "y": 589,
+            "active": true
+          },
+          {
+            "x": 769,
+            "y": 602,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          748,
+          550,
+          1029,
+          1026
+        ]
+      }
+    },
+    {
+      "id": 29,
+      "title_pt": "Oito de Copas",
+      "group": "copas",
+      "group_id": 1,
+      "page": 4,
+      "slot_index": 7,
+      "row": 2,
+      "col": 4,
+      "checksum_decimal": 5,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 1105,
+            "y": 576,
+            "active": true
+          },
+          {
+            "x": 1118,
+            "y": 576,
+            "active": true
+          },
+          {
+            "x": 1105,
+            "y": 589,
+            "active": true
+          },
+          {
+            "x": 1105,
+            "y": 602,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          1084,
+          550,
+          1365,
+          1026
+        ]
+      }
+    },
+    {
+      "id": 30,
+      "title_pt": "Nove de Copas",
+      "group": "copas",
+      "group_id": 1,
+      "page": 5,
+      "slot_index": 0,
+      "row": 1,
+      "col": 1,
+      "checksum_decimal": 6,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 70,
+            "y": 55,
+            "active": true
+          },
+          {
+            "x": 83,
+            "y": 55,
+            "active": true
+          },
+          {
+            "x": 70,
+            "y": 68,
+            "active": true
+          },
+          {
+            "x": 70,
+            "y": 81,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          47,
+          30,
+          354,
+          500
+        ]
+      }
+    },
+    {
+      "id": 31,
+      "title_pt": "Dez de Copas",
+      "group": "copas",
+      "group_id": 1,
+      "page": 5,
+      "slot_index": 1,
+      "row": 1,
+      "col": 2,
+      "checksum_decimal": 7,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 425,
+            "y": 55,
+            "active": true
+          },
+          {
+            "x": 438,
+            "y": 55,
+            "active": true
+          },
+          {
+            "x": 425,
+            "y": 68,
+            "active": true
+          },
+          {
+            "x": 425,
+            "y": 81,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          402,
+          30,
+          710,
+          500
+        ]
+      }
+    },
+    {
+      "id": 32,
+      "title_pt": "Pajem de Copas",
+      "group": "copas",
+      "group_id": 1,
+      "page": 5,
+      "slot_index": 2,
+      "row": 1,
+      "col": 3,
+      "checksum_decimal": 8,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 783,
+            "y": 55,
+            "active": true
+          },
+          {
+            "x": 796,
+            "y": 55,
+            "active": true
+          },
+          {
+            "x": 783,
+            "y": 68,
+            "active": true
+          },
+          {
+            "x": 783,
+            "y": 81,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          760,
+          30,
+          1068,
+          500
+        ]
+      }
+    },
+    {
+      "id": 33,
+      "title_pt": "Cavaleiro de Copas",
+      "group": "copas",
+      "group_id": 1,
+      "page": 5,
+      "slot_index": 3,
+      "row": 1,
+      "col": 4,
+      "checksum_decimal": 9,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 1141,
+            "y": 55,
+            "active": true
+          },
+          {
+            "x": 1154,
+            "y": 55,
+            "active": true
+          },
+          {
+            "x": 1141,
+            "y": 68,
+            "active": true
+          },
+          {
+            "x": 1141,
+            "y": 81,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          1118,
+          30,
+          1425,
+          500
+        ]
+      }
+    },
+    {
+      "id": 34,
+      "title_pt": "Rainha de Copas",
+      "group": "copas",
+      "group_id": 1,
+      "page": 5,
+      "slot_index": 4,
+      "row": 2,
+      "col": 1,
+      "checksum_decimal": 10,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 70,
+            "y": 569,
+            "active": true
+          },
+          {
+            "x": 83,
+            "y": 569,
+            "active": true
+          },
+          {
+            "x": 70,
+            "y": 582,
+            "active": true
+          },
+          {
+            "x": 70,
+            "y": 595,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          47,
+          543,
+          354,
+          1016
+        ]
+      }
+    },
+    {
+      "id": 35,
+      "title_pt": "Rei de Copas",
+      "group": "copas",
+      "group_id": 1,
+      "page": 5,
+      "slot_index": 5,
+      "row": 2,
+      "col": 2,
+      "checksum_decimal": 11,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 425,
+            "y": 569,
+            "active": true
+          },
+          {
+            "x": 438,
+            "y": 569,
+            "active": true
+          },
+          {
+            "x": 425,
+            "y": 582,
+            "active": true
+          },
+          {
+            "x": 425,
+            "y": 595,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          0,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          402,
+          543,
+          710,
+          1016
+        ]
+      }
+    },
+    {
+      "id": 36,
+      "title_pt": "Ás de Ouros",
+      "group": "ouros",
+      "group_id": 2,
+      "page": 5,
+      "slot_index": 6,
+      "row": 2,
+      "col": 3,
+      "checksum_decimal": 10,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 783,
+            "y": 569,
+            "active": true
+          },
+          {
+            "x": 796,
+            "y": 569,
+            "active": true
+          },
+          {
+            "x": 783,
+            "y": 582,
+            "active": true
+          },
+          {
+            "x": 783,
+            "y": 595,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          760,
+          543,
+          1068,
+          1016
+        ]
+      }
+    },
+    {
+      "id": 37,
+      "title_pt": "Dois de Ouros",
+      "group": "ouros",
+      "group_id": 2,
+      "page": 5,
+      "slot_index": 7,
+      "row": 2,
+      "col": 4,
+      "checksum_decimal": 11,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 1141,
+            "y": 569,
+            "active": true
+          },
+          {
+            "x": 1154,
+            "y": 569,
+            "active": true
+          },
+          {
+            "x": 1141,
+            "y": 582,
+            "active": true
+          },
+          {
+            "x": 1141,
+            "y": 595,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          1118,
+          543,
+          1425,
+          1016
+        ]
+      }
+    },
+    {
+      "id": 38,
+      "title_pt": "Três de Ouros",
+      "group": "ouros",
+      "group_id": 2,
+      "page": 6,
+      "slot_index": 0,
+      "row": 1,
+      "col": 1,
+      "checksum_decimal": 8,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 69,
+            "y": 54,
+            "active": true
+          },
+          {
+            "x": 82,
+            "y": 54,
+            "active": true
+          },
+          {
+            "x": 69,
+            "y": 67,
+            "active": true
+          },
+          {
+            "x": 69,
+            "y": 80,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          47,
+          28,
+          346,
+          502
+        ]
+      }
+    },
+    {
+      "id": 39,
+      "title_pt": "Quatro de Ouros",
+      "group": "ouros",
+      "group_id": 2,
+      "page": 6,
+      "slot_index": 1,
+      "row": 1,
+      "col": 2,
+      "checksum_decimal": 9,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 426,
+            "y": 54,
+            "active": true
+          },
+          {
+            "x": 439,
+            "y": 54,
+            "active": true
+          },
+          {
+            "x": 426,
+            "y": 67,
+            "active": true
+          },
+          {
+            "x": 426,
+            "y": 80,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          404,
+          28,
+          698,
+          502
+        ]
+      }
+    },
+    {
+      "id": 40,
+      "title_pt": "Cinco de Ouros",
+      "group": "ouros",
+      "group_id": 2,
+      "page": 6,
+      "slot_index": 2,
+      "row": 1,
+      "col": 3,
+      "checksum_decimal": 6,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 776,
+            "y": 54,
+            "active": true
+          },
+          {
+            "x": 789,
+            "y": 54,
+            "active": true
+          },
+          {
+            "x": 776,
+            "y": 67,
+            "active": true
+          },
+          {
+            "x": 776,
+            "y": 80,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          754,
+          28,
+          1050,
+          502
+        ]
+      }
+    },
+    {
+      "id": 41,
+      "title_pt": "Seis de Ouros",
+      "group": "ouros",
+      "group_id": 2,
+      "page": 6,
+      "slot_index": 3,
+      "row": 1,
+      "col": 4,
+      "checksum_decimal": 7,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 1128,
+            "y": 54,
+            "active": true
+          },
+          {
+            "x": 1141,
+            "y": 54,
+            "active": true
+          },
+          {
+            "x": 1128,
+            "y": 67,
+            "active": true
+          },
+          {
+            "x": 1128,
+            "y": 80,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          1106,
+          28,
+          1405,
+          502
+        ]
+      }
+    },
+    {
+      "id": 42,
+      "title_pt": "Sete de Ouros",
+      "group": "ouros",
+      "group_id": 2,
+      "page": 6,
+      "slot_index": 4,
+      "row": 2,
+      "col": 1,
+      "checksum_decimal": 4,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 69,
+            "y": 578,
+            "active": true
+          },
+          {
+            "x": 82,
+            "y": 578,
+            "active": true
+          },
+          {
+            "x": 69,
+            "y": 591,
+            "active": true
+          },
+          {
+            "x": 69,
+            "y": 604,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          47,
+          553,
+          346,
+          1024
+        ]
+      }
+    },
+    {
+      "id": 43,
+      "title_pt": "Oito de Ouros",
+      "group": "ouros",
+      "group_id": 2,
+      "page": 6,
+      "slot_index": 5,
+      "row": 2,
+      "col": 2,
+      "checksum_decimal": 5,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 426,
+            "y": 578,
+            "active": true
+          },
+          {
+            "x": 439,
+            "y": 578,
+            "active": true
+          },
+          {
+            "x": 426,
+            "y": 591,
+            "active": true
+          },
+          {
+            "x": 426,
+            "y": 604,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          404,
+          553,
+          698,
+          1024
+        ]
+      }
+    },
+    {
+      "id": 44,
+      "title_pt": "Nove de Ouros",
+      "group": "ouros",
+      "group_id": 2,
+      "page": 6,
+      "slot_index": 6,
+      "row": 2,
+      "col": 3,
+      "checksum_decimal": 2,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 776,
+            "y": 578,
+            "active": true
+          },
+          {
+            "x": 789,
+            "y": 578,
+            "active": true
+          },
+          {
+            "x": 776,
+            "y": 591,
+            "active": true
+          },
+          {
+            "x": 776,
+            "y": 604,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          754,
+          553,
+          1050,
+          1024
+        ]
+      }
+    },
+    {
+      "id": 45,
+      "title_pt": "Dez de Ouros",
+      "group": "ouros",
+      "group_id": 2,
+      "page": 6,
+      "slot_index": 7,
+      "row": 2,
+      "col": 4,
+      "checksum_decimal": 3,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 1128,
+            "y": 578,
+            "active": true
+          },
+          {
+            "x": 1141,
+            "y": 578,
+            "active": true
+          },
+          {
+            "x": 1128,
+            "y": 591,
+            "active": true
+          },
+          {
+            "x": 1128,
+            "y": 604,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          1,
+          1,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          1106,
+          553,
+          1405,
+          1024
+        ]
+      }
+    },
+    {
+      "id": 46,
+      "title_pt": "Pajem de Ouros",
+      "group": "ouros",
+      "group_id": 2,
+      "page": 7,
+      "slot_index": 0,
+      "row": 1,
+      "col": 1,
+      "checksum_decimal": 0,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 56,
+            "y": 58,
+            "active": true
+          },
+          {
+            "x": 69,
+            "y": 58,
+            "active": true
+          },
+          {
+            "x": 56,
+            "y": 71,
+            "active": true
+          },
+          {
+            "x": 56,
+            "y": 84,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          1,
+          1,
+          1,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          33,
+          32,
+          343,
+          509
+        ]
+      }
+    },
+    {
+      "id": 47,
+      "title_pt": "Cavaleiro de Ouros",
+      "group": "ouros",
+      "group_id": 2,
+      "page": 7,
+      "slot_index": 1,
+      "row": 1,
+      "col": 2,
+      "checksum_decimal": 1,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 419,
+            "y": 58,
+            "active": true
+          },
+          {
+            "x": 432,
+            "y": 58,
+            "active": true
+          },
+          {
+            "x": 419,
+            "y": 71,
+            "active": true
+          },
+          {
+            "x": 419,
+            "y": 84,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          396,
+          32,
+          709,
+          509
+        ]
+      }
+    },
+    {
+      "id": 48,
+      "title_pt": "Rainha de Ouros",
+      "group": "ouros",
+      "group_id": 2,
+      "page": 7,
+      "slot_index": 2,
+      "row": 1,
+      "col": 3,
+      "checksum_decimal": 14,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 782,
+            "y": 58,
+            "active": true
+          },
+          {
+            "x": 795,
+            "y": 58,
+            "active": true
+          },
+          {
+            "x": 782,
+            "y": 71,
+            "active": true
+          },
+          {
+            "x": 782,
+            "y": 84,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          760,
+          32,
+          1066,
+          509
+        ]
+      }
+    },
+    {
+      "id": 49,
+      "title_pt": "Rei de Ouros",
+      "group": "ouros",
+      "group_id": 2,
+      "page": 7,
+      "slot_index": 3,
+      "row": 1,
+      "col": 4,
+      "checksum_decimal": 15,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 1146,
+            "y": 58,
+            "active": true
+          },
+          {
+            "x": 1159,
+            "y": 58,
+            "active": true
+          },
+          {
+            "x": 1146,
+            "y": 71,
+            "active": true
+          },
+          {
+            "x": 1146,
+            "y": 84,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          1123,
+          32,
+          1433,
+          509
+        ]
+      }
+    },
+    {
+      "id": 50,
+      "title_pt": "Ás de Espadas",
+      "group": "espadas",
+      "group_id": 3,
+      "page": 7,
+      "slot_index": 4,
+      "row": 2,
+      "col": 1,
+      "checksum_decimal": 14,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 56,
+            "y": 571,
+            "active": true
+          },
+          {
+            "x": 69,
+            "y": 571,
+            "active": true
+          },
+          {
+            "x": 56,
+            "y": 584,
+            "active": true
+          },
+          {
+            "x": 56,
+            "y": 597,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          33,
+          545,
+          343,
+          1028
+        ]
+      }
+    },
+    {
+      "id": 51,
+      "title_pt": "Dois de Espadas",
+      "group": "espadas",
+      "group_id": 3,
+      "page": 7,
+      "slot_index": 5,
+      "row": 2,
+      "col": 2,
+      "checksum_decimal": 15,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 419,
+            "y": 571,
+            "active": true
+          },
+          {
+            "x": 432,
+            "y": 571,
+            "active": true
+          },
+          {
+            "x": 419,
+            "y": 584,
+            "active": true
+          },
+          {
+            "x": 419,
+            "y": 597,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          396,
+          545,
+          709,
+          1028
+        ]
+      }
+    },
+    {
+      "id": 52,
+      "title_pt": "Três de Espadas",
+      "group": "espadas",
+      "group_id": 3,
+      "page": 7,
+      "slot_index": 6,
+      "row": 2,
+      "col": 3,
+      "checksum_decimal": 8,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 782,
+            "y": 571,
+            "active": true
+          },
+          {
+            "x": 795,
+            "y": 571,
+            "active": true
+          },
+          {
+            "x": 782,
+            "y": 584,
+            "active": true
+          },
+          {
+            "x": 782,
+            "y": 597,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          0,
+          1,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          760,
+          545,
+          1066,
+          1028
+        ]
+      }
+    },
+    {
+      "id": 53,
+      "title_pt": "Quatro de Espadas",
+      "group": "espadas",
+      "group_id": 3,
+      "page": 7,
+      "slot_index": 7,
+      "row": 2,
+      "col": 4,
+      "checksum_decimal": 9,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 1146,
+            "y": 571,
+            "active": true
+          },
+          {
+            "x": 1159,
+            "y": 571,
+            "active": true
+          },
+          {
+            "x": 1146,
+            "y": 584,
+            "active": true
+          },
+          {
+            "x": 1146,
+            "y": 597,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          0,
+          1,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          1123,
+          545,
+          1433,
+          1028
+        ]
+      }
+    },
+    {
+      "id": 54,
+      "title_pt": "Cinco de Espadas",
+      "group": "espadas",
+      "group_id": 3,
+      "page": 8,
+      "slot_index": 0,
+      "row": 1,
+      "col": 1,
+      "checksum_decimal": 10,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 64,
+            "y": 55,
+            "active": true
+          },
+          {
+            "x": 77,
+            "y": 55,
+            "active": true
+          },
+          {
+            "x": 64,
+            "y": 68,
+            "active": true
+          },
+          {
+            "x": 64,
+            "y": 81,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          0,
+          1,
+          1,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          42,
+          29,
+          346,
+          511
+        ]
+      }
+    },
+    {
+      "id": 55,
+      "title_pt": "Seis de Espadas",
+      "group": "espadas",
+      "group_id": 3,
+      "page": 8,
+      "slot_index": 1,
+      "row": 1,
+      "col": 2,
+      "checksum_decimal": 11,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 422,
+            "y": 55,
+            "active": true
+          },
+          {
+            "x": 435,
+            "y": 55,
+            "active": true
+          },
+          {
+            "x": 422,
+            "y": 68,
+            "active": true
+          },
+          {
+            "x": 422,
+            "y": 81,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          399,
+          29,
+          707,
+          511
+        ]
+      }
+    },
+    {
+      "id": 56,
+      "title_pt": "Sete de Espadas",
+      "group": "espadas",
+      "group_id": 3,
+      "page": 8,
+      "slot_index": 2,
+      "row": 1,
+      "col": 3,
+      "checksum_decimal": 4,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 783,
+            "y": 55,
+            "active": true
+          },
+          {
+            "x": 796,
+            "y": 55,
+            "active": true
+          },
+          {
+            "x": 783,
+            "y": 68,
+            "active": true
+          },
+          {
+            "x": 783,
+            "y": 81,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          760,
+          29,
+          1069,
+          511
+        ]
+      }
+    },
+    {
+      "id": 57,
+      "title_pt": "Oito de Espadas",
+      "group": "espadas",
+      "group_id": 3,
+      "page": 8,
+      "slot_index": 3,
+      "row": 1,
+      "col": 4,
+      "checksum_decimal": 5,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 1143,
+            "y": 55,
+            "active": true
+          },
+          {
+            "x": 1156,
+            "y": 55,
+            "active": true
+          },
+          {
+            "x": 1143,
+            "y": 68,
+            "active": true
+          },
+          {
+            "x": 1143,
+            "y": 81,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          1120,
+          29,
+          1427,
+          511
+        ]
+      }
+    },
+    {
+      "id": 58,
+      "title_pt": "Nove de Espadas",
+      "group": "espadas",
+      "group_id": 3,
+      "page": 8,
+      "slot_index": 4,
+      "row": 2,
+      "col": 1,
+      "checksum_decimal": 6,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 64,
+            "y": 578,
+            "active": true
+          },
+          {
+            "x": 77,
+            "y": 578,
+            "active": true
+          },
+          {
+            "x": 64,
+            "y": 591,
+            "active": true
+          },
+          {
+            "x": 64,
+            "y": 604,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          1,
+          0,
+          1,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          42,
+          552,
+          346,
+          1036
+        ]
+      }
+    },
+    {
+      "id": 59,
+      "title_pt": "Dez de Espadas",
+      "group": "espadas",
+      "group_id": 3,
+      "page": 8,
+      "slot_index": 5,
+      "row": 2,
+      "col": 2,
+      "checksum_decimal": 7,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 422,
+            "y": 578,
+            "active": true
+          },
+          {
+            "x": 435,
+            "y": 578,
+            "active": true
+          },
+          {
+            "x": 422,
+            "y": 591,
+            "active": true
+          },
+          {
+            "x": 422,
+            "y": 604,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          399,
+          552,
+          707,
+          1036
+        ]
+      }
+    },
+    {
+      "id": 60,
+      "title_pt": "Pajem de Espadas",
+      "group": "espadas",
+      "group_id": 3,
+      "page": 8,
+      "slot_index": 6,
+      "row": 2,
+      "col": 3,
+      "checksum_decimal": 0,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 783,
+            "y": 578,
+            "active": true
+          },
+          {
+            "x": 796,
+            "y": 578,
+            "active": true
+          },
+          {
+            "x": 783,
+            "y": 591,
+            "active": true
+          },
+          {
+            "x": 783,
+            "y": 604,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          760,
+          552,
+          1069,
+          1036
+        ]
+      }
+    },
+    {
+      "id": 61,
+      "title_pt": "Cavaleiro de Espadas",
+      "group": "espadas",
+      "group_id": 3,
+      "page": 8,
+      "slot_index": 7,
+      "row": 2,
+      "col": 4,
+      "checksum_decimal": 1,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 1143,
+            "y": 578,
+            "active": true
+          },
+          {
+            "x": 1156,
+            "y": 578,
+            "active": true
+          },
+          {
+            "x": 1143,
+            "y": 591,
+            "active": true
+          },
+          {
+            "x": 1143,
+            "y": 604,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          1120,
+          552,
+          1427,
+          1036
+        ]
+      }
+    },
+    {
+      "id": 62,
+      "title_pt": "Rainha de Espadas",
+      "group": "espadas",
+      "group_id": 3,
+      "page": 9,
+      "slot_index": 0,
+      "row": 1,
+      "col": 1,
+      "checksum_decimal": 2,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 56,
+            "y": 56,
+            "active": true
+          },
+          {
+            "x": 69,
+            "y": 56,
+            "active": true
+          },
+          {
+            "x": 56,
+            "y": 69,
+            "active": true
+          },
+          {
+            "x": 56,
+            "y": 82,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          34,
+          31,
+          335,
+          502
+        ]
+      }
+    },
+    {
+      "id": 63,
+      "title_pt": "Rei de Espadas",
+      "group": "espadas",
+      "group_id": 3,
+      "page": 9,
+      "slot_index": 1,
+      "row": 1,
+      "col": 2,
+      "checksum_decimal": 3,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 423,
+            "y": 56,
+            "active": true
+          },
+          {
+            "x": 436,
+            "y": 56,
+            "active": true
+          },
+          {
+            "x": 423,
+            "y": 69,
+            "active": true
+          },
+          {
+            "x": 423,
+            "y": 82,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          0,
+          1,
+          1
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          401,
+          31,
+          701,
+          502
+        ]
+      }
+    },
+    {
+      "id": 64,
+      "title_pt": "Ás de Paus",
+      "group": "paus",
+      "group_id": 4,
+      "page": 9,
+      "slot_index": 2,
+      "row": 1,
+      "col": 3,
+      "checksum_decimal": 2,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 792,
+            "y": 56,
+            "active": true
+          },
+          {
+            "x": 805,
+            "y": 56,
+            "active": true
+          },
+          {
+            "x": 792,
+            "y": 69,
+            "active": true
+          },
+          {
+            "x": 792,
+            "y": 82,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          1,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          770,
+          31,
+          1070,
+          502
+        ]
+      }
+    },
+    {
+      "id": 65,
+      "title_pt": "Dois de Paus",
+      "group": "paus",
+      "group_id": 4,
+      "page": 9,
+      "slot_index": 3,
+      "row": 1,
+      "col": 4,
+      "checksum_decimal": 3,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 1158,
+            "y": 56,
+            "active": true
+          },
+          {
+            "x": 1171,
+            "y": 56,
+            "active": true
+          },
+          {
+            "x": 1158,
+            "y": 69,
+            "active": true
+          },
+          {
+            "x": 1158,
+            "y": 82,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          1,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          1136,
+          31,
+          1433,
+          502
+        ]
+      }
+    },
+    {
+      "id": 66,
+      "title_pt": "Três de Paus",
+      "group": "paus",
+      "group_id": 4,
+      "page": 9,
+      "slot_index": 4,
+      "row": 2,
+      "col": 1,
+      "checksum_decimal": 0,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 56,
+            "y": 580,
+            "active": true
+          },
+          {
+            "x": 69,
+            "y": 580,
+            "active": true
+          },
+          {
+            "x": 56,
+            "y": 593,
+            "active": true
+          },
+          {
+            "x": 56,
+            "y": 606,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          1,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          34,
+          555,
+          335,
+          1023
+        ]
+      }
+    },
+    {
+      "id": 67,
+      "title_pt": "Quatro de Paus",
+      "group": "paus",
+      "group_id": 4,
+      "page": 9,
+      "slot_index": 5,
+      "row": 2,
+      "col": 2,
+      "checksum_decimal": 1,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 423,
+            "y": 580,
+            "active": true
+          },
+          {
+            "x": 436,
+            "y": 580,
+            "active": true
+          },
+          {
+            "x": 423,
+            "y": 593,
+            "active": true
+          },
+          {
+            "x": 423,
+            "y": 606,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          1,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          401,
+          555,
+          701,
+          1023
+        ]
+      }
+    },
+    {
+      "id": 68,
+      "title_pt": "Cinco de Paus",
+      "group": "paus",
+      "group_id": 4,
+      "page": 9,
+      "slot_index": 6,
+      "row": 2,
+      "col": 3,
+      "checksum_decimal": 6,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 792,
+            "y": 580,
+            "active": true
+          },
+          {
+            "x": 805,
+            "y": 580,
+            "active": true
+          },
+          {
+            "x": 792,
+            "y": 593,
+            "active": true
+          },
+          {
+            "x": 792,
+            "y": 606,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          1,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          770,
+          555,
+          1070,
+          1023
+        ]
+      }
+    },
+    {
+      "id": 69,
+      "title_pt": "Seis de Paus",
+      "group": "paus",
+      "group_id": 4,
+      "page": 9,
+      "slot_index": 7,
+      "row": 2,
+      "col": 4,
+      "checksum_decimal": 7,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 1158,
+            "y": 580,
+            "active": true
+          },
+          {
+            "x": 1171,
+            "y": 580,
+            "active": true
+          },
+          {
+            "x": 1158,
+            "y": 593,
+            "active": true
+          },
+          {
+            "x": 1158,
+            "y": 606,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          1,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          1136,
+          555,
+          1433,
+          1023
+        ]
+      }
+    },
+    {
+      "id": 70,
+      "title_pt": "Sete de Paus",
+      "group": "paus",
+      "group_id": 4,
+      "page": 10,
+      "slot_index": 0,
+      "row": 1,
+      "col": 1,
+      "checksum_decimal": 4,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 71,
+            "y": 54,
+            "active": true
+          },
+          {
+            "x": 84,
+            "y": 54,
+            "active": true
+          },
+          {
+            "x": 71,
+            "y": 67,
+            "active": true
+          },
+          {
+            "x": 71,
+            "y": 80,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          1,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          50,
+          28,
+          338,
+          507
+        ]
+      }
+    },
+    {
+      "id": 71,
+      "title_pt": "Oito de Paus",
+      "group": "paus",
+      "group_id": 4,
+      "page": 10,
+      "slot_index": 1,
+      "row": 1,
+      "col": 2,
+      "checksum_decimal": 5,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 426,
+            "y": 54,
+            "active": true
+          },
+          {
+            "x": 439,
+            "y": 54,
+            "active": true
+          },
+          {
+            "x": 426,
+            "y": 67,
+            "active": true
+          },
+          {
+            "x": 426,
+            "y": 80,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          1,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          404,
+          28,
+          703,
+          507
+        ]
+      }
+    },
+    {
+      "id": 72,
+      "title_pt": "Nove de Paus",
+      "group": "paus",
+      "group_id": 4,
+      "page": 10,
+      "slot_index": 2,
+      "row": 1,
+      "col": 3,
+      "checksum_decimal": 10,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 791,
+            "y": 54,
+            "active": true
+          },
+          {
+            "x": 804,
+            "y": 54,
+            "active": true
+          },
+          {
+            "x": 791,
+            "y": 67,
+            "active": true
+          },
+          {
+            "x": 791,
+            "y": 80,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          1,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          769,
+          28,
+          1064,
+          507
+        ]
+      }
+    },
+    {
+      "id": 73,
+      "title_pt": "Dez de Paus",
+      "group": "paus",
+      "group_id": 4,
+      "page": 10,
+      "slot_index": 3,
+      "row": 1,
+      "col": 4,
+      "checksum_decimal": 11,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 1152,
+            "y": 54,
+            "active": true
+          },
+          {
+            "x": 1165,
+            "y": 54,
+            "active": true
+          },
+          {
+            "x": 1152,
+            "y": 67,
+            "active": true
+          },
+          {
+            "x": 1152,
+            "y": 80,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          1,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          1131,
+          28,
+          1423,
+          507
+        ]
+      }
+    },
+    {
+      "id": 74,
+      "title_pt": "Pajem de Paus",
+      "group": "paus",
+      "group_id": 4,
+      "page": 10,
+      "slot_index": 4,
+      "row": 2,
+      "col": 1,
+      "checksum_decimal": 8,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 71,
+            "y": 570,
+            "active": true
+          },
+          {
+            "x": 84,
+            "y": 570,
+            "active": true
+          },
+          {
+            "x": 71,
+            "y": 583,
+            "active": true
+          },
+          {
+            "x": 71,
+            "y": 596,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          1,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          50,
+          544,
+          338,
+          1024
+        ]
+      }
+    },
+    {
+      "id": 75,
+      "title_pt": "Cavaleiro de Paus",
+      "group": "paus",
+      "group_id": 4,
+      "page": 10,
+      "slot_index": 5,
+      "row": 2,
+      "col": 2,
+      "checksum_decimal": 9,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 426,
+            "y": 570,
+            "active": true
+          },
+          {
+            "x": 439,
+            "y": 570,
+            "active": true
+          },
+          {
+            "x": 426,
+            "y": 583,
+            "active": true
+          },
+          {
+            "x": 426,
+            "y": 596,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          1,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          404,
+          544,
+          703,
+          1024
+        ]
+      }
+    },
+    {
+      "id": 76,
+      "title_pt": "Rainha de Paus",
+      "group": "paus",
+      "group_id": 4,
+      "page": 10,
+      "slot_index": 6,
+      "row": 2,
+      "col": 3,
+      "checksum_decimal": 14,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 791,
+            "y": 570,
+            "active": true
+          },
+          {
+            "x": 804,
+            "y": 570,
+            "active": true
+          },
+          {
+            "x": 791,
+            "y": 583,
+            "active": true
+          },
+          {
+            "x": 791,
+            "y": 596,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "group_bits_msb_left_to_right": [
+          1,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          769,
+          544,
+          1064,
+          1024
+        ]
+      }
+    },
+    {
+      "id": 77,
+      "title_pt": "Rei de Paus",
+      "group": "paus",
+      "group_id": 4,
+      "page": 10,
+      "slot_index": 7,
+      "row": 2,
+      "col": 4,
+      "checksum_decimal": 15,
+      "marker": {
+        "orientation_slots": [
+          {
+            "x": 1152,
+            "y": 570,
+            "active": true
+          },
+          {
+            "x": 1165,
+            "y": 570,
+            "active": true
+          },
+          {
+            "x": 1152,
+            "y": 583,
+            "active": true
+          },
+          {
+            "x": 1152,
+            "y": 596,
+            "active": true
+          }
+        ],
+        "id_bits_msb_left_to_right": [
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1
+        ],
+        "group_bits_msb_left_to_right": [
+          1,
+          0,
+          0
+        ],
+        "checksum_bits_msb_left_to_right": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "slot_radius_px": 5,
+        "slot_spacing_px": 13,
+        "bbox_px": [
+          1131,
+          544,
+          1423,
+          1024
+        ]
+      }
+    }
+  ]
+}

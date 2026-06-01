@@ -102,10 +102,6 @@ export const useCardRecognition = ({
       return
     }
 
-    // MODO OFICIAL DO BARALHO:
-    // O reconhecimento automático aceita somente Tarot Vision Mark.
-    // Modelo antigo e capturas locais ficam desativados para evitar falsos positivos
-    // como “O Louco” quando o marcador técnico não fecha.
     setStatus('running-marker')
     setError(null)
     setLastResult(null)
@@ -139,6 +135,8 @@ export const useCardRecognition = ({
 
       try {
         const confirmResult = (result: RecognitionResult, requiredVotes: number) => {
+          if (!result.card) return
+
           const voteKey = `${result.card.id}:${result.isReversed ? 'r' : 'v'}`
           const currentVote = votesRef.current
 
@@ -202,7 +200,7 @@ export const useCardRecognition = ({
     return () => {
       window.clearInterval(timer)
     }
-  }, [enabled, status, videoRef, cardLookup, intervalMs, minVotes, onConfirmed])
+  }, [cards, enabled, status, videoRef, cardLookup, intervalMs, minVotes, onConfirmed])
 
   const resetLastConfirmation = useCallback(() => {
     lastConfirmedKeyRef.current = ''

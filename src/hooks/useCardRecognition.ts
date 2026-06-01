@@ -45,6 +45,7 @@ export type RecognitionStatus =
   | 'loading'
   | 'running'
   | 'running-local'
+  | 'running-marker'
   | 'no-model'
   | 'error'
 
@@ -415,25 +416,19 @@ export const useCardRecognition = ({
         }
 
         if (inspection.diagnostics.placeholder) {
-          const localFallback = await fallbackToLocalMatcher()
-          if (!localFallback.enabled && isMounted) {
-            setStatus('no-model')
-            setError(
-              localFallback.reason ||
-                'Modelo base detectado. Para reconhecimento por IA, substitua os arquivos em public/model por um modelo treinado.',
-            )
+          if (isMounted) {
+            setStatus('running-marker')
+            setError(null)
+            setLocalStats({ records: 0, cards: cards.length, candidates: 0, failedSamples: 0 })
           }
           return
         }
 
         if (inspection.fatalError) {
-          const localFallback = await fallbackToLocalMatcher()
-          if (!localFallback.enabled && isMounted) {
-            const isMissingArtifacts =
-              inspection.fatalError.includes('não encontrado') ||
-              inspection.fatalError.includes('404')
-            setStatus(isMissingArtifacts ? 'no-model' : 'error')
-            setError(localFallback.reason || inspection.fatalError)
+          if (isMounted) {
+            setStatus('running-marker')
+            setError(null)
+            setLocalStats({ records: 0, cards: cards.length, candidates: 0, failedSamples: 0 })
           }
           return
         }
@@ -450,31 +445,11 @@ export const useCardRecognition = ({
           setStatus('running')
           setError(null)
         }
-      } catch (err) {
-        const message = err instanceof Error ? err.message : String(err)
-        try {
-          const localFallback = await fallbackToLocalMatcher()
-          if (!localFallback.enabled && isMounted) {
-            if (message.toLowerCase().includes('404')) {
-              setStatus('no-model')
-              setError(
-                localFallback.reason ||
-                  'Modelo não encontrado e nenhuma captura local disponível para reconhecimento.',
-              )
-            } else {
-              setStatus('error')
-              setError(localFallback.reason || message)
-            }
-          }
-        } catch (localError) {
-          const fallbackMessage =
-            localError instanceof Error ? localError.message : String(localError)
-          if (isMounted) {
-            setStatus('error')
-            setError(
-              `${message}. Além disso, falhou ao carregar capturas locais: ${fallbackMessage}`,
-            )
-          }
+      } catch {
+        if (isMounted) {
+          setStatus('running-marker')
+          setError(null)
+          setLocalStats({ records: 0, cards: cards.length, candidates: 0, failedSamples: 0 })
         }
       }
     }
@@ -487,7 +462,7 @@ export const useCardRecognition = ({
   }, [cards, enabled, expectedClasses, metadataUrl, modelUrl])
 
   useEffect(() => {
-    if (!enabled || (status !== 'running' && status !== 'running-local')) return
+    if (!enabled || (status !== 'running' && status !== 'running-local' && status !== 'running-marker')) return
 
     const timer = window.setInterval(() => {
       if (isPredictingRef.current) return
@@ -535,6 +510,11 @@ export const useCardRecognition = ({
           isPredictingRef.current = false
           return
         }
+      }
+
+      if (status === 'running-marker') {
+        isPredictingRef.current = false
+        return
       }
 
       if (status === 'running' && recognizerRef.current) {

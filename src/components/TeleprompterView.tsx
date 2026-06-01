@@ -428,8 +428,9 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
     if (!recognitionEnabled) return 'Reconhecimento pausado manualmente.'
     if (status === 'loading') return 'Carregando motor de reconhecimento...'
     if (status === 'running') return 'Reconhecimento por modelo ativo.'
-    if (status === 'running-local') return localDiagnostics.records === 0 && localDiagnostics.cards > 0 ? 'Catálogo local carregado apenas para referência. A confirmação automática exige capturas reais ou modelo treinado.' : `Reconhecimento local ativo com ${localDiagnostics.cards} carta(s) utilizáveis.`
-    if (status === 'no-model') return localDiagnostics.records > 0 && localDiagnostics.cards === 0 ? 'Capturas locais existem, mas não foram convertidas para reconhecimento. Reimporte as capturas dessa carta via ZIP.' : 'Sem modelo e sem base local suficiente para reconhecer. Cadastre cartas ou envie o modelo.'
+    if (status === 'running-marker') return 'Tarot Vision Mark ativo. Enquadre a carta inteira, com os quatro cantos e marcadores visíveis.'
+    if (status === 'running-local') return 'Reconhecimento local antigo desativado para evitar leituras erradas. Use cartas com Tarot Vision Mark.'
+    if (status === 'no-model') return 'Sem modelo treinado. Usando apenas Tarot Vision Mark nas cartas marcadas.'
     if (status === 'error') return recognitionError || 'Falha no reconhecimento.'
     return 'Aguardando câmera e reconhecimento.'
   }, [isActive, localDiagnostics.cards, localDiagnostics.records, recognitionEnabled, recognitionError, status])

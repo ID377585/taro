@@ -10,6 +10,7 @@ import {
   matchCardFromModelLabel,
   normalizeLabelValue,
 } from '../services/labelService'
+import { detectTarotVisionMarkFromVideo } from '../services/detectCardFromImage'
 
 interface UseCardRecognitionOptions {
   videoRef: RefObject<HTMLVideoElement>
@@ -518,6 +519,23 @@ export const useCardRecognition = ({
       }
 
       isPredictingRef.current = true
+
+      const markerPrediction = detectTarotVisionMarkFromVideo(video)
+      if (markerPrediction) {
+        const card = cardLookup.get(`${markerPrediction.cardId}`) || null
+
+        if (card && markerPrediction.confidence >= 0.55) {
+          handleResult({
+            card,
+            isReversed: markerPrediction.isReversed,
+            confidence: markerPrediction.confidence,
+            label: `tarot-vision-mark-${markerPrediction.cardId}`,
+          }, Math.max(2, Math.min(minVotes, 3)))
+
+          isPredictingRef.current = false
+          return
+        }
+      }
 
       if (status === 'running' && recognizerRef.current) {
         void recognizerRef.current

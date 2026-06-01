@@ -18,19 +18,26 @@ const TARGET_WIDTH = 420
 const TARGET_HEIGHT = 630
 const TARGET_RATIO = 2 / 3
 
-const MARK_POINTS = {
-  orientation: [
-    { x: 0.065, y: 0.055 },
-    { x: 0.098, y: 0.055 },
-    { x: 0.065, y: 0.088 },
-    { x: 0.065, y: 0.122 },
-  ],
-  id: Array.from({ length: 7 }, (_, index) => ({ x: 0.655 + index * 0.037, y: 0.055 })),
-  group: Array.from({ length: 3 }, (_, index) => ({ x: 0.075 + index * 0.04, y: 0.825 })),
-  checksum: Array.from({ length: 4 }, (_, index) => ({ x: 0.705 + index * 0.04, y: 0.825 })),
-}
-
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
+
+const createMarkPoints = (cardRatio: number) => {
+  const safeRatio = cardRatio > 0 ? cardRatio : TARGET_RATIO
+  const pitch = clamp(0.0268 / safeRatio, 0.038, 0.052)
+  const topY = 0.0615
+  const bottomY = 0.85
+
+  return {
+    orientation: [
+      { x: 0.085, y: topY },
+      { x: 0.085 + pitch, y: topY },
+      { x: 0.085, y: 0.0885 },
+      { x: 0.085, y: 0.1155 },
+    ],
+    id: Array.from({ length: 7 }, (_, index) => ({ x: 0.683 + index * pitch, y: topY })),
+    group: Array.from({ length: 3 }, (_, index) => ({ x: 0.085 + index * pitch, y: bottomY })),
+    checksum: Array.from({ length: 4 }, (_, index) => ({ x: 0.779 + index * pitch, y: bottomY })),
+  }
+}
 
 const luminance = (r: number, g: number, b: number) => (0.299 * r + 0.587 * g + 0.114 * b) / 255
 
@@ -224,16 +231,18 @@ const readCandidate = (
   imageData: ImageData,
   reversed: boolean,
   cropConfidence = 1,
+  cardRatio = TARGET_RATIO,
 ): TarotVisionDetection | null => {
-  const orientation = MARK_POINTS.orientation.map(point => sampleSlot(imageData, point, reversed))
+  const markPoints = createMarkPoints(cardRatio)
+  const orientation = markPoints.orientation.map(point => sampleSlot(imageData, point, reversed))
   const orientationScore = orientation.filter(sample => sample.active).length / orientation.length
   const orientationConfidence = orientation.reduce((sum, sample) => sum + sample.confidence, 0) / orientation.length
 
   if (orientationScore < 0.75 || orientationConfidence < 0.35) return null
 
-  const id = readBits(imageData, MARK_POINTS.id, reversed)
-  const group = readBits(imageData, MARK_POINTS.group, reversed)
-  const checksum = readBits(imageData, MARK_POINTS.checksum, reversed)
+  const id = readBits(imageData, markPoints.id, reversed)
+  const group = readBits(imageData, markPoints.group, reversed)
+  const checksum = readBits(imageData, markPoints.checksum, reversed)
 
   if (id.confidence < 0.18 || group.confidence < 0.18 || checksum.confidence < 0.18) return null
 
@@ -295,8 +304,9 @@ export function detectTarotVisionMarkFromVideo(video: HTMLVideoElement): TarotVi
   }, crop)
 
   const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
-  const upright = readCandidate(imageData, false, crop.confidence)
-  const reversed = readCandidate(imageData, true, crop.confidence)
+  const cardRatio = crop.sw / crop.sh
+  const upright = readCandidate(imageData, false, crop.confidence, cardRatio)
+  const reversed = readCandidate(imageData, true, crop.confidence, cardRatio)
 
   if (upright && reversed) return upright.confidence >= reversed.confidence ? upright : reversed
   return upright || reversed
@@ -304,14 +314,14 @@ export function detectTarotVisionMarkFromVideo(video: HTMLVideoElement): TarotVi
 
 export async function detectTarotVisionMarkFromBlob(blob: Blob): Promise<TarotVisionDetection | null> {
   const { canvas, context } = createMarkerCanvas()
+  let cardRatio = TARGET_RATIO
 
   if (typeof createImageBitmap === 'function') {
     const bitmap = await createImageBitmap(blob)
     try {
+      cardRatio = bitmap.width / bitmap.height
       context.clearRect(0, 0, canvas.width, canvas.height)
-      drawCropToTarget(bitmap.width, bitmap.height, context, (sx, sy, sw, sh) => {
-        context.drawImage(bitmap, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height)
-      })
+      context.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height, 0, 0, canvas.width, canvas.height)
     } finally {
       bitmap.close()
     }
@@ -321,10 +331,9 @@ export async function detectTarotVisionMarkFromBlob(blob: Blob): Promise<TarotVi
       const objectUrl = URL.createObjectURL(blob)
       image.onload = () => {
         try {
+          cardRatio = image.naturalWidth / image.naturalHeight
           context.clearRect(0, 0, canvas.width, canvas.height)
-          drawCropToTarget(image.naturalWidth, image.naturalHeight, context, (sx, sy, sw, sh) => {
-            context.drawImage(image, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height)
-          })
+          context.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight, 0, 0, canvas.width, canvas.height)
           resolve()
         } catch (error) {
           reject(error)
@@ -341,8 +350,8 @@ export async function detectTarotVisionMarkFromBlob(blob: Blob): Promise<TarotVi
   }
 
   const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
-  const upright = readCandidate(imageData, false)
-  const reversed = readCandidate(imageData, true)
+  const upright = readCandidate(imageData, false, 1, cardRatio)
+  const reversed = readCandidate(imageData, true, 1, cardRatio)
   if (upright && reversed) return upright.confidence >= reversed.confidence ? upright : reversed
   return upright || reversed
 }

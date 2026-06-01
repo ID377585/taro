@@ -20,14 +20,14 @@ const TARGET_RATIO = 2 / 3
 
 const MARK_POINTS = {
   orientation: [
-    { x: 0.075, y: 0.06 },
-    { x: 0.11, y: 0.06 },
-    { x: 0.075, y: 0.095 },
-    { x: 0.075, y: 0.13 },
+    { x: 0.065, y: 0.055 },
+    { x: 0.098, y: 0.055 },
+    { x: 0.065, y: 0.088 },
+    { x: 0.065, y: 0.122 },
   ],
-  id: Array.from({ length: 7 }, (_, index) => ({ x: 0.71 + index * 0.035, y: 0.06 })),
-  group: Array.from({ length: 3 }, (_, index) => ({ x: 0.11 + index * 0.035, y: 0.84 })),
-  checksum: Array.from({ length: 4 }, (_, index) => ({ x: 0.72 + index * 0.035, y: 0.84 })),
+  id: Array.from({ length: 7 }, (_, index) => ({ x: 0.655 + index * 0.037, y: 0.055 })),
+  group: Array.from({ length: 3 }, (_, index) => ({ x: 0.075 + index * 0.04, y: 0.825 })),
+  checksum: Array.from({ length: 4 }, (_, index) => ({ x: 0.705 + index * 0.04, y: 0.825 })),
 }
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
@@ -54,6 +54,27 @@ const luminanceAt = (imageData: ImageData, px: number, py: number, radius = 3) =
   return count ? total / count : 1
 }
 
+const darknessRatio = (imageData: ImageData, px: number, py: number, radius = 5) => {
+  const { width, height, data } = imageData
+  const x0 = clamp(Math.round(px) - radius, 0, width - 1)
+  const x1 = clamp(Math.round(px) + radius, 0, width - 1)
+  const y0 = clamp(Math.round(py) - radius, 0, height - 1)
+  const y1 = clamp(Math.round(py) + radius, 0, height - 1)
+  let dark = 0
+  let total = 0
+
+  for (let y = y0; y <= y1; y += 1) {
+    for (let x = x0; x <= x1; x += 1) {
+      const offset = (y * width + x) * 4
+      const lum = luminance(data[offset], data[offset + 1], data[offset + 2])
+      if (lum < 0.45) dark += 1
+      total += 1
+    }
+  }
+
+  return total ? dark / total : 0
+}
+
 const locateCardCrop = (imageData: ImageData): CropBox | null => {
   const { width, height, data } = imageData
   const step = Math.max(2, Math.floor(Math.min(width, height) / 260))
@@ -74,7 +95,7 @@ const locateCardCrop = (imageData: ImageData): CropBox | null => {
 
       // As cartas têm fundo branco/marfim. Esta etapa localiza a área clara da carta
       // dentro do frame da câmera, em vez de presumir que a carta preenche todo o vídeo.
-      if (lum > 0.68 && chroma < 0.32) {
+      if (lum > 0.52 && chroma < 0.56) {
         minX = Math.min(minX, x)
         minY = Math.min(minY, y)
         maxX = Math.max(maxX, x)
@@ -86,8 +107,8 @@ const locateCardCrop = (imageData: ImageData): CropBox | null => {
 
   if (hits < 80 || maxX <= minX || maxY <= minY) return null
 
-  const padX = Math.round((maxX - minX) * 0.025)
-  const padY = Math.round((maxY - minY) * 0.025)
+  const padX = Math.round((maxX - minX) * 0.01)
+  const padY = Math.round((maxY - minY) * 0.01)
   const sx = clamp(minX - padX, 0, width - 1)
   const sy = clamp(minY - padY, 0, height - 1)
   const ex = clamp(maxX + padX, 0, width - 1)
@@ -100,7 +121,7 @@ const locateCardCrop = (imageData: ImageData): CropBox | null => {
   const ratioError = Math.abs(ratio - TARGET_RATIO) / TARGET_RATIO
 
   // Rejeita enquadramentos parciais. A câmera precisa ver a carta inteira.
-  if (ratioError > 0.28) return null
+  if (ratioError > 0.38) return null
   if (sw < width * 0.18 || sh < height * 0.35) return null
 
   return {
@@ -108,7 +129,7 @@ const locateCardCrop = (imageData: ImageData): CropBox | null => {
     sy,
     sw,
     sh,
-    confidence: clamp(1 - ratioError / 0.28, 0, 1),
+    confidence: clamp(1 - ratioError / 0.38, 0, 1),
   }
 }
 
@@ -151,26 +172,50 @@ const normalizePoint = (point: SamplePoint, reversed: boolean): SamplePoint => {
 
 const sampleSlot = (imageData: ImageData, point: SamplePoint, reversed: boolean) => {
   const normalized = normalizePoint(point, reversed)
-  const x = normalized.x * imageData.width
-  const y = normalized.y * imageData.height
-  const center = luminanceAt(imageData, x, y, 3)
-  const ring = luminanceAt(imageData, x, y, 7)
+  const baseX = normalized.x * imageData.width
+  const baseY = normalized.y * imageData.height
 
-  const active = center < 0.50
-  const inactive = center >= 0.50 && ring > 0.42
-  const confidence = active
-    ? clamp((0.50 - center) / 0.35, 0, 1)
-    : inactive
-      ? clamp((center - 0.50) / 0.35, 0, 1)
-      : 0
+  const offsets = [
+    [0, 0],
+    [-3, 0], [3, 0], [0, -3], [0, 3],
+    [-5, -3], [5, -3], [-5, 3], [5, 3],
+  ]
 
-  return { active, confidence, luminance: center }
+  let best = { center: 1, localDarkness: 0, confidence: 0 }
+
+  for (const [ox, oy] of offsets) {
+    const x = baseX + ox
+    const y = baseY + oy
+    const center = luminanceAt(imageData, x, y, 4)
+    const background = luminanceAt(imageData, x, y, 11)
+    const localDarkness = darknessRatio(imageData, x, y, 5)
+    const contrast = background - center
+
+    const score =
+      clamp((0.64 - center) / 0.44, 0, 1) * 0.55 +
+      clamp(contrast / 0.20, 0, 1) * 0.25 +
+      clamp((localDarkness - 0.18) / 0.34, 0, 1) * 0.20
+
+    if (score > best.confidence) {
+      best = { center, localDarkness, confidence: score }
+    }
+  }
+
+  const active = best.center < 0.64 && best.localDarkness > 0.16 && best.confidence > 0.32
+  const inactiveConfidence = best.center >= 0.50 ? clamp((best.center - 0.50) / 0.34, 0, 1) : 0
+
+  return {
+    active,
+    confidence: active ? best.confidence : inactiveConfidence,
+    luminance: best.center,
+  }
 }
 
 const readBits = (imageData: ImageData, points: SamplePoint[], reversed: boolean) => {
   const samples = points.map(point => sampleSlot(imageData, point, reversed))
   return {
     bits: samples.map(sample => (sample.active ? 1 : 0)),
+    activeCount: samples.filter(sample => sample.active).length,
     confidence: samples.reduce((sum, sample) => sum + sample.confidence, 0) / samples.length,
   }
 }
@@ -184,13 +229,13 @@ const readCandidate = (
   const orientationScore = orientation.filter(sample => sample.active).length / orientation.length
   const orientationConfidence = orientation.reduce((sum, sample) => sum + sample.confidence, 0) / orientation.length
 
-  if (orientationScore < 0.75 || orientationConfidence < 0.45) return null
+  if (orientationScore < 0.75 || orientationConfidence < 0.35) return null
 
   const id = readBits(imageData, MARK_POINTS.id, reversed)
   const group = readBits(imageData, MARK_POINTS.group, reversed)
   const checksum = readBits(imageData, MARK_POINTS.checksum, reversed)
 
-  if (id.confidence < 0.25 || group.confidence < 0.25 || checksum.confidence < 0.25) return null
+  if (id.confidence < 0.18 || group.confidence < 0.18 || checksum.confidence < 0.18) return null
 
   const bits: TarotVisionBits = {
     idBits: id.bits,
@@ -199,6 +244,11 @@ const readCandidate = (
   }
   const decoded = decodeTarotVisionMark(bits)
   if (!decoded.isValid) return null
+
+  const dataActiveCount = id.activeCount + group.activeCount + checksum.activeCount
+
+  // Protecao contra falso positivo comum: leitura cair em ornamentos e validar ID 0.
+  if (decoded.cardId === 0 && (dataActiveCount < 3 || checksum.confidence < 0.55)) return null
 
   return {
     cardId: decoded.cardId,

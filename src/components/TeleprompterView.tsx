@@ -250,6 +250,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
   const [capturingShortcut, setCapturingShortcut] = useState<ShortcutAction | null>(null)
   const [showAdvancedPanel, setShowAdvancedPanel] = useState(false)
   const [isPanelExpanded, setIsPanelExpanded] = useState(false)
+  const [isMobileReader, setIsMobileReader] = useState(false)
   const [isReadingInfoExpanded, setIsReadingInfoExpanded] = useState(false)
   const [isActionControlsExpanded, setIsActionControlsExpanded] = useState(false)
   const [isExtraControlsExpanded, setIsExtraControlsExpanded] = useState(false)
@@ -267,6 +268,7 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
   const [scriptMode, setScriptMode] = useState<'auto' | 'manual'>('auto')
   const [scriptText, setScriptText] = useState('')
   const [isScrolling, setIsScrolling] = useState(false)
+  const [hasReachedScriptEnd, setHasReachedScriptEnd] = useState(false)
   const [activeParagraphIndex, setActiveParagraphIndex] = useState(0)
   const [elapsedSeconds, setElapsedSeconds] = useState(0)
   const [countdownMinutes, setCountdownMinutes] = useState(0)
@@ -285,6 +287,19 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
     stopCamera,
     switchCamera,
   } = useCamera(videoRef)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 640px)')
+    const updateMobileReader = () => setIsMobileReader(mediaQuery.matches)
+
+    updateMobileReader()
+    mediaQuery.addEventListener('change', updateMobileReader)
+    return () => mediaQuery.removeEventListener('change', updateMobileReader)
+  }, [])
+
+  useEffect(() => {
+    if (isMobileReader) setIsPanelExpanded(true)
+  }, [isMobileReader])
 
   const currentPosition = spread.positions[currentPositionIndex]
   const currentPositionNumber = currentPosition?.index ?? 1
@@ -412,8 +427,8 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
       setControlFeedback(blockedReason)
       return
     }
-    if (shouldAdvance && autoAdvance && currentPositionIndex < spread.positions.length - 1) setCurrentPositionIndex(prev => prev + 1)
-  }, [autoAdvance, currentPositionIndex, currentPositionNumber, spread.positions.length])
+    if (shouldAdvance && autoAdvance && !isMobileReader && currentPositionIndex < spread.positions.length - 1) setCurrentPositionIndex(prev => prev + 1)
+  }, [autoAdvance, currentPositionIndex, currentPositionNumber, isMobileReader, spread.positions.length])
 
   const { status, error: recognitionError, resetLastConfirmation, localDiagnostics } = useCardRecognition({
     videoRef,
@@ -474,6 +489,16 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
     setManualIsReversed(Boolean(drawn?.isReversed))
   }, [currentPositionNumber, drawnByPosition, resetLastConfirmation])
 
+  useEffect(() => {
+    setHasReachedScriptEnd(false)
+    scrollPositionRef.current = 0
+    if (scriptWindowRef.current) scriptWindowRef.current.scrollTop = 0
+  }, [currentDrawn?.cardId, currentDrawn?.isReversed, currentPositionNumber, scriptText])
+
+  useEffect(() => {
+    if (isMobileReader && currentCard) setIsPanelExpanded(true)
+  }, [currentCard, isMobileReader])
+
   const requestWakeLock = useCallback(async () => {
     const wakeLockNavigator = navigator as Navigator & { wakeLock?: { request: (type: 'screen') => Promise<WakeLockSentinelLike> } }
     if (!wakeLockNavigator.wakeLock) return
@@ -520,11 +545,18 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
     if (!container) return
     const handleScroll = () => {
       scrollPositionRef.current = container.scrollTop
+      if (isMobileReader && currentCard) {
+        const maxScrollTop = Math.max(0, container.scrollHeight - container.clientHeight)
+        if (maxScrollTop > 0 && container.scrollTop >= maxScrollTop - 1) {
+          setHasReachedScriptEnd(true)
+          setIsScrolling(false)
+        }
+      }
       if (!isScrolling) updateActiveParagraphFromScroll()
     }
     container.addEventListener('scroll', handleScroll)
     return () => container.removeEventListener('scroll', handleScroll)
-  }, [isScrolling, updateActiveParagraphFromScroll])
+  }, [currentCard, isMobileReader, isScrolling, updateActiveParagraphFromScroll])
 
   useEffect(() => {
     if (!isScrolling) {
@@ -558,7 +590,11 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
         updateActiveParagraphFromScroll()
       }
 
-      if (nextScrollTop >= maxScrollTop - 0.5) { setIsScrolling(false); return }
+      if (nextScrollTop >= maxScrollTop - 0.5) {
+        setHasReachedScriptEnd(true)
+        setIsScrolling(false)
+        return
+      }
       scrollAnimationRef.current = requestAnimationFrame(tick)
     }
     scrollAnimationRef.current = requestAnimationFrame(tick)
@@ -592,6 +628,21 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
     try { const content = await file.text(); setScriptMode('manual'); setScriptText(content); setControlFeedback('Script importado com sucesso.') } catch { setControlFeedback('Falha ao importar script.') }
   }
   const handleExportScript = () => { const blob = new Blob([scriptText], { type: 'text/plain;charset=utf-8' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = `roteiro_${spread.id}_${Date.now()}.txt`; link.click(); URL.revokeObjectURL(url); setControlFeedback('Script exportado.') }
+
+  const handleMobileScriptTap = useCallback(() => {
+    if (!isMobileReader || !currentCard) return
+
+    if (hasReachedScriptEnd) {
+      const container = scriptWindowRef.current
+      if (container) container.scrollTop = 0
+      scrollPositionRef.current = 0
+      setHasReachedScriptEnd(false)
+      setIsScrolling(true)
+      return
+    }
+
+    setIsScrolling(prev => !prev)
+  }, [currentCard, hasReachedScriptEnd, isMobileReader])
 
   const applyShortcutAction = useCallback((action: ShortcutAction) => {
     if (action === 'togglePlay') { setIsScrolling(prev => !prev); return }
@@ -654,10 +705,18 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
     '--tp-text-align': settings.textAlign,
     '--tp-render-scale': settings.renderScale,
   } as CSSProperties
+  const rootClassName = [
+    'teleprompter-view',
+    isMobileReader ? 'teleprompter-view--mobile-reader' : '',
+    currentCard ? 'teleprompter-view--has-card' : 'teleprompter-view--awaiting-card',
+    hasReachedScriptEnd ? 'teleprompter-view--script-complete' : '',
+    allPositionsFilled ? 'teleprompter-view--spread-complete' : '',
+    isScrolling ? 'teleprompter-view--scrolling' : '',
+  ].filter(Boolean).join(' ')
 
   return (
-    <div className="teleprompter-view" style={rootStyle}>
-      <CameraView videoRef={videoRef} devices={devices} currentDeviceId={currentDeviceId} isActive={isActive} isStarting={isStarting} error={cameraError} onStart={() => void handleStartCamera()} onSwitch={deviceId => void handleSwitchCamera(deviceId)} toolbarActions={<button className="camera-btn" onClick={() => { setRecognitionEnabled(false); stopCamera() }}>{isActive ? 'Desligar câmera' : 'Câmera desligada'}</button>}>
+    <div className={rootClassName} style={rootStyle}>
+      <CameraView videoRef={videoRef} devices={devices} currentDeviceId={currentDeviceId} isActive={isActive} isStarting={isStarting} error={cameraError} onStart={() => void handleStartCamera()} onSwitch={deviceId => void handleSwitchCamera(deviceId)} toolbarActions={isMobileReader && !isActive ? null : <button className="camera-btn" onClick={() => { setRecognitionEnabled(false); stopCamera() }}>{isActive ? 'Desligar câmera' : 'Câmera desligada'}</button>}>
         {isActive && (
           <div className="recognition-status-card">
             <strong>{currentCard ? currentCard.nome : 'Reconhecimento ativo'}</strong>
@@ -682,9 +741,9 @@ const TeleprompterView: FC<TeleprompterViewProps> = ({
         <div className="text-overlay-content">
           <div className="teleprompter-topline"><div><h2>{spread.nome}</h2><p className="position-desc">{currentPosition?.descricao}</p>{consultationSummary && <p className="reading-context">{consultationSummary}</p>}</div><div className="topline-meta"><span>{allPositionsFilled ? 'Completa' : 'Em andamento'}</span><span>{recognitionHint}</span></div></div>
           <div className="card-info"><h1>{currentCard ? currentCard.nome : 'Aguardando carta'}</h1><p className="status">{currentDrawn ? `${currentDrawn.isReversed ? 'Invertida' : 'Vertical'} • ${currentDrawn.source === 'camera' ? 'Câmera' : 'Manual'}` : 'Ative a câmera ou selecione manualmente.'}</p>{currentCard && <div className="card-meta"><p><strong>{formatArcanoLabel(currentCard)}:</strong> {currentCard.arcanoDescricao || formatNaipeElementLabel(currentCard)}</p><p><strong>Significado:</strong> {currentDrawn?.isReversed ? currentCard.significado.invertido.curto : currentCard.significado.vertical.curto}</p></div>}</div>
-          <div className="teleprompter-actions"><button onClick={() => setIsScrolling(prev => !prev)}>{isScrolling ? 'Pausar' : 'Iniciar'} rolagem</button><button className="secondary" onClick={goPrevious}>Anterior</button><button className="secondary" onClick={goNext}>Próxima</button><button className="secondary" onClick={() => void (isFullscreen ? exitFullscreen() : enterFullscreen())}>{isFullscreen ? 'Sair tela cheia' : 'Tela cheia'}</button></div>
+          <div className="teleprompter-actions"><button onClick={() => setIsScrolling(prev => !prev)}>{isScrolling ? 'Pausar' : 'Iniciar'} rolagem</button><button className="secondary" onClick={goPrevious} disabled={currentPositionIndex === 0}>Anterior</button><button className="secondary" onClick={goNext} disabled={currentPositionIndex >= spread.positions.length - 1}>Próxima</button><button className="secondary" onClick={() => void (isFullscreen ? exitFullscreen() : enterFullscreen())}>{isFullscreen ? 'Sair tela cheia' : 'Tela cheia'}</button></div>
           <div className="wpm-slider-wrap"><label>Velocidade: {settings.wpm} WPM</label><input type="range" min="40" max="260" value={settings.wpm} onChange={event => setSettings(prev => ({ ...prev, wpm: Number(event.target.value) }))} /></div>
-          <div ref={scriptWindowRef} className={`script-window${settings.flipHorizontal ? ' flip-horizontal' : ''}${settings.flipVertical ? ' flip-vertical' : ''}`}>{settings.highlightLine && <div className="focus-line" />}<div className="script-content">{paragraphs.map((paragraph, index) => <p key={`${paragraph.slice(0, 12)}-${index}`} ref={el => { paragraphRefs.current[index] = el }} className={index === activeParagraphIndex ? 'active-line' : ''}>{renderParagraph(paragraph)}</p>)}</div></div>
+          <div ref={scriptWindowRef} className={`script-window${settings.flipHorizontal ? ' flip-horizontal' : ''}${settings.flipVertical ? ' flip-vertical' : ''}`} onClick={handleMobileScriptTap}>{settings.highlightLine && <div className="focus-line" />}<div className="script-content">{paragraphs.map((paragraph, index) => <p key={`${paragraph.slice(0, 12)}-${index}`} ref={el => { paragraphRefs.current[index] = el }} className={index === activeParagraphIndex ? 'active-line' : ''}>{renderParagraph(paragraph)}</p>)}</div></div>
           <div className="manual-controls"><label>Seleção manual de carta</label><div className="manual-row"><select value={manualCardId} onChange={event => setManualCardId(event.target.value)}><option value="">Escolha uma carta</option>{cards.map(card => <option key={card.id} value={card.id}>{card.nome}</option>)}</select><button className={`secondary${manualIsReversed ? ' active' : ''}`} onClick={() => setManualIsReversed(prev => !prev)}>{manualIsReversed ? 'Invertida' : 'Vertical'}</button><button onClick={handleManualConfirm}>Confirmar</button></div></div>
           <div className="controls"><button className="secondary" onClick={() => setRecognitionEnabled(prev => !prev)} disabled={!isActive}>{recognitionEnabled ? 'Pausar reconhecimento' : 'Ativar reconhecimento'}</button><button className="secondary" onClick={() => setAutoAdvance(prev => !prev)}>{autoAdvance ? 'Avanço automático: on' : 'Avanço automático: off'}</button><button className="secondary" onClick={toggleVoice}>{voiceStatus === 'listening' ? 'Parar voz' : 'Comandos de voz'}</button></div>
           <details className="script-editor"><summary>Editar/importar roteiro</summary><p>Use TXT/MD para ajustar o texto lido no teleprompter.</p><textarea value={scriptText} onChange={event => handleScriptChange(event.target.value)} /><div className="script-editor-actions"><button onClick={handleResetAutoScript}>Restaurar automático</button><button className="secondary" onClick={() => fileInputRef.current?.click()}>Importar TXT/MD</button><button className="secondary" onClick={handleExportScript}>Exportar</button></div><input ref={fileInputRef} type="file" accept=".txt,.md,.markdown" hidden onChange={event => void handleImportScript(event)} /></details>

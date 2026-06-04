@@ -1,0 +1,158 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         UserRole @default(TAROLOGIST)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  readings Reading[]
+}
+
+model Client {
+  id        String   @id @default(cuid())
+  fullName  String
+  birthDate DateTime?
+  phone     String?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  readings ReadingClient[]
+}
+
+model ReadingType {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  description    String?
+  defaultSpread  String?
+  cardsCount     Int      @default(3)
+  openingScript  String?
+  closingScript  String?
+  promptTemplate String?
+  active         Boolean  @default(true)
+  sourceSpreadId String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  readings Reading[]
+}
+
+model Reading {
+  id            String        @id @default(cuid())
+  tarologistId  String
+  readingTypeId String
+  status        ReadingStatus @default(DRAFT)
+  roomCode      String        @unique
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  tarologist User          @relation(fields: [tarologistId], references: [id], onDelete: Cascade)
+  readingType ReadingType  @relation(fields: [readingTypeId], references: [id], onDelete: Restrict)
+  clients     ReadingClient[]
+  cards       ReadingCard[]
+  guestLinks  ReadingGuestLink[]
+  events      ReadingEvent[]
+}
+
+model ReadingClient {
+  id        String            @id @default(cuid())
+  readingId String
+  clientId  String
+  role      ReadingClientRole
+
+  reading Reading @relation(fields: [readingId], references: [id], onDelete: Cascade)
+  client  Client  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@unique([readingId, clientId, role])
+}
+
+model TarotCard {
+  id           String   @id @default(cuid())
+  legacyId     Int      @unique
+  name         String
+  slug         String   @unique
+  arcana       String
+  suit         String?
+  number       Int?
+  imageUrl     String?
+  uprightText  String
+  reversedText String?
+  keywords     String[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  readings ReadingCard[]
+}
+
+model ReadingCard {
+  id              String          @id @default(cuid())
+  readingId       String
+  cardId          String
+  position        Int
+  orientation     CardOrientation @default(UPRIGHT)
+  confidence      Float?
+  detectedAt      DateTime        @default(now())
+  confirmedByUser Boolean         @default(false)
+  generatedText   String?
+
+  reading Reading   @relation(fields: [readingId], references: [id], onDelete: Cascade)
+  card    TarotCard @relation(fields: [cardId], references: [id], onDelete: Restrict)
+
+  @@unique([readingId, position])
+}
+
+model ReadingGuestLink {
+  id         String    @id @default(cuid())
+  readingId  String
+  tokenHash  String    @unique
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+
+  reading Reading @relation(fields: [readingId], references: [id], onDelete: Cascade)
+}
+
+model ReadingEvent {
+  id        String   @id @default(cuid())
+  readingId String
+  eventType String
+  payload   Json?
+  createdAt DateTime @default(now())
+
+  reading Reading @relation(fields: [readingId], references: [id], onDelete: Cascade)
+}
+
+enum UserRole {
+  ADMIN
+  TAROLOGIST
+}
+
+enum ReadingStatus {
+  DRAFT
+  LIVE
+  FINISHED
+  CANCELED
+}
+
+enum ReadingClientRole {
+  PRIMARY
+  SECONDARY
+}
+
+enum CardOrientation {
+  UPRIGHT
+  REVERSED
+}

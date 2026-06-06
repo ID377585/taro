@@ -40,6 +40,7 @@ Abra no navegador em `http://localhost:5173`.
 3. **Contador por Carta**: usa contagem remota em `taro_metadata` (deduplicada por `queue_id`) + pendências locais da fila.
 4. **Reconhecimento**: tenta modelo TensorFlow.js; se modelo estiver ausente/bootstrap, entra fallback local.
 5. **Leitura**: teleprompter com recursos avançados (WPM, atalhos, voz, ajustes visuais e de performance).
+6. **Histórico**: sessões ficam no IndexedDB e podem ser exportadas/importadas por backup JSON.
 
 ## Upload em nuvem (Supabase) para capturas
 
@@ -60,6 +61,9 @@ Com Supabase configurado, o app:
 - remove a amostra local após upload concluído (limpeza automática),
 - mantém contador por carta/orientação usando a tabela remota + fila local pendente.
 
+Valores de exemplo copiados de `.env.example` são tratados como configuração inválida;
+substitua por URL e chave reais antes de usar sincronização em nuvem.
+
 ### Schema do Supabase (`taro_metadata`)
 
 Antes de usar contagem remota, aplique a migration SQL:
@@ -72,6 +76,8 @@ Ela cria/ajusta a tabela esperada pelo app (`queue_id`, `card_id`, `orientation`
 
 Estado atual no repositório: **modelo bootstrap** (não final).  
 Para produção de reconhecimento por IA, substitua `public/model/*` pelos artefatos finais treinados.
+O painel **Diagnóstico** também verifica automaticamente `public/model/metadata.json`
+e `public/model/model.json` para indicar se o modelo publicado é final, bootstrap ou inconsistente.
 
 ### Verificação automática do modelo final
 
@@ -96,6 +102,13 @@ Critérios validados:
 ```bash
 npm run build
 ```
+
+## Backup local de histórico
+
+Enquanto não houver backend de negócio, o histórico de leituras fica salvo no navegador.
+Na tela **Todos os Históricos de Leitura**, use **Backup JSON** para baixar todas as
+sessões locais, **Importar JSON** para restaurar esse arquivo em outro navegador/aparelho
+e **Excluir sessão** para remover uma leitura local específica.
 
 ## Qualidade e testes
 
@@ -132,6 +145,7 @@ npm run e2e
 - `src/components`: telas e componentes de UI.
 - `src/hooks`: hooks de câmera e IndexedDB.
 - `src/services`: serviços de dados e persistência.
+- `docs/PRODUCTION_READINESS.md`: pendências críticas e ordem recomendada para produção.
 - `public/data`: base inicial de cartas e tiragens.
 - `public/cards`: imagens locais das cartas (o bootstrap atual usa SVG; você pode substituir por seu deck real).
 - `public/model`: modelo para TensorFlow.js (`model.json`, `metadata.json`, pesos). O projeto inclui um modelo bootstrap neutro.

@@ -13,6 +13,9 @@ import {
 import { useIndexedDB } from './hooks/useIndexedDB'
 import { dbService, CaptureUploadQueueStats } from './services/dbService'
 import { applyCardDisplayNames } from './services/cardDisplayName'
+import { inspectModelReadiness } from './services/modelService'
+import type { ModelReadinessDiagnostics } from './services/modelService'
+import { getCaptureCloudConfigStatus } from './services/captureUploadService'
 
 const TeleprompterView = lazy(() => import('./components/TeleprompterView'))
 const HistoryRecordsView = lazy(() => import('./components/HistoryRecordsView'))
@@ -125,13 +128,21 @@ function App() {
   const [queueStats, setQueueStats] = useState<CaptureUploadQueueStats | null>(null)
   const [captureTotals, setCaptureTotals] = useState({ cardsWithSamples: 0, localSamples: 0 })
   const [operationsError, setOperationsError] = useState<string | null>(null)
+  const [modelReadiness, setModelReadiness] =
+    useState<ModelReadinessDiagnostics | null>(null)
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [loadErrorDetail, setLoadErrorDetail] = useState<string | null>(null)
   const [savedFlow, setSavedFlow] = useState<PersistedFlowState | null>(null)
   const hasInitializedFlowRef = useRef(false)
 
-  const { isReady, error: indexedDbError, saveSession, getAllSessions } = useIndexedDB()
+  const {
+    isReady,
+    error: indexedDbError,
+    saveSession,
+    getAllSessions,
+    deleteSession,
+  } = useIndexedDB()
 
   useEffect(() => {
     const loadBaseData = async () => {
@@ -165,6 +176,21 @@ function App() {
     }
 
     void loadBaseData()
+  }, [])
+
+  useEffect(() => {
+    let cancelled = false
+
+    const loadModelReadiness = async () => {
+      const diagnostics = await inspectModelReadiness()
+      if (!cancelled) setModelReadiness(diagnostics)
+    }
+
+    void loadModelReadiness()
+
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   const refreshSessions = useCallback(async () => {
@@ -270,6 +296,12 @@ function App() {
     const hasSpeechRecognition =
       'SpeechRecognition' in window || 'webkitSpeechRecognition' in window
     const hasWakeLock = 'wakeLock' in navigator
+    const cloudConfig = getCaptureCloudConfigStatus()
+    const cloudConfigIssue = cloudConfig.invalid.length
+      ? `Valores de exemplo detectados em ${cloudConfig.invalid.join(', ')}.`
+      : cloudConfig.missing.length
+        ? `Configure ${cloudConfig.missing.join(', ')}.`
+        : ''
 
     return [
       {
@@ -330,12 +362,44 @@ function App() {
           : 'Aguardando leitura da fila local.',
       },
       {
+        label: 'Supabase de capturas',
+        status: cloudConfig.enabled ? 'ok' : 'warning',
+        detail: cloudConfig.enabled
+          ? `Ativo no bucket ${cloudConfig.bucket}; metadata ${cloudConfig.metadataTable || 'não configurada'}.`
+          : `Nuvem de capturas desativada. ${cloudConfigIssue}`,
+      },
+      {
         label: 'Modelo de IA',
+        status:
+          modelReadiness?.status === 'ready'
+            ? 'ok'
+            : modelReadiness?.status === 'unavailable'
+              ? 'error'
+              : 'warning',
+        detail: modelReadiness
+          ? `${modelReadiness.message} ${modelReadiness.detail}`
+          : 'Verificando arquivos em /model.',
+      },
+      {
+        label: 'Autenticação',
         status: 'warning',
-        detail: 'Verifique em Registrar/Leitura se public/model contém o modelo final de 156 classes.',
+        detail:
+          'Ainda não há login, usuário/admin ou sessão protegida. Use apenas em ambiente controlado até implementar backend seguro.',
+      },
+      {
+        label: 'Persistência de negócio',
+        status: 'warning',
+        detail:
+          'Histórico, clientes e leituras ficam principalmente neste navegador. Falta banco central para produção multiusuário.',
+      },
+      {
+        label: 'Sala do cliente',
+        status: 'warning',
+        detail:
+          'Ainda não há link de cliente, WebRTC ou separação host/guest. O atendimento atual é local ao aparelho do tarólogo.',
       },
     ]
-  }, [cards.length, indexedDbError, isReady, queueStats, spreads.length])
+  }, [cards.length, indexedDbError, isReady, modelReadiness, queueStats, spreads.length])
 
   const operationalCardsTarget = cards.length * TARGET_PER_ORIENTATION * 2
   const uploadedSamples = queueStats?.uploaded || 0
@@ -445,6 +509,16 @@ function App() {
     }
 
     await saveSession(session)
+    await refreshSessions()
+  }
+
+  const handleImportSessions = async (importedSessions: SpreadingSession[]) => {
+    await Promise.all(importedSessions.map(session => saveSession(session)))
+    await refreshSessions()
+  }
+
+  const handleDeleteSession = async (sessionId: string) => {
+    await deleteSession(sessionId)
     await refreshSessions()
   }
 
@@ -646,6 +720,8 @@ function App() {
               sessions={sessions}
               cards={cards}
               spreads={spreads}
+              onImportSessions={handleImportSessions}
+              onDeleteSession={handleDeleteSession}
               onBack={() => setShowHistoryRecords(false)}
             />
           </Suspense>

@@ -1,10 +1,15 @@
-import { FC, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, FC, useEffect, useMemo, useRef, useState } from 'react'
 import { Card, SpreadingSession, Spread } from '../types'
 import {
   buildSessionFullReport,
   buildSessionHtmlReport,
   buildSessionReportFileName,
 } from '../services/sessionReportService'
+import {
+  buildSessionBackupFileName,
+  parseSessionBackup,
+  stringifySessionBackup,
+} from '../services/sessionBackupService'
 import './HistoryRecordsView.css'
 
 interface HistoryRecordsViewProps {
@@ -12,6 +17,8 @@ interface HistoryRecordsViewProps {
   cards: Card[]
   spreads: Spread[]
   onBack: () => void
+  onImportSessions: (sessions: SpreadingSession[]) => Promise<void>
+  onDeleteSession: (sessionId: string) => Promise<void>
 }
 
 const formatDate = (timestamp: number) =>
@@ -67,6 +74,8 @@ const HistoryRecordsView: FC<HistoryRecordsViewProps> = ({
   cards,
   spreads,
   onBack,
+  onImportSessions,
+  onDeleteSession,
 }) => {
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
     sessions[0]?.id || null,
@@ -76,6 +85,7 @@ const HistoryRecordsView: FC<HistoryRecordsViewProps> = ({
   const [clientFilter, setClientFilter] = useState('all')
   const copyTimerRef = useRef<number | null>(null)
   const reportRef = useRef<HTMLTextAreaElement>(null)
+  const backupInputRef = useRef<HTMLInputElement>(null)
 
   const cardsById = useMemo(() => new Map(cards.map(card => [card.id, card])), [cards])
   const spreadById = useMemo(
@@ -259,6 +269,47 @@ const HistoryRecordsView: FC<HistoryRecordsViewProps> = ({
     }
   }
 
+  const handleDownloadBackup = () => {
+    downloadTextFile(
+      stringifySessionBackup(sessions),
+      buildSessionBackupFileName(),
+      'application/json;charset=utf-8',
+    )
+    showFeedback('Backup JSON baixado')
+  }
+
+  const handleImportBackup = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+
+    try {
+      const raw = await file.text()
+      const importedSessions = parseSessionBackup(raw)
+      await onImportSessions(importedSessions)
+      showFeedback(`${importedSessions.length} sessão(ões) importada(s)`)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Falha ao importar backup.'
+      showFeedback(message)
+    }
+  }
+
+  const handleDeleteSelected = async () => {
+    if (!selectedSession) return
+
+    const confirmed = window.confirm(
+      `Excluir a leitura "${selectedSession.spreadName}" de ${formatDate(selectedSession.timestamp)}?`,
+    )
+    if (!confirmed) return
+
+    try {
+      await onDeleteSession(selectedSession.id)
+      showFeedback('Sessão excluída')
+    } catch {
+      showFeedback('Falha ao excluir sessão')
+    }
+  }
+
   return (
     <div className="history-records-view">
       <div className="history-records-header">
@@ -269,9 +320,25 @@ const HistoryRecordsView: FC<HistoryRecordsViewProps> = ({
             incluindo a síntese final.
           </p>
         </div>
-        <button className="secondary" onClick={onBack}>
-          Voltar ao menu
-        </button>
+        <div className="history-header-actions">
+          <button className="secondary" onClick={handleDownloadBackup}>
+            Backup JSON
+          </button>
+          <button className="secondary" onClick={() => backupInputRef.current?.click()}>
+            Importar JSON
+          </button>
+          <button className="secondary" onClick={onBack}>
+            Voltar ao menu
+          </button>
+          {copyFeedback && <span>{copyFeedback}</span>}
+          <input
+            ref={backupInputRef}
+            type="file"
+            accept="application/json,.json"
+            hidden
+            onChange={event => void handleImportBackup(event)}
+          />
+        </div>
       </div>
 
       {sessions.length === 0 && (
@@ -381,7 +448,13 @@ const HistoryRecordsView: FC<HistoryRecordsViewProps> = ({
                 <button onClick={() => void handleShareText()}>
                   Compartilhar
                 </button>
-                {copyFeedback && <span>{copyFeedback}</span>}
+                <button
+                  className="danger"
+                  onClick={() => void handleDeleteSelected()}
+                  disabled={!selectedSession}
+                >
+                  Excluir sessão
+                </button>
               </div>
 
               {filteredSessions.length === 0 ? (

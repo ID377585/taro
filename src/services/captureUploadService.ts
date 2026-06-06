@@ -26,6 +26,7 @@ interface CaptureCloudConfig {
 interface CaptureCloudConfigStatus {
   enabled: boolean
   missing: string[]
+  invalid: string[]
   bucket: string
   folderPrefix: string
   metadataTable: string
@@ -125,6 +126,16 @@ const sanitizePathPart = (value: string) =>
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '')
 
+const isPlaceholderCloudValue = (value: string) => {
+  const normalized = value.toLowerCase()
+  return (
+    normalized.includes('your-project-id') ||
+    normalized.includes('your_public_key') ||
+    normalized.includes('your-public-key') ||
+    normalized.includes('example.supabase.co')
+  )
+}
+
 const getConfig = (): CaptureCloudConfig => {
   const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || '').trim()
   const supabaseAnonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY || '').trim()
@@ -135,7 +146,12 @@ const getConfig = (): CaptureCloudConfig => {
   const metadataTable = (import.meta.env.VITE_SUPABASE_METADATA_TABLE || '').trim()
 
   return {
-    enabled: Boolean(supabaseUrl && supabaseAnonKey),
+    enabled: Boolean(
+      supabaseUrl &&
+        supabaseAnonKey &&
+        !isPlaceholderCloudValue(supabaseUrl) &&
+        !isPlaceholderCloudValue(supabaseAnonKey),
+    ),
     supabaseUrl,
     supabaseAnonKey,
     bucket: bucket || DEFAULT_BUCKET,
@@ -147,12 +163,20 @@ const getConfig = (): CaptureCloudConfig => {
 export const getCaptureCloudConfigStatus = (): CaptureCloudConfigStatus => {
   const config = getConfig()
   const missing: string[] = []
+  const invalid: string[] = []
   if (!config.supabaseUrl) missing.push('VITE_SUPABASE_URL')
   if (!config.supabaseAnonKey) missing.push('VITE_SUPABASE_ANON_KEY')
+  if (config.supabaseUrl && isPlaceholderCloudValue(config.supabaseUrl)) {
+    invalid.push('VITE_SUPABASE_URL')
+  }
+  if (config.supabaseAnonKey && isPlaceholderCloudValue(config.supabaseAnonKey)) {
+    invalid.push('VITE_SUPABASE_ANON_KEY')
+  }
 
   return {
     enabled: config.enabled,
-    missing,
+    missing: [...missing, ...invalid],
+    invalid,
     bucket: config.bucket,
     folderPrefix: config.folderPrefix,
     metadataTable: config.metadataTable,

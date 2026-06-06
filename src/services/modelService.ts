@@ -1,8 +1,10 @@
-interface ModelMetadata {
+export interface ModelMetadata {
   labels?: string[]
   classes?: string[]
   classNames?: string[]
   wordLabels?: string[]
+  placeholder?: boolean
+  modelType?: string
   modelSettings?: {
     labels?: string[]
   }
@@ -16,6 +18,34 @@ export interface Prediction {
   label: string
   confidence: number
   scores: number[]
+}
+
+export type ModelReadinessStatus = 'ready' | 'bootstrap' | 'incomplete' | 'unavailable'
+
+export interface ModelReadinessDiagnostics {
+  status: ModelReadinessStatus
+  placeholder: boolean
+  modelType: string | null
+  labelsCount: number
+  outputClasses: number | null
+  expectedClasses: number
+  message: string
+  detail: string
+}
+
+interface ModelJsonLayer {
+  config?: {
+    units?: unknown
+  }
+}
+
+interface ModelJson {
+  format?: string
+  modelTopology?: {
+    config?: {
+      layers?: ModelJsonLayer[]
+    }
+  }
 }
 
 type TfModule = typeof import('@tensorflow/tfjs')
@@ -54,28 +84,124 @@ const ensureBackendReady = async (): Promise<TfModule> => {
   return backendReady
 }
 
+export const extractLabelsFromMetadata = (metadata: ModelMetadata) => {
+  const candidates: unknown[] = [
+    metadata.labels,
+    metadata.classNames,
+    metadata.classes,
+    metadata.wordLabels,
+    metadata.modelSettings?.labels,
+    metadata.tfjsMetadata?.labels,
+  ]
+
+  for (const candidate of candidates) {
+    if (Array.isArray(candidate) && candidate.every(item => typeof item === 'string')) {
+      return candidate as string[]
+    }
+  }
+
+  return []
+}
+
+export const getModelOutputClasses = (modelJson: ModelJson) => {
+  const layers = modelJson.modelTopology?.config?.layers
+  if (!Array.isArray(layers)) return null
+
+  for (let index = layers.length - 1; index >= 0; index -= 1) {
+    const units = layers[index]?.config?.units
+    if (Number.isInteger(units)) return units as number
+  }
+
+  return null
+}
+
+export const buildModelReadinessDiagnostics = (
+  metadata: ModelMetadata,
+  modelJson: ModelJson,
+  expectedClasses = 156,
+): ModelReadinessDiagnostics => {
+  const labelsCount = extractLabelsFromMetadata(metadata).length
+  const outputClasses = getModelOutputClasses(modelJson)
+  const placeholder = metadata.placeholder === true
+  const modelType = typeof metadata.modelType === 'string' ? metadata.modelType : null
+  const hasExpectedShape = labelsCount === expectedClasses && outputClasses === expectedClasses
+
+  if (!placeholder && hasExpectedShape && modelJson.format === 'layers-model') {
+    return {
+      status: 'ready',
+      placeholder,
+      modelType,
+      labelsCount,
+      outputClasses,
+      expectedClasses,
+      message: 'Modelo final pronto.',
+      detail: `${labelsCount} labels e ${outputClasses} classes de saída publicados.`,
+    }
+  }
+
+  if (placeholder) {
+    return {
+      status: 'bootstrap',
+      placeholder,
+      modelType,
+      labelsCount,
+      outputClasses,
+      expectedClasses,
+      message: 'Modelo bootstrap publicado.',
+      detail: `Substitua public/model por um modelo final com ${expectedClasses} classes antes de depender da IA treinada.`,
+    }
+  }
+
+  return {
+    status: 'incomplete',
+    placeholder,
+    modelType,
+    labelsCount,
+    outputClasses,
+    expectedClasses,
+    message: 'Modelo incompleto ou inconsistente.',
+    detail: `Esperado: ${expectedClasses} labels/classes. Atual: ${labelsCount} labels e ${String(outputClasses)} classes.`,
+  }
+}
+
+export const inspectModelReadiness = async (
+  metadataUrl = '/model/metadata.json',
+  modelUrl = '/model/model.json',
+  expectedClasses = 156,
+): Promise<ModelReadinessDiagnostics> => {
+  try {
+    const [metadataResponse, modelResponse] = await Promise.all([
+      fetch(metadataUrl),
+      fetch(modelUrl),
+    ])
+
+    if (!metadataResponse.ok || !modelResponse.ok) {
+      throw new Error(
+        `HTTP metadata=${metadataResponse.status}, model=${modelResponse.status}`,
+      )
+    }
+
+    const metadata = (await metadataResponse.json()) as ModelMetadata
+    const modelJson = (await modelResponse.json()) as ModelJson
+    return buildModelReadinessDiagnostics(metadata, modelJson, expectedClasses)
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : 'Falha desconhecida.'
+    return {
+      status: 'unavailable',
+      placeholder: false,
+      modelType: null,
+      labelsCount: 0,
+      outputClasses: null,
+      expectedClasses,
+      message: 'Modelo indisponível.',
+      detail,
+    }
+  }
+}
+
 export class CardRecognizerModel {
   private model: import('@tensorflow/tfjs').LayersModel | null = null
   private labels: string[] = []
-
-  private extractLabelsFromMetadata(metadata: ModelMetadata) {
-    const candidates: unknown[] = [
-      metadata.labels,
-      metadata.classNames,
-      metadata.classes,
-      metadata.wordLabels,
-      metadata.modelSettings?.labels,
-      metadata.tfjsMetadata?.labels,
-    ]
-
-    for (const candidate of candidates) {
-      if (Array.isArray(candidate) && candidate.every(item => typeof item === 'string')) {
-        return candidate as string[]
-      }
-    }
-
-    return []
-  }
 
   async load(modelUrl: string, metadataUrl?: string) {
     const tf = await ensureBackendReady()
@@ -86,7 +212,7 @@ export class CardRecognizerModel {
         const metadata = (await fetch(metadataUrl).then(res =>
           res.json(),
         )) as ModelMetadata
-        this.labels = this.extractLabelsFromMetadata(metadata)
+        this.labels = extractLabelsFromMetadata(metadata)
       } catch {
         this.labels = []
       }

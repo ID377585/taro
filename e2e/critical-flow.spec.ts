@@ -16,10 +16,16 @@ test.describe('Fluxo crítico do app Taro', () => {
       .click()
 
     await page.getByRole('button', { name: /Uma Carta/ }).click()
-    await page.getByRole('button', { name: /Mostrar funções/ }).click()
-    await page.getByRole('button', { name: 'Mostrar controles extras' }).click()
 
-    const manualSelect = page.locator('#manual-card')
+    const showExtraControlsButton = page.getByRole('button', {
+      name: /Mostrar controles extras/,
+    })
+
+    if (await showExtraControlsButton.isVisible().catch(() => false)) {
+      await showExtraControlsButton.click()
+    }
+
+    const manualSelect = page.locator('.manual-row select')
     await expect(manualSelect).toBeVisible()
     await expect.poll(async () => manualSelect.locator('option').count()).toBeGreaterThan(1)
     const firstCardValue = await manualSelect
@@ -29,12 +35,12 @@ test.describe('Fluxo crítico do app Taro', () => {
     expect(firstCardValue).toBeTruthy()
     await manualSelect.selectOption(firstCardValue!)
     await expect(manualSelect).toHaveValue(firstCardValue!)
-    await page.locator('.manual-row button', { hasText: 'Registrar' }).click()
+    await page.locator('.manual-row button', { hasText: 'Confirmar' }).click()
 
     const saveButton = page.getByRole('button', { name: 'Salvar sessão' })
     await expect(saveButton).toBeEnabled()
     await saveButton.click()
-    await expect(page.getByText('Sessão salva no histórico local.')).toBeVisible()
+    await expect(page.getByText('Sessão salva no histórico.')).toBeVisible()
 
     await page.getByRole('button', { name: 'Voltar' }).click()
     await page.getByRole('button', { name: 'Voltar ao menu' }).click()

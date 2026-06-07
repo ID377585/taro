@@ -96,6 +96,24 @@ export default async function CardsPage() {
                   </span>
                 </div>
 
+                {card.imageUrl ? (
+                  <div className="mb-4 rounded-[22px] border border-stone-200 bg-white p-3">
+                    <div className="flex aspect-[2/3] max-h-[360px] items-center justify-center overflow-hidden rounded-[18px] bg-stone-100">
+                      <img
+                        alt={`Imagem da carta ${card.name}`}
+                        className="h-full w-full object-contain"
+                        loading="lazy"
+                        src={card.imageUrl}
+                      />
+                    </div>
+                    <p className="mt-2 break-all text-xs text-stone-500">{card.imageUrl}</p>
+                  </div>
+                ) : (
+                  <div className="mb-4 flex aspect-[2/3] max-h-[360px] items-center justify-center rounded-[22px] border border-dashed border-stone-300 bg-white p-6 text-center text-sm text-stone-500">
+                    Sem imagem cadastrada
+                  </div>
+                )}
+
                 <form action={updateCard} className="grid gap-3">
                   <input name="id" type="hidden" value={card.id} />
                   <div className="grid gap-3 md:grid-cols-2">

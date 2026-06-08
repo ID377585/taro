@@ -5,7 +5,7 @@ Rebuild do `ID377585/taro.git` como monorepo para leituras profissionais de taro
 ## Stack
 
 - `apps/web`: Next.js App Router + Auth.js
-- `apps/realtime`: Socket.IO para sinalização WebRTC 1:1
+- `apps/realtime`: Socket.IO legado/opcional para laboratório local
 - `apps/vision-service`: FastAPI com contrato `/health` e `/detect`
 - `packages/database`: Prisma + PostgreSQL
 - `packages/tarot-core`: cartas, tiragens e interpretação local
@@ -31,6 +31,7 @@ corepack pnpm dev:web
 - criação de sessão com consulente principal e secundário opcional
 - guest link com token hashado
 - host room e guest room separados
+- live host/guest com sinalização WebRTC por HTTP polling via PostgreSQL, compatível com Vercel
 - contrato de confirmação de carta e composição determinística de texto
 
 ## Estrutura

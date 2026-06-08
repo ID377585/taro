@@ -2,7 +2,6 @@ import { tarotCards } from "@taro/tarot-core";
 import { notFound } from "next/navigation";
 import { Panel, SectionTitle } from "@taro/ui";
 import { HostLiveRoom } from "@/components/host-live-room";
-import { getPublicRuntimeConfig } from "@/lib/env";
 import { getReadingByIdForHost } from "@/lib/reading-service";
 import { requireAuthUser } from "@/lib/session";
 
@@ -16,8 +15,6 @@ export default async function ReadingLivePage({
   const reading = await getReadingByIdForHost(id, { id: user.id, role: user.role });
 
   if (!reading) notFound();
-
-  const runtimeConfig = getPublicRuntimeConfig();
 
   return (
     <main className="space-y-6">
@@ -48,7 +45,6 @@ export default async function ReadingLivePage({
         }))}
         initialStatus={reading.status}
         readingId={reading.id}
-        realtimeServerUrl={runtimeConfig.realtimeServerUrl}
         roomCode={reading.roomCode}
       />
     </main>

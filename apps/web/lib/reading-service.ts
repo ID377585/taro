@@ -55,6 +55,23 @@ const assertReadingAccess = async (readingId: string, user: SessionUser) => {
   return reading;
 };
 
+const liveSignalEventTypes = [
+  "live.host_ready",
+  "live.guest_ready",
+  "live.webrtc_offer",
+  "live.webrtc_answer",
+  "live.host_ice_candidate",
+  "live.guest_ice_candidate",
+  "live.card_locked",
+  "live.card_confirmed",
+  "live.peer_left",
+] as const;
+
+type LiveSignalEventType = (typeof liveSignalEventTypes)[number];
+
+const isLiveSignalEventType = (eventType: string): eventType is LiveSignalEventType =>
+  liveSignalEventTypes.includes(eventType as LiveSignalEventType);
+
 export const getDashboardSnapshot = async (user: SessionUser) => {
   const readings = await prisma.reading.findMany({
     where: user.role === "ADMIN" ? {} : { tarologistId: user.id },
@@ -338,6 +355,79 @@ export const appendReadingEventByGuestToken = async (input: {
       payload: (input.payload ?? {}) as Prisma.InputJsonValue,
     },
   });
+};
+
+export const appendLiveSignalForHost = async (input: {
+  readingId: string;
+  user: SessionUser;
+  eventType: string;
+  payload?: Record<string, unknown>;
+}) => {
+  if (!isLiveSignalEventType(input.eventType)) return null;
+
+  return appendReadingEventForHost({
+    readingId: input.readingId,
+    user: input.user,
+    eventType: input.eventType,
+    payload: input.payload,
+  });
+};
+
+export const appendLiveSignalByGuestToken = async (input: {
+  token: string;
+  eventType: string;
+  payload?: Record<string, unknown>;
+}) => {
+  if (!isLiveSignalEventType(input.eventType)) return null;
+
+  return appendReadingEventByGuestToken({
+    token: input.token,
+    eventType: input.eventType,
+    payload: input.payload,
+  });
+};
+
+export const getLiveSignalsForHost = async (input: {
+  readingId: string;
+  user: SessionUser;
+}) => {
+  const reading = await assertReadingAccess(input.readingId, input.user);
+  if (!reading) return null;
+
+  const signals = await prisma.readingEvent.findMany({
+    where: {
+      readingId: input.readingId,
+      eventType: {
+        in: [...liveSignalEventTypes],
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 160,
+  });
+
+  return signals.reverse();
+};
+
+export const getLiveSignalsByGuestToken = async (token: string) => {
+  const guestLink = await getReadingByGuestToken(token);
+  if (!guestLink) return null;
+
+  const signals = await prisma.readingEvent.findMany({
+    where: {
+      readingId: guestLink.readingId,
+      eventType: {
+        in: [...liveSignalEventTypes],
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 160,
+  });
+
+  return signals.reverse();
 };
 
 export const updateReadingStatus = async (input: {

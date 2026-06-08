@@ -11,7 +11,7 @@
 ## Apps
 
 - `apps/web`: produto principal, Auth.js, dashboard, leituras, sala do host e sala do cliente
-- `apps/realtime`: eventos Socket.IO para criação e entrada em salas WebRTC
+- `apps/realtime`: serviço Socket.IO legado/opcional para laboratório local
 - `apps/vision-service`: serviço Python com interface estável para detecção
 
 ## Packages
@@ -27,3 +27,12 @@
 3. host usa a sala privada com teleprompter e câmera
 4. cliente acessa apenas a sala guest
 5. carta confirmada é persistida e vira texto oral local
+
+## Live na Vercel
+
+A sala ao vivo não depende de WebSocket server no deploy da Vercel. A sinalização WebRTC é feita por HTTP polling em rotas Next.js:
+
+- host: `/api/readings/[id]/signals`
+- guest: `/api/guest/[token]/signals`
+
+Os sinais `live.*` são armazenados em `ReadingEvent`, usando PostgreSQL como barramento curto da sessão. Isso permite offer, answer, ICE candidates e eventos de carta sem Firebase, Supabase ou Socket.IO em produção.

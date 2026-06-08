@@ -11,13 +11,22 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", socket => {
-  socket.on("room:create", ({ roomCode }) => {
+  socket.on("room:create", async ({ roomCode }) => {
     socket.join(roomCode);
     socket.data.roomCode = roomCode;
     socket.data.role = "host";
     socket.to(roomCode).emit("room:host-ready", {
       roomCode,
     });
+
+    const roomSockets = await io.in(roomCode).fetchSockets();
+    roomSockets
+      .filter(roomSocket => roomSocket.id !== socket.id && roomSocket.data.role === "guest")
+      .forEach(roomSocket => {
+        socket.emit("room:guest-joined", {
+          socketId: roomSocket.id,
+        });
+      });
   });
 
   socket.on("room:join", ({ roomCode, role }) => {

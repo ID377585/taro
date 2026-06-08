@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { Panel, SectionTitle } from "@taro/ui";
 import { GuestLiveRoom } from "@/components/guest-live-room";
-import { getPublicRuntimeConfig } from "@/lib/env";
 import { getReadingByGuestToken } from "@/lib/reading-service";
 
 export default async function GuestRoomPage({
@@ -14,7 +13,6 @@ export default async function GuestRoomPage({
 
   if (!guestLink) notFound();
 
-  const runtimeConfig = getPublicRuntimeConfig();
   const primary = guestLink.reading.clients[0]?.client;
 
   return (
@@ -30,7 +28,6 @@ export default async function GuestRoomPage({
 
         <GuestLiveRoom
           guestToken={token}
-          realtimeServerUrl={runtimeConfig.realtimeServerUrl}
           roomCode={guestLink.reading.roomCode}
         />
       </div>

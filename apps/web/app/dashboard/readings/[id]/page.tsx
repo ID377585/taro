@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { redirect, notFound } from "next/navigation";
 import { Panel, SectionTitle, StatusPill } from "@taro/ui";
 import { buildReadingMarkdownReport } from "@/lib/reporting";
@@ -27,6 +28,12 @@ export default async function ReadingDetailPage({
   const primary = reading.clients.find(client => client.role === "PRIMARY");
   const secondary = reading.clients.find(client => client.role === "SECONDARY");
   const activeGuestLink = reading.guestLinks.find(link => !link.revokedAt);
+  const requestHeaders = await headers();
+  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
+  const protocol =
+    requestHeaders.get("x-forwarded-proto") ?? (host?.startsWith("localhost") ? "http" : "https");
+  const guestPath = `/guest/${activeGuestLinkToken}`;
+  const guestUrl = guestToken && host ? `${protocol}://${host}${guestPath}` : guestPath;
   const report = buildReadingMarkdownReport(reading);
 
   async function handleRegenerateGuestLink() {
@@ -87,7 +94,7 @@ export default async function ReadingDetailPage({
           <div className="rounded-[24px] bg-stone-50 p-5">
             <p className="text-sm text-stone-500">Guest URL</p>
             <code className="mt-2 block break-all text-sm text-stone-800">
-              /guest/{activeGuestLinkToken}
+              {guestUrl}
             </code>
             <p className="mt-3 text-xs text-stone-500">
               {activeGuestLink

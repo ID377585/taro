@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { io, type Socket } from "socket.io-client";
 import {
   getTarotVisionCardBySlug,
   shouldLockDetection,
@@ -33,12 +32,29 @@ type VisionDetectionCandidate = {
   timestamp: number | string;
 };
 
+type LiveSignal = {
+  id: string;
+  eventType: string;
+  createdAt: string;
+  payload?: Record<string, unknown> | null;
+};
+
+const isSessionDescription = (value: unknown): value is RTCSessionDescriptionInit =>
+  typeof value === "object" &&
+  value !== null &&
+  "type" in value &&
+  "sdp" in value &&
+  typeof (value as RTCSessionDescriptionInit).type === "string" &&
+  typeof (value as RTCSessionDescriptionInit).sdp === "string";
+
+const isIceCandidate = (value: unknown): value is RTCIceCandidateInit =>
+  typeof value === "object" && value !== null && "candidate" in value;
+
 export function HostLiveRoom({
   readingId,
   roomCode,
   cards,
   confirmedCards,
-  realtimeServerUrl,
   initialStatus,
   initialEvents,
 }: {
@@ -46,15 +62,17 @@ export function HostLiveRoom({
   roomCode: string;
   cards: Array<{ slug: string; name: string }>;
   confirmedCards: ConfirmedCard[];
-  realtimeServerUrl: string;
   initialStatus: "DRAFT" | "LIVE" | "FINISHED" | "CANCELED";
   initialEvents: TimelineEvent[];
 }) {
   const localVideoRef = useRef<HTMLVideoElement>(null);
+  const remoteGuestVideoRef = useRef<HTMLVideoElement>(null);
   const captureCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  const socketRef = useRef<Socket | null>(null);
   const peerRef = useRef<RTCPeerConnection | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const remoteGuestStreamRef = useRef<MediaStream | null>(null);
+  const pendingIceCandidatesRef = useRef<RTCIceCandidateInit[]>([]);
+  const handledSignalIdsRef = useRef<Set<string>>(new Set());
 
   const [status, setStatus] = useState("Preparando câmera");
   const [selectedCardSlug, setSelectedCardSlug] = useState(cards[0]?.slug ?? "");
@@ -71,6 +89,9 @@ export function HostLiveRoom({
   );
   const [timeline, setTimeline] = useState(initialEvents);
   const [isDetecting, setIsDetecting] = useState(false);
+  const [isCameraReady, setIsCameraReady] = useState(false);
+  const [hasRemoteGuestVideo, setHasRemoteGuestVideo] = useState(false);
+  const [remoteGuestStatus, setRemoteGuestStatus] = useState("Consulente sem câmera");
 
   const appendTimeline = useCallback((eventType: string, payload?: Record<string, unknown>) => {
     setTimeline(current => [
@@ -95,6 +116,19 @@ export function HostLiveRoom({
     });
   }, [appendTimeline, readingId]);
 
+  const postLiveSignal = useCallback(async (
+    eventType: string,
+    payload?: Record<string, unknown>,
+  ) => {
+    await fetch(`/api/readings/${readingId}/signals`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ eventType, payload }),
+    });
+  }, [readingId]);
+
   const persistStatus = useCallback(async (nextStatus: "DRAFT" | "LIVE" | "FINISHED" | "CANCELED") => {
     await fetch(`/api/readings/${readingId}/status`, {
       method: "PATCH",
@@ -110,22 +144,45 @@ export function HostLiveRoom({
     let cancelled = false;
 
     async function bootCamera() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: { ideal: "environment" } },
-          audio: true,
-        });
-
-        if (cancelled) return;
-        streamRef.current = stream;
-        if (localVideoRef.current) {
-          localVideoRef.current.srcObject = stream;
-        }
-        setStatus("Câmera ativa. Aguardando cliente.");
-      } catch (error) {
-        console.error(error);
-        setStatus("Não foi possível acessar a câmera.");
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setStatus("Este navegador não oferece suporte à câmera.");
+        return;
       }
+
+      const videoConstraints = { facingMode: { ideal: "environment" } };
+      const attempts: MediaStreamConstraints[] = [
+        { video: videoConstraints, audio: true },
+        { video: videoConstraints, audio: false },
+      ];
+
+      for (const constraints of attempts) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+          if (cancelled) {
+            stream.getTracks().forEach(track => track.stop());
+            return;
+          }
+
+          streamRef.current = stream;
+          if (localVideoRef.current) {
+            localVideoRef.current.srcObject = stream;
+          }
+
+          setIsCameraReady(true);
+          setStatus(
+            constraints.audio
+              ? "Câmera e microfone ativos. Aguardando cliente."
+              : "Câmera ativa sem microfone. Aguardando cliente.",
+          );
+          return;
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      setIsCameraReady(false);
+      setStatus("Permissão negada ou câmera indisponível. Libere câmera e microfone no navegador.");
     }
 
     void bootCamera();
@@ -152,14 +209,14 @@ export function HostLiveRoom({
     return () => {
       cancelled = true;
       streamRef.current?.getTracks().forEach(track => track.stop());
+      setIsCameraReady(false);
     };
   }, [initialStatus, readingId, roomCode]);
 
   useEffect(() => {
-    const socket = io(realtimeServerUrl, {
-      transports: ["websocket"],
-    });
-    socketRef.current = socket;
+    if (!isCameraReady || !streamRef.current) return;
+    let cancelled = false;
+    const mountedAt = Date.now();
 
     const ensurePeer = () => {
       if (peerRef.current) return peerRef.current;
@@ -172,11 +229,52 @@ export function HostLiveRoom({
         peer.addTrack(track, streamRef.current as MediaStream);
       });
 
+      const hasVideoSender = peer.getSenders().some(sender => sender.track?.kind === "video");
+      const hasAudioSender = peer.getSenders().some(sender => sender.track?.kind === "audio");
+      if (!hasVideoSender) {
+        peer.addTransceiver("video", { direction: "recvonly" });
+      }
+      if (!hasAudioSender) {
+        peer.addTransceiver("audio", { direction: "recvonly" });
+      }
+
+      peer.getTransceivers().forEach(transceiver => {
+        if (transceiver.sender.track) {
+          transceiver.direction = "sendrecv";
+        }
+      });
+
+      remoteGuestStreamRef.current = new MediaStream();
+      peer.ontrack = event => {
+        const [remoteStream] = event.streams;
+        const guestStream = remoteStream ?? remoteGuestStreamRef.current;
+        if (!guestStream) return;
+
+        if (!remoteStream && !guestStream.getTracks().some(track => track.id === event.track.id)) {
+          guestStream.addTrack(event.track);
+        }
+
+        if (remoteGuestVideoRef.current) {
+          remoteGuestVideoRef.current.srcObject = guestStream;
+          void remoteGuestVideoRef.current.play().catch(() => {
+            setRemoteGuestStatus("Consulente conectado. Toque no vídeo para liberar áudio.");
+          });
+        }
+
+        if (event.track.kind === "video") {
+          setHasRemoteGuestVideo(true);
+          setRemoteGuestStatus("Consulente conectado");
+        }
+        if (event.track.kind === "audio") {
+          setRemoteGuestStatus("Consulente com áudio conectado");
+        }
+      };
+
       peer.onicecandidate = event => {
         if (event.candidate) {
-          socket.emit("webrtc:ice-candidate", {
+          void postLiveSignal("live.host_ice_candidate", {
             roomCode,
-            candidate: event.candidate,
+            candidate: event.candidate.toJSON(),
           });
         }
       };
@@ -185,38 +283,112 @@ export function HostLiveRoom({
       return peer;
     };
 
-    socket.emit("room:create", { roomCode });
+    const sendOffer = async () => {
+      if (
+        peerRef.current &&
+        (peerRef.current.remoteDescription || peerRef.current.signalingState !== "stable")
+      ) {
+        peerRef.current.close();
+        peerRef.current = null;
+        remoteGuestStreamRef.current = null;
+        setHasRemoteGuestVideo(false);
+        pendingIceCandidatesRef.current = [];
+      }
 
-    socket.on("room:guest-joined", async () => {
+      const peer = ensurePeer();
+      if (peer.signalingState !== "stable") return;
+
       setStatus("Cliente conectado. Enviando oferta WebRTC.");
       void persistEvent("guest.joined_realtime", { roomCode });
-      const peer = ensurePeer();
       const offer = await peer.createOffer();
       await peer.setLocalDescription(offer);
-      socket.emit("webrtc:offer", { roomCode, offer });
-    });
+      await postLiveSignal("live.webrtc_offer", { roomCode, offer });
+    };
 
-    socket.on("webrtc:answer", async ({ answer }) => {
-      const peer = ensurePeer();
-      await peer.setRemoteDescription(answer);
-      setStatus("Conexão com cliente estabelecida.");
-      void persistEvent("webrtc.answer_received", { roomCode });
-    });
-
-    socket.on("webrtc:ice-candidate", async ({ candidate }) => {
-      const peer = ensurePeer();
-      if (candidate) {
+    const flushPendingIceCandidates = async (peer: RTCPeerConnection) => {
+      const candidates = pendingIceCandidatesRef.current.splice(0);
+      for (const candidate of candidates) {
         await peer.addIceCandidate(candidate);
       }
-    });
+    };
+
+    const handleSignal = async (signal: LiveSignal) => {
+      if (handledSignalIdsRef.current.has(signal.id)) return;
+      if (Date.parse(signal.createdAt) < mountedAt) return;
+      handledSignalIdsRef.current.add(signal.id);
+
+      if (signal.eventType === "live.guest_ready") {
+        const mediaKind = signal.payload?.mediaKind;
+        setRemoteGuestStatus(
+          mediaKind === "none"
+            ? "Consulente sem câmera"
+            : "Consulente entrando com câmera",
+        );
+        await sendOffer();
+        return;
+      }
+
+      if (signal.eventType === "live.webrtc_answer") {
+        const answer = signal.payload?.answer;
+        if (!isSessionDescription(answer)) return;
+
+        const peer = ensurePeer();
+        await peer.setRemoteDescription(answer);
+        await flushPendingIceCandidates(peer);
+        setStatus("Conexão com cliente estabelecida.");
+        void persistEvent("webrtc.answer_received", { roomCode });
+        return;
+      }
+
+      if (signal.eventType === "live.guest_ice_candidate") {
+        const candidate = signal.payload?.candidate;
+        if (!isIceCandidate(candidate)) return;
+
+        const peer = ensurePeer();
+        if (peer.remoteDescription) {
+          await peer.addIceCandidate(candidate);
+        } else {
+          pendingIceCandidatesRef.current.push(candidate);
+        }
+      }
+    };
+
+    const pollSignals = async () => {
+      if (cancelled) return;
+
+      try {
+        const response = await fetch(`/api/readings/${readingId}/signals`, {
+          cache: "no-store",
+        });
+
+        if (response.ok) {
+          const signals = (await response.json()) as LiveSignal[];
+          for (const signal of signals) {
+            await handleSignal(signal);
+          }
+        }
+      } finally {
+        if (!cancelled) {
+          window.setTimeout(pollSignals, 1000);
+        }
+      }
+    };
+
+    void postLiveSignal("live.host_ready", { roomCode });
+    void pollSignals();
 
     return () => {
+      cancelled = true;
+      void postLiveSignal("live.peer_left", { roomCode, role: "host" });
       void persistEvent("host.room_closed", { roomCode });
-      socket.disconnect();
       peerRef.current?.close();
       peerRef.current = null;
+      remoteGuestStreamRef.current = null;
+      setHasRemoteGuestVideo(false);
+      setRemoteGuestStatus("Consulente sem câmera");
+      pendingIceCandidatesRef.current = [];
     };
-  }, [persistEvent, realtimeServerUrl, roomCode]);
+  }, [isCameraReady, persistEvent, postLiveSignal, readingId, roomCode]);
 
   const simulateStableFrame = () => {
     const selectedCard = getTarotVisionCardBySlug(selectedCardSlug);
@@ -242,7 +414,7 @@ export function HostLiveRoom({
       if (isLocked) {
         setLocked(true);
         setStatus(`Carta ${selectedCardSlug} travada por estabilidade.`);
-        socketRef.current?.emit("reading:card-locked", {
+        void postLiveSignal("live.card_locked", {
           roomCode,
           cardSlug: selectedCardSlug,
           confidence,
@@ -321,7 +493,7 @@ export function HostLiveRoom({
         const isLocked = shouldLockDetection(next);
         if (isLocked) {
           setLocked(true);
-          socketRef.current?.emit("reading:card-locked", {
+          void postLiveSignal("live.card_locked", {
             roomCode,
             cardSlug: candidate.cardSlug,
             confidence: candidate.confidence,
@@ -378,17 +550,17 @@ export function HostLiveRoom({
     setLocked(false);
     setStatus(`Carta ${payload.card.name} confirmada.`);
 
-    socketRef.current?.emit("reading:card-confirmed", {
+    void postLiveSignal("live.card_confirmed", {
       roomCode,
       cardName: payload.card.name,
       position: payload.position,
-      });
+    });
   };
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
       <div className="space-y-5">
-        <div className="glass-panel overflow-hidden rounded-[28px]">
+        <div className="glass-panel relative overflow-hidden rounded-[28px]">
           <video
             ref={localVideoRef}
             autoPlay
@@ -396,6 +568,22 @@ export function HostLiveRoom({
             playsInline
             className="aspect-[4/5] w-full bg-stone-950 object-cover"
           />
+          <div className="absolute bottom-4 right-4 w-[42%] max-w-72 overflow-hidden rounded-[18px] border border-stone-100/30 bg-stone-950 shadow-2xl">
+            <div className="absolute left-3 top-3 z-10 rounded-full bg-stone-950/80 px-3 py-1 text-xs font-medium text-stone-50">
+              Consulente
+            </div>
+            <video
+              ref={remoteGuestVideoRef}
+              autoPlay
+              playsInline
+              className={`aspect-video w-full object-cover ${hasRemoteGuestVideo ? "block" : "hidden"}`}
+            />
+            {!hasRemoteGuestVideo ? (
+              <div className="flex aspect-video items-center justify-center px-4 text-center text-sm text-stone-200">
+                {remoteGuestStatus}
+              </div>
+            ) : null}
+          </div>
         </div>
 
         <div className="glass-panel rounded-[28px] p-5">

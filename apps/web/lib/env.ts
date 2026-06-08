@@ -12,6 +12,5 @@ export const getServerEnvStatus = () =>
   });
 
 export const getPublicRuntimeConfig = () => ({
-  realtimeServerUrl: process.env.REALTIME_SERVER_URL || "http://localhost:3001",
   visionServiceUrl: process.env.VISION_SERVICE_URL || "http://localhost:8000",
 });

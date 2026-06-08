@@ -2,7 +2,7 @@ import Link from "next/link";
 import { signOut } from "@/auth";
 import { requireAuthUser } from "@/lib/session";
 
-export default async function DashboardLayout({
+export default async function InícioLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

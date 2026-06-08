@@ -1,0 +1,4838 @@
+[
+  {
+    "id": 0,
+    "title": "O Louco",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 10,
+    "slug": "o-louco",
+    "imageUrl": "/cards/tarot-gold-v2/00_o_louco.png",
+    "fileName": "00_o_louco.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 50,
+          "y": 48,
+          "active": true
+        },
+        {
+          "x": 64,
+          "y": 48,
+          "active": true
+        },
+        {
+          "x": 50,
+          "y": 62,
+          "active": true
+        },
+        {
+          "x": 50,
+          "y": 76,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 14,
+      "bbox_px": [
+        26,
+        22,
+        348,
+        511
+      ]
+    }
+  },
+  {
+    "id": 1,
+    "title": "O Mago",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 11,
+    "slug": "o-mago",
+    "imageUrl": "/cards/tarot-gold-v2/01_o_mago.png",
+    "fileName": "01_o_mago.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 415,
+          "y": 48,
+          "active": true
+        },
+        {
+          "x": 429,
+          "y": 48,
+          "active": true
+        },
+        {
+          "x": 415,
+          "y": 62,
+          "active": true
+        },
+        {
+          "x": 415,
+          "y": 76,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 14,
+      "bbox_px": [
+        391,
+        22,
+        717,
+        511
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "title": "A Sacerdotisa",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 8,
+    "slug": "a-sacerdotisa",
+    "imageUrl": "/cards/tarot-gold-v2/02_a_sacerdotisa.png",
+    "fileName": "02_a_sacerdotisa.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 770,
+          "y": 48,
+          "active": true
+        },
+        {
+          "x": 784,
+          "y": 48,
+          "active": true
+        },
+        {
+          "x": 770,
+          "y": 62,
+          "active": true
+        },
+        {
+          "x": 770,
+          "y": 76,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "slot_radius_px": 6,
+      "slot_spacing_px": 14,
+      "bbox_px": [
+        745,
+        22,
+        1079,
+        511
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "title": "A Imperatriz",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 9,
+    "slug": "a-imperatriz",
+    "imageUrl": "/cards/tarot-gold-v2/03_a_imperatriz.png",
+    "fileName": "03_a_imperatriz.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 1143,
+          "y": 48,
+          "active": true
+        },
+        {
+          "x": 1157,
+          "y": 48,
+          "active": true
+        },
+        {
+          "x": 1143,
+          "y": 62,
+          "active": true
+        },
+        {
+          "x": 1143,
+          "y": 76,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 14,
+      "bbox_px": [
+        1119,
+        22,
+        1445,
+        511
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "title": "O Imperador",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 14,
+    "slug": "o-imperador",
+    "imageUrl": "/cards/tarot-gold-v2/04_o_imperador.png",
+    "fileName": "04_o_imperador.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 50,
+          "y": 565,
+          "active": true
+        },
+        {
+          "x": 64,
+          "y": 565,
+          "active": true
+        },
+        {
+          "x": 50,
+          "y": 579,
+          "active": true
+        },
+        {
+          "x": 50,
+          "y": 593,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 14,
+      "bbox_px": [
+        26,
+        538,
+        348,
+        1037
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "title": "O Hierofante",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 15,
+    "slug": "o-hierofante",
+    "imageUrl": "/cards/tarot-gold-v2/05_o_hierofante.png",
+    "fileName": "05_o_hierofante.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 415,
+          "y": 565,
+          "active": true
+        },
+        {
+          "x": 429,
+          "y": 565,
+          "active": true
+        },
+        {
+          "x": 415,
+          "y": 579,
+          "active": true
+        },
+        {
+          "x": 415,
+          "y": 593,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 14,
+      "bbox_px": [
+        391,
+        538,
+        717,
+        1037
+      ]
+    }
+  },
+  {
+    "id": 6,
+    "title": "Os Enamorados",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 12,
+    "slug": "os-enamorados",
+    "imageUrl": "/cards/tarot-gold-v2/06_os_enamorados.png",
+    "fileName": "06_os_enamorados.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 770,
+          "y": 565,
+          "active": true
+        },
+        {
+          "x": 784,
+          "y": 565,
+          "active": true
+        },
+        {
+          "x": 770,
+          "y": 579,
+          "active": true
+        },
+        {
+          "x": 770,
+          "y": 593,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "slot_radius_px": 6,
+      "slot_spacing_px": 14,
+      "bbox_px": [
+        745,
+        538,
+        1079,
+        1037
+      ]
+    }
+  },
+  {
+    "id": 7,
+    "title": "O Carro",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 13,
+    "slug": "o-carro",
+    "imageUrl": "/cards/tarot-gold-v2/07_o_carro.png",
+    "fileName": "07_o_carro.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 1143,
+          "y": 565,
+          "active": true
+        },
+        {
+          "x": 1157,
+          "y": 565,
+          "active": true
+        },
+        {
+          "x": 1143,
+          "y": 579,
+          "active": true
+        },
+        {
+          "x": 1143,
+          "y": 593,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        1,
+        0,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 14,
+      "bbox_px": [
+        1119,
+        538,
+        1445,
+        1037
+      ]
+    }
+  },
+  {
+    "id": 8,
+    "title": "A Força",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 2,
+    "slug": "a-forca",
+    "imageUrl": "/cards/tarot-gold-v2/08_a_forca.png",
+    "fileName": "08_a_forca.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 53,
+          "y": 48,
+          "active": true
+        },
+        {
+          "x": 66,
+          "y": 48,
+          "active": true
+        },
+        {
+          "x": 53,
+          "y": 61,
+          "active": true
+        },
+        {
+          "x": 53,
+          "y": 74,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        32,
+        22,
+        323,
+        502
+      ]
+    }
+  },
+  {
+    "id": 9,
+    "title": "O Eremita",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 3,
+    "slug": "o-eremita",
+    "imageUrl": "/cards/tarot-gold-v2/09_o_eremita.png",
+    "fileName": "09_o_eremita.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 399,
+          "y": 48,
+          "active": true
+        },
+        {
+          "x": 412,
+          "y": 48,
+          "active": true
+        },
+        {
+          "x": 399,
+          "y": 61,
+          "active": true
+        },
+        {
+          "x": 399,
+          "y": 74,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        378,
+        22,
+        666,
+        502
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "title": "A Roda da Fortuna",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 0,
+    "slug": "a-roda-da-fortuna",
+    "imageUrl": "/cards/tarot-gold-v2/10_a_roda_da_fortuna.png",
+    "fileName": "10_a_roda_da_fortuna.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 752,
+          "y": 48,
+          "active": true
+        },
+        {
+          "x": 765,
+          "y": 48,
+          "active": true
+        },
+        {
+          "x": 752,
+          "y": 61,
+          "active": true
+        },
+        {
+          "x": 752,
+          "y": 74,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        731,
+        22,
+        1017,
+        502
+      ]
+    }
+  },
+  {
+    "id": 11,
+    "title": "A Justiça",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 1,
+    "slug": "a-justica",
+    "imageUrl": "/cards/tarot-gold-v2/11_a_justica.png",
+    "fileName": "11_a_justica.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 1104,
+          "y": 48,
+          "active": true
+        },
+        {
+          "x": 1117,
+          "y": 48,
+          "active": true
+        },
+        {
+          "x": 1104,
+          "y": 61,
+          "active": true
+        },
+        {
+          "x": 1104,
+          "y": 74,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        1083,
+        22,
+        1370,
+        502
+      ]
+    }
+  },
+  {
+    "id": 12,
+    "title": "O Enforcado",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 6,
+    "slug": "o-enforcado",
+    "imageUrl": "/cards/tarot-gold-v2/12_o_enforcado.png",
+    "fileName": "12_o_enforcado.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 53,
+          "y": 558,
+          "active": true
+        },
+        {
+          "x": 66,
+          "y": 558,
+          "active": true
+        },
+        {
+          "x": 53,
+          "y": 571,
+          "active": true
+        },
+        {
+          "x": 53,
+          "y": 584,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        32,
+        532,
+        323,
+        1015
+      ]
+    }
+  },
+  {
+    "id": 13,
+    "title": "A Morte",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 7,
+    "slug": "a-morte",
+    "imageUrl": "/cards/tarot-gold-v2/13_a_morte.png",
+    "fileName": "13_a_morte.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 399,
+          "y": 558,
+          "active": true
+        },
+        {
+          "x": 412,
+          "y": 558,
+          "active": true
+        },
+        {
+          "x": 399,
+          "y": 571,
+          "active": true
+        },
+        {
+          "x": 399,
+          "y": 584,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        378,
+        532,
+        666,
+        1015
+      ]
+    }
+  },
+  {
+    "id": 14,
+    "title": "A Temperança",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 4,
+    "slug": "a-temperanca",
+    "imageUrl": "/cards/tarot-gold-v2/14_a_temperanca.png",
+    "fileName": "14_a_temperanca.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 752,
+          "y": 558,
+          "active": true
+        },
+        {
+          "x": 765,
+          "y": 558,
+          "active": true
+        },
+        {
+          "x": 752,
+          "y": 571,
+          "active": true
+        },
+        {
+          "x": 752,
+          "y": 584,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        731,
+        532,
+        1017,
+        1015
+      ]
+    }
+  },
+  {
+    "id": 15,
+    "title": "O Diabo",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 5,
+    "slug": "o-diabo",
+    "imageUrl": "/cards/tarot-gold-v2/15_o_diabo.png",
+    "fileName": "15_o_diabo.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 1104,
+          "y": 558,
+          "active": true
+        },
+        {
+          "x": 1117,
+          "y": 558,
+          "active": true
+        },
+        {
+          "x": 1104,
+          "y": 571,
+          "active": true
+        },
+        {
+          "x": 1104,
+          "y": 584,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        1083,
+        532,
+        1370,
+        1015
+      ]
+    }
+  },
+  {
+    "id": 16,
+    "title": "A Torre",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 10,
+    "slug": "a-torre",
+    "imageUrl": "/cards/tarot-gold-v2/16_a_torre.png",
+    "fileName": "16_a_torre.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 50,
+          "y": 47,
+          "active": true
+        },
+        {
+          "x": 64,
+          "y": 47,
+          "active": true
+        },
+        {
+          "x": 50,
+          "y": 61,
+          "active": true
+        },
+        {
+          "x": 50,
+          "y": 75,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 14,
+      "bbox_px": [
+        26,
+        21,
+        348,
+        511
+      ]
+    }
+  },
+  {
+    "id": 17,
+    "title": "A Estrela",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 11,
+    "slug": "a-estrela",
+    "imageUrl": "/cards/tarot-gold-v2/17_a_estrela.png",
+    "fileName": "17_a_estrela.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 414,
+          "y": 47,
+          "active": true
+        },
+        {
+          "x": 428,
+          "y": 47,
+          "active": true
+        },
+        {
+          "x": 414,
+          "y": 61,
+          "active": true
+        },
+        {
+          "x": 414,
+          "y": 75,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 14,
+      "bbox_px": [
+        390,
+        21,
+        716,
+        511
+      ]
+    }
+  },
+  {
+    "id": 18,
+    "title": "A Lua",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 8,
+    "slug": "a-lua",
+    "imageUrl": "/cards/tarot-gold-v2/18_a_lua.png",
+    "fileName": "18_a_lua.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 769,
+          "y": 47,
+          "active": true
+        },
+        {
+          "x": 783,
+          "y": 47,
+          "active": true
+        },
+        {
+          "x": 769,
+          "y": 61,
+          "active": true
+        },
+        {
+          "x": 769,
+          "y": 75,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "slot_radius_px": 6,
+      "slot_spacing_px": 14,
+      "bbox_px": [
+        744,
+        21,
+        1079,
+        511
+      ]
+    }
+  },
+  {
+    "id": 19,
+    "title": "O Sol",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 9,
+    "slug": "o-sol",
+    "imageUrl": "/cards/tarot-gold-v2/19_o_sol.png",
+    "fileName": "19_o_sol.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 50,
+          "y": 565,
+          "active": true
+        },
+        {
+          "x": 64,
+          "y": 565,
+          "active": true
+        },
+        {
+          "x": 50,
+          "y": 579,
+          "active": true
+        },
+        {
+          "x": 50,
+          "y": 593,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 14,
+      "bbox_px": [
+        26,
+        538,
+        348,
+        1039
+      ]
+    }
+  },
+  {
+    "id": 20,
+    "title": "O Julgamento",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 14,
+    "slug": "o-julgamento",
+    "imageUrl": "/cards/tarot-gold-v2/20_o_julgamento.png",
+    "fileName": "20_o_julgamento.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 414,
+          "y": 565,
+          "active": true
+        },
+        {
+          "x": 428,
+          "y": 565,
+          "active": true
+        },
+        {
+          "x": 414,
+          "y": 579,
+          "active": true
+        },
+        {
+          "x": 414,
+          "y": 593,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 14,
+      "bbox_px": [
+        390,
+        538,
+        716,
+        1039
+      ]
+    }
+  },
+  {
+    "id": 21,
+    "title": "O Mundo",
+    "group": "arcanos_maiores",
+    "groupId": 0,
+    "checksum": 15,
+    "slug": "o-mundo",
+    "imageUrl": "/cards/tarot-gold-v2/21_o_mundo.png",
+    "fileName": "21_o_mundo.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 769,
+          "y": 565,
+          "active": true
+        },
+        {
+          "x": 783,
+          "y": 565,
+          "active": true
+        },
+        {
+          "x": 769,
+          "y": 579,
+          "active": true
+        },
+        {
+          "x": 769,
+          "y": 593,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "slot_radius_px": 6,
+      "slot_spacing_px": 14,
+      "bbox_px": [
+        744,
+        538,
+        1079,
+        1039
+      ]
+    }
+  },
+  {
+    "id": 22,
+    "title": "Ás de Copas",
+    "group": "copas",
+    "groupId": 1,
+    "checksum": 14,
+    "slug": "as-de-copas",
+    "imageUrl": "/cards/tarot-gold-v2/22_as_de_copas.png",
+    "fileName": "22_as_de_copas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 123,
+          "y": 58,
+          "active": true
+        },
+        {
+          "x": 136,
+          "y": 58,
+          "active": true
+        },
+        {
+          "x": 123,
+          "y": 71,
+          "active": true
+        },
+        {
+          "x": 123,
+          "y": 84,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        104,
+        32,
+        360,
+        511
+      ]
+    }
+  },
+  {
+    "id": 23,
+    "title": "Dois de Copas",
+    "group": "copas",
+    "groupId": 1,
+    "checksum": 15,
+    "slug": "dois-de-copas",
+    "imageUrl": "/cards/tarot-gold-v2/23_dois_de_copas.png",
+    "fileName": "23_dois_de_copas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 435,
+          "y": 58,
+          "active": true
+        },
+        {
+          "x": 448,
+          "y": 58,
+          "active": true
+        },
+        {
+          "x": 435,
+          "y": 71,
+          "active": true
+        },
+        {
+          "x": 435,
+          "y": 84,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        415,
+        32,
+        694,
+        511
+      ]
+    }
+  },
+  {
+    "id": 24,
+    "title": "Três de Copas",
+    "group": "copas",
+    "groupId": 1,
+    "checksum": 0,
+    "slug": "tres-de-copas",
+    "imageUrl": "/cards/tarot-gold-v2/24_tres_de_copas.png",
+    "fileName": "24_tres_de_copas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 769,
+          "y": 58,
+          "active": true
+        },
+        {
+          "x": 782,
+          "y": 58,
+          "active": true
+        },
+        {
+          "x": 769,
+          "y": 71,
+          "active": true
+        },
+        {
+          "x": 769,
+          "y": 84,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        748,
+        32,
+        1029,
+        511
+      ]
+    }
+  },
+  {
+    "id": 25,
+    "title": "Quatro de Copas",
+    "group": "copas",
+    "groupId": 1,
+    "checksum": 1,
+    "slug": "quatro-de-copas",
+    "imageUrl": "/cards/tarot-gold-v2/25_quatro_de_copas.png",
+    "fileName": "25_quatro_de_copas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 1105,
+          "y": 58,
+          "active": true
+        },
+        {
+          "x": 1118,
+          "y": 58,
+          "active": true
+        },
+        {
+          "x": 1105,
+          "y": 71,
+          "active": true
+        },
+        {
+          "x": 1105,
+          "y": 84,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        1084,
+        32,
+        1365,
+        511
+      ]
+    }
+  },
+  {
+    "id": 26,
+    "title": "Cinco de Copas",
+    "group": "copas",
+    "groupId": 1,
+    "checksum": 2,
+    "slug": "cinco-de-copas",
+    "imageUrl": "/cards/tarot-gold-v2/26_cinco_de_copas.png",
+    "fileName": "26_cinco_de_copas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 123,
+          "y": 576,
+          "active": true
+        },
+        {
+          "x": 136,
+          "y": 576,
+          "active": true
+        },
+        {
+          "x": 123,
+          "y": 589,
+          "active": true
+        },
+        {
+          "x": 123,
+          "y": 602,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        104,
+        550,
+        360,
+        1026
+      ]
+    }
+  },
+  {
+    "id": 27,
+    "title": "Seis de Copas",
+    "group": "copas",
+    "groupId": 1,
+    "checksum": 3,
+    "slug": "seis-de-copas",
+    "imageUrl": "/cards/tarot-gold-v2/27_seis_de_copas.png",
+    "fileName": "27_seis_de_copas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 435,
+          "y": 576,
+          "active": true
+        },
+        {
+          "x": 448,
+          "y": 576,
+          "active": true
+        },
+        {
+          "x": 435,
+          "y": 589,
+          "active": true
+        },
+        {
+          "x": 435,
+          "y": 602,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        415,
+        550,
+        694,
+        1026
+      ]
+    }
+  },
+  {
+    "id": 28,
+    "title": "Sete de Copas",
+    "group": "copas",
+    "groupId": 1,
+    "checksum": 4,
+    "slug": "sete-de-copas",
+    "imageUrl": "/cards/tarot-gold-v2/28_sete_de_copas.png",
+    "fileName": "28_sete_de_copas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 769,
+          "y": 576,
+          "active": true
+        },
+        {
+          "x": 782,
+          "y": 576,
+          "active": true
+        },
+        {
+          "x": 769,
+          "y": 589,
+          "active": true
+        },
+        {
+          "x": 769,
+          "y": 602,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        748,
+        550,
+        1029,
+        1026
+      ]
+    }
+  },
+  {
+    "id": 29,
+    "title": "Oito de Copas",
+    "group": "copas",
+    "groupId": 1,
+    "checksum": 5,
+    "slug": "oito-de-copas",
+    "imageUrl": "/cards/tarot-gold-v2/29_oito_de_copas.png",
+    "fileName": "29_oito_de_copas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 1105,
+          "y": 576,
+          "active": true
+        },
+        {
+          "x": 1118,
+          "y": 576,
+          "active": true
+        },
+        {
+          "x": 1105,
+          "y": 589,
+          "active": true
+        },
+        {
+          "x": 1105,
+          "y": 602,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        1084,
+        550,
+        1365,
+        1026
+      ]
+    }
+  },
+  {
+    "id": 30,
+    "title": "Nove de Copas",
+    "group": "copas",
+    "groupId": 1,
+    "checksum": 6,
+    "slug": "nove-de-copas",
+    "imageUrl": "/cards/tarot-gold-v2/30_nove_de_copas.png",
+    "fileName": "30_nove_de_copas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 70,
+          "y": 55,
+          "active": true
+        },
+        {
+          "x": 83,
+          "y": 55,
+          "active": true
+        },
+        {
+          "x": 70,
+          "y": 68,
+          "active": true
+        },
+        {
+          "x": 70,
+          "y": 81,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        47,
+        30,
+        354,
+        500
+      ]
+    }
+  },
+  {
+    "id": 31,
+    "title": "Dez de Copas",
+    "group": "copas",
+    "groupId": 1,
+    "checksum": 7,
+    "slug": "dez-de-copas",
+    "imageUrl": "/cards/tarot-gold-v2/31_dez_de_copas.png",
+    "fileName": "31_dez_de_copas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 425,
+          "y": 55,
+          "active": true
+        },
+        {
+          "x": 438,
+          "y": 55,
+          "active": true
+        },
+        {
+          "x": 425,
+          "y": 68,
+          "active": true
+        },
+        {
+          "x": 425,
+          "y": 81,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        402,
+        30,
+        710,
+        500
+      ]
+    }
+  },
+  {
+    "id": 32,
+    "title": "Pajem de Copas",
+    "group": "copas",
+    "groupId": 1,
+    "checksum": 8,
+    "slug": "pajem-de-copas",
+    "imageUrl": "/cards/tarot-gold-v2/32_pajem_de_copas.png",
+    "fileName": "32_pajem_de_copas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 783,
+          "y": 55,
+          "active": true
+        },
+        {
+          "x": 796,
+          "y": 55,
+          "active": true
+        },
+        {
+          "x": 783,
+          "y": 68,
+          "active": true
+        },
+        {
+          "x": 783,
+          "y": 81,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        760,
+        30,
+        1068,
+        500
+      ]
+    }
+  },
+  {
+    "id": 33,
+    "title": "Cavaleiro de Copas",
+    "group": "copas",
+    "groupId": 1,
+    "checksum": 9,
+    "slug": "cavaleiro-de-copas",
+    "imageUrl": "/cards/tarot-gold-v2/33_cavaleiro_de_copas.png",
+    "fileName": "33_cavaleiro_de_copas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 1141,
+          "y": 55,
+          "active": true
+        },
+        {
+          "x": 1154,
+          "y": 55,
+          "active": true
+        },
+        {
+          "x": 1141,
+          "y": 68,
+          "active": true
+        },
+        {
+          "x": 1141,
+          "y": 81,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        1118,
+        30,
+        1425,
+        500
+      ]
+    }
+  },
+  {
+    "id": 34,
+    "title": "Rainha de Copas",
+    "group": "copas",
+    "groupId": 1,
+    "checksum": 10,
+    "slug": "rainha-de-copas",
+    "imageUrl": "/cards/tarot-gold-v2/34_rainha_de_copas.png",
+    "fileName": "34_rainha_de_copas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 70,
+          "y": 569,
+          "active": true
+        },
+        {
+          "x": 83,
+          "y": 569,
+          "active": true
+        },
+        {
+          "x": 70,
+          "y": 582,
+          "active": true
+        },
+        {
+          "x": 70,
+          "y": 595,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        47,
+        543,
+        354,
+        1016
+      ]
+    }
+  },
+  {
+    "id": 35,
+    "title": "Rei de Copas",
+    "group": "copas",
+    "groupId": 1,
+    "checksum": 11,
+    "slug": "rei-de-copas",
+    "imageUrl": "/cards/tarot-gold-v2/35_rei_de_copas.png",
+    "fileName": "35_rei_de_copas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 425,
+          "y": 569,
+          "active": true
+        },
+        {
+          "x": 438,
+          "y": 569,
+          "active": true
+        },
+        {
+          "x": 425,
+          "y": 582,
+          "active": true
+        },
+        {
+          "x": 425,
+          "y": 595,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        0,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        402,
+        543,
+        710,
+        1016
+      ]
+    }
+  },
+  {
+    "id": 36,
+    "title": "Ás de Ouros",
+    "group": "ouros",
+    "groupId": 2,
+    "checksum": 10,
+    "slug": "as-de-ouros",
+    "imageUrl": "/cards/tarot-gold-v2/36_as_de_ouros.png",
+    "fileName": "36_as_de_ouros.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 783,
+          "y": 569,
+          "active": true
+        },
+        {
+          "x": 796,
+          "y": 569,
+          "active": true
+        },
+        {
+          "x": 783,
+          "y": 582,
+          "active": true
+        },
+        {
+          "x": 783,
+          "y": 595,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        760,
+        543,
+        1068,
+        1016
+      ]
+    }
+  },
+  {
+    "id": 37,
+    "title": "Dois de Ouros",
+    "group": "ouros",
+    "groupId": 2,
+    "checksum": 11,
+    "slug": "dois-de-ouros",
+    "imageUrl": "/cards/tarot-gold-v2/37_dois_de_ouros.png",
+    "fileName": "37_dois_de_ouros.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 1141,
+          "y": 569,
+          "active": true
+        },
+        {
+          "x": 1154,
+          "y": 569,
+          "active": true
+        },
+        {
+          "x": 1141,
+          "y": 582,
+          "active": true
+        },
+        {
+          "x": 1141,
+          "y": 595,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        1118,
+        543,
+        1425,
+        1016
+      ]
+    }
+  },
+  {
+    "id": 38,
+    "title": "Três de Ouros",
+    "group": "ouros",
+    "groupId": 2,
+    "checksum": 8,
+    "slug": "tres-de-ouros",
+    "imageUrl": "/cards/tarot-gold-v2/38_tres_de_ouros.png",
+    "fileName": "38_tres_de_ouros.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 69,
+          "y": 54,
+          "active": true
+        },
+        {
+          "x": 82,
+          "y": 54,
+          "active": true
+        },
+        {
+          "x": 69,
+          "y": 67,
+          "active": true
+        },
+        {
+          "x": 69,
+          "y": 80,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        47,
+        28,
+        346,
+        502
+      ]
+    }
+  },
+  {
+    "id": 39,
+    "title": "Quatro de Ouros",
+    "group": "ouros",
+    "groupId": 2,
+    "checksum": 9,
+    "slug": "quatro-de-ouros",
+    "imageUrl": "/cards/tarot-gold-v2/39_quatro_de_ouros.png",
+    "fileName": "39_quatro_de_ouros.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 426,
+          "y": 54,
+          "active": true
+        },
+        {
+          "x": 439,
+          "y": 54,
+          "active": true
+        },
+        {
+          "x": 426,
+          "y": 67,
+          "active": true
+        },
+        {
+          "x": 426,
+          "y": 80,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        404,
+        28,
+        698,
+        502
+      ]
+    }
+  },
+  {
+    "id": 40,
+    "title": "Cinco de Ouros",
+    "group": "ouros",
+    "groupId": 2,
+    "checksum": 6,
+    "slug": "cinco-de-ouros",
+    "imageUrl": "/cards/tarot-gold-v2/40_cinco_de_ouros.png",
+    "fileName": "40_cinco_de_ouros.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 776,
+          "y": 54,
+          "active": true
+        },
+        {
+          "x": 789,
+          "y": 54,
+          "active": true
+        },
+        {
+          "x": 776,
+          "y": 67,
+          "active": true
+        },
+        {
+          "x": 776,
+          "y": 80,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        754,
+        28,
+        1050,
+        502
+      ]
+    }
+  },
+  {
+    "id": 41,
+    "title": "Seis de Ouros",
+    "group": "ouros",
+    "groupId": 2,
+    "checksum": 7,
+    "slug": "seis-de-ouros",
+    "imageUrl": "/cards/tarot-gold-v2/41_seis_de_ouros.png",
+    "fileName": "41_seis_de_ouros.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 1128,
+          "y": 54,
+          "active": true
+        },
+        {
+          "x": 1141,
+          "y": 54,
+          "active": true
+        },
+        {
+          "x": 1128,
+          "y": 67,
+          "active": true
+        },
+        {
+          "x": 1128,
+          "y": 80,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        1106,
+        28,
+        1405,
+        502
+      ]
+    }
+  },
+  {
+    "id": 42,
+    "title": "Sete de Ouros",
+    "group": "ouros",
+    "groupId": 2,
+    "checksum": 4,
+    "slug": "sete-de-ouros",
+    "imageUrl": "/cards/tarot-gold-v2/42_sete_de_ouros.png",
+    "fileName": "42_sete_de_ouros.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 69,
+          "y": 578,
+          "active": true
+        },
+        {
+          "x": 82,
+          "y": 578,
+          "active": true
+        },
+        {
+          "x": 69,
+          "y": 591,
+          "active": true
+        },
+        {
+          "x": 69,
+          "y": 604,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        47,
+        553,
+        346,
+        1024
+      ]
+    }
+  },
+  {
+    "id": 43,
+    "title": "Oito de Ouros",
+    "group": "ouros",
+    "groupId": 2,
+    "checksum": 5,
+    "slug": "oito-de-ouros",
+    "imageUrl": "/cards/tarot-gold-v2/43_oito_de_ouros.png",
+    "fileName": "43_oito_de_ouros.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 426,
+          "y": 578,
+          "active": true
+        },
+        {
+          "x": 439,
+          "y": 578,
+          "active": true
+        },
+        {
+          "x": 426,
+          "y": 591,
+          "active": true
+        },
+        {
+          "x": 426,
+          "y": 604,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        404,
+        553,
+        698,
+        1024
+      ]
+    }
+  },
+  {
+    "id": 44,
+    "title": "Nove de Ouros",
+    "group": "ouros",
+    "groupId": 2,
+    "checksum": 2,
+    "slug": "nove-de-ouros",
+    "imageUrl": "/cards/tarot-gold-v2/44_nove_de_ouros.png",
+    "fileName": "44_nove_de_ouros.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 776,
+          "y": 578,
+          "active": true
+        },
+        {
+          "x": 789,
+          "y": 578,
+          "active": true
+        },
+        {
+          "x": 776,
+          "y": 591,
+          "active": true
+        },
+        {
+          "x": 776,
+          "y": 604,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        754,
+        553,
+        1050,
+        1024
+      ]
+    }
+  },
+  {
+    "id": 45,
+    "title": "Dez de Ouros",
+    "group": "ouros",
+    "groupId": 2,
+    "checksum": 3,
+    "slug": "dez-de-ouros",
+    "imageUrl": "/cards/tarot-gold-v2/45_dez_de_ouros.png",
+    "fileName": "45_dez_de_ouros.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 1128,
+          "y": 578,
+          "active": true
+        },
+        {
+          "x": 1141,
+          "y": 578,
+          "active": true
+        },
+        {
+          "x": 1128,
+          "y": 591,
+          "active": true
+        },
+        {
+          "x": 1128,
+          "y": 604,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        1106,
+        553,
+        1405,
+        1024
+      ]
+    }
+  },
+  {
+    "id": 46,
+    "title": "Pajem de Ouros",
+    "group": "ouros",
+    "groupId": 2,
+    "checksum": 0,
+    "slug": "pajem-de-ouros",
+    "imageUrl": "/cards/tarot-gold-v2/46_pajem_de_ouros.png",
+    "fileName": "46_pajem_de_ouros.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 56,
+          "y": 58,
+          "active": true
+        },
+        {
+          "x": 69,
+          "y": 58,
+          "active": true
+        },
+        {
+          "x": 56,
+          "y": 71,
+          "active": true
+        },
+        {
+          "x": 56,
+          "y": 84,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        33,
+        32,
+        343,
+        509
+      ]
+    }
+  },
+  {
+    "id": 47,
+    "title": "Cavaleiro de Ouros",
+    "group": "ouros",
+    "groupId": 2,
+    "checksum": 1,
+    "slug": "cavaleiro-de-ouros",
+    "imageUrl": "/cards/tarot-gold-v2/47_cavaleiro_de_ouros.png",
+    "fileName": "47_cavaleiro_de_ouros.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 419,
+          "y": 58,
+          "active": true
+        },
+        {
+          "x": 432,
+          "y": 58,
+          "active": true
+        },
+        {
+          "x": 419,
+          "y": 71,
+          "active": true
+        },
+        {
+          "x": 419,
+          "y": 84,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        396,
+        32,
+        709,
+        509
+      ]
+    }
+  },
+  {
+    "id": 48,
+    "title": "Rainha de Ouros",
+    "group": "ouros",
+    "groupId": 2,
+    "checksum": 14,
+    "slug": "rainha-de-ouros",
+    "imageUrl": "/cards/tarot-gold-v2/48_rainha_de_ouros.png",
+    "fileName": "48_rainha_de_ouros.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 782,
+          "y": 58,
+          "active": true
+        },
+        {
+          "x": 795,
+          "y": 58,
+          "active": true
+        },
+        {
+          "x": 782,
+          "y": 71,
+          "active": true
+        },
+        {
+          "x": 782,
+          "y": 84,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        760,
+        32,
+        1066,
+        509
+      ]
+    }
+  },
+  {
+    "id": 49,
+    "title": "Rei de Ouros",
+    "group": "ouros",
+    "groupId": 2,
+    "checksum": 15,
+    "slug": "rei-de-ouros",
+    "imageUrl": "/cards/tarot-gold-v2/49_rei_de_ouros.png",
+    "fileName": "49_rei_de_ouros.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 1146,
+          "y": 58,
+          "active": true
+        },
+        {
+          "x": 1159,
+          "y": 58,
+          "active": true
+        },
+        {
+          "x": 1146,
+          "y": 71,
+          "active": true
+        },
+        {
+          "x": 1146,
+          "y": 84,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        1123,
+        32,
+        1433,
+        509
+      ]
+    }
+  },
+  {
+    "id": 50,
+    "title": "Ás de Espadas",
+    "group": "espadas",
+    "groupId": 3,
+    "checksum": 14,
+    "slug": "as-de-espadas",
+    "imageUrl": "/cards/tarot-gold-v2/50_as_de_espadas.png",
+    "fileName": "50_as_de_espadas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 56,
+          "y": 571,
+          "active": true
+        },
+        {
+          "x": 69,
+          "y": 571,
+          "active": true
+        },
+        {
+          "x": 56,
+          "y": 584,
+          "active": true
+        },
+        {
+          "x": 56,
+          "y": 597,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        33,
+        545,
+        343,
+        1028
+      ]
+    }
+  },
+  {
+    "id": 51,
+    "title": "Dois de Espadas",
+    "group": "espadas",
+    "groupId": 3,
+    "checksum": 15,
+    "slug": "dois-de-espadas",
+    "imageUrl": "/cards/tarot-gold-v2/51_dois_de_espadas.png",
+    "fileName": "51_dois_de_espadas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 419,
+          "y": 571,
+          "active": true
+        },
+        {
+          "x": 432,
+          "y": 571,
+          "active": true
+        },
+        {
+          "x": 419,
+          "y": 584,
+          "active": true
+        },
+        {
+          "x": 419,
+          "y": 597,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        396,
+        545,
+        709,
+        1028
+      ]
+    }
+  },
+  {
+    "id": 52,
+    "title": "Três de Espadas",
+    "group": "espadas",
+    "groupId": 3,
+    "checksum": 8,
+    "slug": "tres-de-espadas",
+    "imageUrl": "/cards/tarot-gold-v2/52_tres_de_espadas.png",
+    "fileName": "52_tres_de_espadas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 782,
+          "y": 571,
+          "active": true
+        },
+        {
+          "x": 795,
+          "y": 571,
+          "active": true
+        },
+        {
+          "x": 782,
+          "y": 584,
+          "active": true
+        },
+        {
+          "x": 782,
+          "y": 597,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        760,
+        545,
+        1066,
+        1028
+      ]
+    }
+  },
+  {
+    "id": 53,
+    "title": "Quatro de Espadas",
+    "group": "espadas",
+    "groupId": 3,
+    "checksum": 9,
+    "slug": "quatro-de-espadas",
+    "imageUrl": "/cards/tarot-gold-v2/53_quatro_de_espadas.png",
+    "fileName": "53_quatro_de_espadas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 1146,
+          "y": 571,
+          "active": true
+        },
+        {
+          "x": 1159,
+          "y": 571,
+          "active": true
+        },
+        {
+          "x": 1146,
+          "y": 584,
+          "active": true
+        },
+        {
+          "x": 1146,
+          "y": 597,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        1123,
+        545,
+        1433,
+        1028
+      ]
+    }
+  },
+  {
+    "id": 54,
+    "title": "Cinco de Espadas",
+    "group": "espadas",
+    "groupId": 3,
+    "checksum": 10,
+    "slug": "cinco-de-espadas",
+    "imageUrl": "/cards/tarot-gold-v2/54_cinco_de_espadas.png",
+    "fileName": "54_cinco_de_espadas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 64,
+          "y": 55,
+          "active": true
+        },
+        {
+          "x": 77,
+          "y": 55,
+          "active": true
+        },
+        {
+          "x": 64,
+          "y": 68,
+          "active": true
+        },
+        {
+          "x": 64,
+          "y": 81,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        42,
+        29,
+        346,
+        511
+      ]
+    }
+  },
+  {
+    "id": 55,
+    "title": "Seis de Espadas",
+    "group": "espadas",
+    "groupId": 3,
+    "checksum": 11,
+    "slug": "seis-de-espadas",
+    "imageUrl": "/cards/tarot-gold-v2/55_seis_de_espadas.png",
+    "fileName": "55_seis_de_espadas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 422,
+          "y": 55,
+          "active": true
+        },
+        {
+          "x": 435,
+          "y": 55,
+          "active": true
+        },
+        {
+          "x": 422,
+          "y": 68,
+          "active": true
+        },
+        {
+          "x": 422,
+          "y": 81,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        399,
+        29,
+        707,
+        511
+      ]
+    }
+  },
+  {
+    "id": 56,
+    "title": "Sete de Espadas",
+    "group": "espadas",
+    "groupId": 3,
+    "checksum": 4,
+    "slug": "sete-de-espadas",
+    "imageUrl": "/cards/tarot-gold-v2/56_sete_de_espadas.png",
+    "fileName": "56_sete_de_espadas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 783,
+          "y": 55,
+          "active": true
+        },
+        {
+          "x": 796,
+          "y": 55,
+          "active": true
+        },
+        {
+          "x": 783,
+          "y": 68,
+          "active": true
+        },
+        {
+          "x": 783,
+          "y": 81,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        760,
+        29,
+        1069,
+        511
+      ]
+    }
+  },
+  {
+    "id": 57,
+    "title": "Oito de Espadas",
+    "group": "espadas",
+    "groupId": 3,
+    "checksum": 5,
+    "slug": "oito-de-espadas",
+    "imageUrl": "/cards/tarot-gold-v2/57_oito_de_espadas.png",
+    "fileName": "57_oito_de_espadas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 1143,
+          "y": 55,
+          "active": true
+        },
+        {
+          "x": 1156,
+          "y": 55,
+          "active": true
+        },
+        {
+          "x": 1143,
+          "y": 68,
+          "active": true
+        },
+        {
+          "x": 1143,
+          "y": 81,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        1120,
+        29,
+        1427,
+        511
+      ]
+    }
+  },
+  {
+    "id": 58,
+    "title": "Nove de Espadas",
+    "group": "espadas",
+    "groupId": 3,
+    "checksum": 6,
+    "slug": "nove-de-espadas",
+    "imageUrl": "/cards/tarot-gold-v2/58_nove_de_espadas.png",
+    "fileName": "58_nove_de_espadas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 64,
+          "y": 578,
+          "active": true
+        },
+        {
+          "x": 77,
+          "y": 578,
+          "active": true
+        },
+        {
+          "x": 64,
+          "y": 591,
+          "active": true
+        },
+        {
+          "x": 64,
+          "y": 604,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        42,
+        552,
+        346,
+        1036
+      ]
+    }
+  },
+  {
+    "id": 59,
+    "title": "Dez de Espadas",
+    "group": "espadas",
+    "groupId": 3,
+    "checksum": 7,
+    "slug": "dez-de-espadas",
+    "imageUrl": "/cards/tarot-gold-v2/59_dez_de_espadas.png",
+    "fileName": "59_dez_de_espadas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 422,
+          "y": 578,
+          "active": true
+        },
+        {
+          "x": 435,
+          "y": 578,
+          "active": true
+        },
+        {
+          "x": 422,
+          "y": 591,
+          "active": true
+        },
+        {
+          "x": 422,
+          "y": 604,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        399,
+        552,
+        707,
+        1036
+      ]
+    }
+  },
+  {
+    "id": 60,
+    "title": "Pajem de Espadas",
+    "group": "espadas",
+    "groupId": 3,
+    "checksum": 0,
+    "slug": "pajem-de-espadas",
+    "imageUrl": "/cards/tarot-gold-v2/60_pajem_de_espadas.png",
+    "fileName": "60_pajem_de_espadas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 783,
+          "y": 578,
+          "active": true
+        },
+        {
+          "x": 796,
+          "y": 578,
+          "active": true
+        },
+        {
+          "x": 783,
+          "y": 591,
+          "active": true
+        },
+        {
+          "x": 783,
+          "y": 604,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        760,
+        552,
+        1069,
+        1036
+      ]
+    }
+  },
+  {
+    "id": 61,
+    "title": "Cavaleiro de Espadas",
+    "group": "espadas",
+    "groupId": 3,
+    "checksum": 1,
+    "slug": "cavaleiro-de-espadas",
+    "imageUrl": "/cards/tarot-gold-v2/61_cavaleiro_de_espadas.png",
+    "fileName": "61_cavaleiro_de_espadas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 1143,
+          "y": 578,
+          "active": true
+        },
+        {
+          "x": 1156,
+          "y": 578,
+          "active": true
+        },
+        {
+          "x": 1143,
+          "y": 591,
+          "active": true
+        },
+        {
+          "x": 1143,
+          "y": 604,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        1120,
+        552,
+        1427,
+        1036
+      ]
+    }
+  },
+  {
+    "id": 62,
+    "title": "Rainha de Espadas",
+    "group": "espadas",
+    "groupId": 3,
+    "checksum": 2,
+    "slug": "rainha-de-espadas",
+    "imageUrl": "/cards/tarot-gold-v2/62_rainha_de_espadas.png",
+    "fileName": "62_rainha_de_espadas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 56,
+          "y": 56,
+          "active": true
+        },
+        {
+          "x": 69,
+          "y": 56,
+          "active": true
+        },
+        {
+          "x": 56,
+          "y": 69,
+          "active": true
+        },
+        {
+          "x": 56,
+          "y": 82,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        34,
+        31,
+        335,
+        502
+      ]
+    }
+  },
+  {
+    "id": 63,
+    "title": "Rei de Espadas",
+    "group": "espadas",
+    "groupId": 3,
+    "checksum": 3,
+    "slug": "rei-de-espadas",
+    "imageUrl": "/cards/tarot-gold-v2/63_rei_de_espadas.png",
+    "fileName": "63_rei_de_espadas.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 423,
+          "y": 56,
+          "active": true
+        },
+        {
+          "x": 436,
+          "y": 56,
+          "active": true
+        },
+        {
+          "x": 423,
+          "y": 69,
+          "active": true
+        },
+        {
+          "x": 423,
+          "y": 82,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        0,
+        1,
+        1
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        401,
+        31,
+        701,
+        502
+      ]
+    }
+  },
+  {
+    "id": 64,
+    "title": "Ás de Paus",
+    "group": "paus",
+    "groupId": 4,
+    "checksum": 2,
+    "slug": "as-de-paus",
+    "imageUrl": "/cards/tarot-gold-v2/64_as_de_paus.png",
+    "fileName": "64_as_de_paus.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 792,
+          "y": 56,
+          "active": true
+        },
+        {
+          "x": 805,
+          "y": 56,
+          "active": true
+        },
+        {
+          "x": 792,
+          "y": 69,
+          "active": true
+        },
+        {
+          "x": 792,
+          "y": 82,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        1,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        770,
+        31,
+        1070,
+        502
+      ]
+    }
+  },
+  {
+    "id": 65,
+    "title": "Dois de Paus",
+    "group": "paus",
+    "groupId": 4,
+    "checksum": 3,
+    "slug": "dois-de-paus",
+    "imageUrl": "/cards/tarot-gold-v2/65_dois_de_paus.png",
+    "fileName": "65_dois_de_paus.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 1158,
+          "y": 56,
+          "active": true
+        },
+        {
+          "x": 1171,
+          "y": 56,
+          "active": true
+        },
+        {
+          "x": 1158,
+          "y": 69,
+          "active": true
+        },
+        {
+          "x": 1158,
+          "y": 82,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        1,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        1136,
+        31,
+        1433,
+        502
+      ]
+    }
+  },
+  {
+    "id": 66,
+    "title": "Três de Paus",
+    "group": "paus",
+    "groupId": 4,
+    "checksum": 0,
+    "slug": "tres-de-paus",
+    "imageUrl": "/cards/tarot-gold-v2/66_tres_de_paus.png",
+    "fileName": "66_tres_de_paus.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 56,
+          "y": 580,
+          "active": true
+        },
+        {
+          "x": 69,
+          "y": 580,
+          "active": true
+        },
+        {
+          "x": 56,
+          "y": 593,
+          "active": true
+        },
+        {
+          "x": 56,
+          "y": 606,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        1,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        34,
+        555,
+        335,
+        1023
+      ]
+    }
+  },
+  {
+    "id": 67,
+    "title": "Quatro de Paus",
+    "group": "paus",
+    "groupId": 4,
+    "checksum": 1,
+    "slug": "quatro-de-paus",
+    "imageUrl": "/cards/tarot-gold-v2/67_quatro_de_paus.png",
+    "fileName": "67_quatro_de_paus.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 423,
+          "y": 580,
+          "active": true
+        },
+        {
+          "x": 436,
+          "y": 580,
+          "active": true
+        },
+        {
+          "x": 423,
+          "y": 593,
+          "active": true
+        },
+        {
+          "x": 423,
+          "y": 606,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        1,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        401,
+        555,
+        701,
+        1023
+      ]
+    }
+  },
+  {
+    "id": 68,
+    "title": "Cinco de Paus",
+    "group": "paus",
+    "groupId": 4,
+    "checksum": 6,
+    "slug": "cinco-de-paus",
+    "imageUrl": "/cards/tarot-gold-v2/68_cinco_de_paus.png",
+    "fileName": "68_cinco_de_paus.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 792,
+          "y": 580,
+          "active": true
+        },
+        {
+          "x": 805,
+          "y": 580,
+          "active": true
+        },
+        {
+          "x": 792,
+          "y": 593,
+          "active": true
+        },
+        {
+          "x": 792,
+          "y": 606,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        1,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        770,
+        555,
+        1070,
+        1023
+      ]
+    }
+  },
+  {
+    "id": 69,
+    "title": "Seis de Paus",
+    "group": "paus",
+    "groupId": 4,
+    "checksum": 7,
+    "slug": "seis-de-paus",
+    "imageUrl": "/cards/tarot-gold-v2/69_seis_de_paus.png",
+    "fileName": "69_seis_de_paus.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 1158,
+          "y": 580,
+          "active": true
+        },
+        {
+          "x": 1171,
+          "y": 580,
+          "active": true
+        },
+        {
+          "x": 1158,
+          "y": 593,
+          "active": true
+        },
+        {
+          "x": 1158,
+          "y": 606,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        1,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        1136,
+        555,
+        1433,
+        1023
+      ]
+    }
+  },
+  {
+    "id": 70,
+    "title": "Sete de Paus",
+    "group": "paus",
+    "groupId": 4,
+    "checksum": 4,
+    "slug": "sete-de-paus",
+    "imageUrl": "/cards/tarot-gold-v2/70_sete_de_paus.png",
+    "fileName": "70_sete_de_paus.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 71,
+          "y": 54,
+          "active": true
+        },
+        {
+          "x": 84,
+          "y": 54,
+          "active": true
+        },
+        {
+          "x": 71,
+          "y": 67,
+          "active": true
+        },
+        {
+          "x": 71,
+          "y": 80,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        1,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        50,
+        28,
+        338,
+        507
+      ]
+    }
+  },
+  {
+    "id": 71,
+    "title": "Oito de Paus",
+    "group": "paus",
+    "groupId": 4,
+    "checksum": 5,
+    "slug": "oito-de-paus",
+    "imageUrl": "/cards/tarot-gold-v2/71_oito_de_paus.png",
+    "fileName": "71_oito_de_paus.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 426,
+          "y": 54,
+          "active": true
+        },
+        {
+          "x": 439,
+          "y": 54,
+          "active": true
+        },
+        {
+          "x": 426,
+          "y": 67,
+          "active": true
+        },
+        {
+          "x": 426,
+          "y": 80,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        1,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        0,
+        1,
+        0,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        404,
+        28,
+        703,
+        507
+      ]
+    }
+  },
+  {
+    "id": 72,
+    "title": "Nove de Paus",
+    "group": "paus",
+    "groupId": 4,
+    "checksum": 10,
+    "slug": "nove-de-paus",
+    "imageUrl": "/cards/tarot-gold-v2/72_nove_de_paus.png",
+    "fileName": "72_nove_de_paus.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 791,
+          "y": 54,
+          "active": true
+        },
+        {
+          "x": 804,
+          "y": 54,
+          "active": true
+        },
+        {
+          "x": 791,
+          "y": 67,
+          "active": true
+        },
+        {
+          "x": 791,
+          "y": 80,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        1,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        769,
+        28,
+        1064,
+        507
+      ]
+    }
+  },
+  {
+    "id": 73,
+    "title": "Dez de Paus",
+    "group": "paus",
+    "groupId": 4,
+    "checksum": 11,
+    "slug": "dez-de-paus",
+    "imageUrl": "/cards/tarot-gold-v2/73_dez_de_paus.png",
+    "fileName": "73_dez_de_paus.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 1152,
+          "y": 54,
+          "active": true
+        },
+        {
+          "x": 1165,
+          "y": 54,
+          "active": true
+        },
+        {
+          "x": 1152,
+          "y": 67,
+          "active": true
+        },
+        {
+          "x": 1152,
+          "y": 80,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        1,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        1131,
+        28,
+        1423,
+        507
+      ]
+    }
+  },
+  {
+    "id": 74,
+    "title": "Pajem de Paus",
+    "group": "paus",
+    "groupId": 4,
+    "checksum": 8,
+    "slug": "pajem-de-paus",
+    "imageUrl": "/cards/tarot-gold-v2/74_pajem_de_paus.png",
+    "fileName": "74_pajem_de_paus.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 71,
+          "y": 570,
+          "active": true
+        },
+        {
+          "x": 84,
+          "y": 570,
+          "active": true
+        },
+        {
+          "x": 71,
+          "y": 583,
+          "active": true
+        },
+        {
+          "x": 71,
+          "y": 596,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        1,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        50,
+        544,
+        338,
+        1024
+      ]
+    }
+  },
+  {
+    "id": 75,
+    "title": "Cavaleiro de Paus",
+    "group": "paus",
+    "groupId": 4,
+    "checksum": 9,
+    "slug": "cavaleiro-de-paus",
+    "imageUrl": "/cards/tarot-gold-v2/75_cavaleiro_de_paus.png",
+    "fileName": "75_cavaleiro_de_paus.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 426,
+          "y": 570,
+          "active": true
+        },
+        {
+          "x": 439,
+          "y": 570,
+          "active": true
+        },
+        {
+          "x": 426,
+          "y": 583,
+          "active": true
+        },
+        {
+          "x": 426,
+          "y": 596,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        1,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        404,
+        544,
+        703,
+        1024
+      ]
+    }
+  },
+  {
+    "id": 76,
+    "title": "Rainha de Paus",
+    "group": "paus",
+    "groupId": 4,
+    "checksum": 14,
+    "slug": "rainha-de-paus",
+    "imageUrl": "/cards/tarot-gold-v2/76_rainha_de_paus.png",
+    "fileName": "76_rainha_de_paus.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 791,
+          "y": 570,
+          "active": true
+        },
+        {
+          "x": 804,
+          "y": 570,
+          "active": true
+        },
+        {
+          "x": 791,
+          "y": 583,
+          "active": true
+        },
+        {
+          "x": 791,
+          "y": 596,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0
+      ],
+      "group_bits_msb_left_to_right": [
+        1,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        769,
+        544,
+        1064,
+        1024
+      ]
+    }
+  },
+  {
+    "id": 77,
+    "title": "Rei de Paus",
+    "group": "paus",
+    "groupId": 4,
+    "checksum": 15,
+    "slug": "rei-de-paus",
+    "imageUrl": "/cards/tarot-gold-v2/77_rei_de_paus.png",
+    "fileName": "77_rei_de_paus.png",
+    "marker": {
+      "orientation_slots": [
+        {
+          "x": 1152,
+          "y": 570,
+          "active": true
+        },
+        {
+          "x": 1165,
+          "y": 570,
+          "active": true
+        },
+        {
+          "x": 1152,
+          "y": 583,
+          "active": true
+        },
+        {
+          "x": 1152,
+          "y": 596,
+          "active": true
+        }
+      ],
+      "id_bits_msb_left_to_right": [
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "group_bits_msb_left_to_right": [
+        1,
+        0,
+        0
+      ],
+      "checksum_bits_msb_left_to_right": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "slot_radius_px": 5,
+      "slot_spacing_px": 13,
+      "bbox_px": [
+        1131,
+        544,
+        1423,
+        1024
+      ]
+    }
+  }
+]

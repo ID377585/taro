@@ -11,10 +11,13 @@ export default async function DashboardPage() {
     role: user.role,
   });
   const envStatus = getServerEnvStatus();
+  const showDashboardDiagnostics = false;
 
   return (
     <main className="space-y-6">
-      <Panel className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
+      {showDashboardDiagnostics ? (
+        <>
+          <Panel className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
         <SectionTitle
           eyebrow="Status"
           title="Base do rebuild ativa"
@@ -39,27 +42,29 @@ export default async function DashboardPage() {
             </strong>
           </div>
         </div>
-      </Panel>
+          </Panel>
 
-      <Panel>
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <SectionTitle
-            eyebrow="Ambiente"
-            title="Validação de configuração"
-            description="A aplicação só depende de PostgreSQL, Auth.js e serviços locais dedicados."
-          />
-          <StatusPill
-            label={envStatus.success ? "Env pronto" : "Env incompleto"}
-            tone={envStatus.success ? "success" : "warning"}
-          />
-        </div>
+          <Panel>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <SectionTitle
+                eyebrow="Ambiente"
+                title="Validação de configuração"
+                description="A aplicação só depende de PostgreSQL, Auth.js e serviços locais dedicados."
+              />
+              <StatusPill
+                label={envStatus.success ? "Env pronto" : "Env incompleto"}
+                tone={envStatus.success ? "success" : "warning"}
+              />
+            </div>
 
-        {!envStatus.success ? (
-          <p className="mt-4 text-sm text-red-700">
-            {envStatus.error.issues.map(issue => issue.message).join(" ")}
-          </p>
-        ) : null}
-      </Panel>
+            {!envStatus.success ? (
+              <p className="mt-4 text-sm text-red-700">
+                {envStatus.error.issues.map(issue => issue.message).join(" ")}
+              </p>
+            ) : null}
+          </Panel>
+        </>
+      ) : null}
 
       <Panel>
         <div className="flex flex-wrap items-center justify-between gap-4">

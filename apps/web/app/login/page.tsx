@@ -8,10 +8,6 @@ export default function LoginPage() {
           Área do tarólogo
         </p>
         <h1 className="mt-4 text-4xl font-semibold text-stone-950">Entrar no painel</h1>
-        <p className="mt-3 text-sm leading-6 text-stone-600">
-          Use o usuário criado no seed inicial. O acesso guest não passa por esta tela.
-        </p>
-
         <div className="mt-8">
           <LoginForm />
         </div>

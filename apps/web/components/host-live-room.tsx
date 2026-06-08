@@ -2,7 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { io, type Socket } from "socket.io-client";
-import { shouldLockDetection, type DetectionCandidate } from "@taro/vision-core";
+import {
+  getTarotVisionCardBySlug,
+  shouldLockDetection,
+  type DetectionCandidate,
+} from "@taro/vision-core";
 
 type ConfirmedCard = {
   id: string;
@@ -19,9 +23,13 @@ type TimelineEvent = {
 };
 
 type VisionDetectionCandidate = {
+  cardId: number;
   cardSlug: string;
+  cardName: string;
   confidence: number;
   boundingBox: DetectionCandidate["boundingBox"];
+  source: DetectionCandidate["source"];
+  isValid: boolean;
   timestamp: number | string;
 };
 
@@ -211,8 +219,11 @@ export function HostLiveRoom({
   }, [persistEvent, realtimeServerUrl, roomCode]);
 
   const simulateStableFrame = () => {
+    const selectedCard = getTarotVisionCardBySlug(selectedCardSlug);
     const candidate: DetectionCandidate = {
+      cardId: selectedCard?.id ?? 0,
       cardSlug: selectedCardSlug,
+      cardName: selectedCard?.title ?? selectedCardSlug,
       confidence,
       boundingBox: {
         x: 120,
@@ -220,6 +231,8 @@ export function HostLiveRoom({
         width: 220,
         height: 340,
       },
+      source: "manual",
+      isValid: Boolean(selectedCard),
       timestamp: Date.now(),
     };
 

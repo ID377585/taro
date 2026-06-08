@@ -3,9 +3,13 @@ import { shouldLockDetection } from "./stability";
 
 const createHistory = (confidence = 0.9) =>
   Array.from({ length: 10 }, (_, index) => ({
+    cardId: 0,
     cardSlug: "o-louco",
+    cardName: "O Louco",
     confidence,
     boundingBox: { x: 100 + index % 2, y: 120, width: 200, height: 320 },
+    source: "manual" as const,
+    isValid: true,
     timestamp: index,
   }));
 

@@ -5,11 +5,17 @@ export interface BoundingBox {
   height: number;
 }
 
+export type DetectionSource = "marker" | "mock" | "manual";
+
 export interface DetectionCandidate {
+  cardId: number;
   cardSlug: string;
+  cardName: string;
   confidence: number;
   boundingBox: BoundingBox;
-  timestamp: number;
+  source: DetectionSource;
+  isValid: boolean;
+  timestamp?: number;
 }
 
 export interface StabilityOptions {

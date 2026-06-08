@@ -4,6 +4,22 @@ export type TarotVisionBits = {
   checksumBits: number[];
 };
 
+export type TarotVisionMarkerSlot = {
+  x: number;
+  y: number;
+  active: boolean;
+};
+
+export type TarotVisionMarker = {
+  orientation_slots?: TarotVisionMarkerSlot[];
+  id_bits_msb_left_to_right: number[];
+  group_bits_msb_left_to_right: number[];
+  checksum_bits_msb_left_to_right: number[];
+  slot_radius_px?: number;
+  slot_spacing_px?: number;
+  bbox_px?: [number, number, number, number];
+};
+
 export type TarotVisionDecodedMark = {
   cardId: number;
   groupId: number;
@@ -21,7 +37,7 @@ export type TarotVisionCardMetadata = {
   slug: string;
   imageUrl: string;
   fileName: string;
-  marker: unknown;
+  marker: TarotVisionMarker;
 };
 
 export function bitsToNumber(bits: number[]): number {
@@ -30,6 +46,22 @@ export function bitsToNumber(bits: number[]): number {
 
 export function tarotVisionChecksum(cardId: number, groupId: number): number {
   return (cardId ^ (groupId << 1) ^ 0xA) & 0xF;
+}
+
+function normalizeBits(bits: number[], expectedLength: number): number[] {
+  if (bits.length !== expectedLength) {
+    throw new Error(`Expected ${expectedLength} marker bits, received ${bits.length}.`);
+  }
+
+  return bits.map(bit => (bit ? 1 : 0));
+}
+
+export function readTarotVisionMarkerBits(marker: TarotVisionMarker): TarotVisionBits {
+  return {
+    idBits: normalizeBits(marker.id_bits_msb_left_to_right, 7),
+    groupBits: normalizeBits(marker.group_bits_msb_left_to_right, 3),
+    checksumBits: normalizeBits(marker.checksum_bits_msb_left_to_right, 4),
+  };
 }
 
 export function decodeTarotVisionMark(bits: TarotVisionBits): TarotVisionDecodedMark {
@@ -52,6 +84,10 @@ export function decodeTarotVisionMark(bits: TarotVisionBits): TarotVisionDecoded
   };
 }
 
+export function decodeTarotVisionMarker(marker: TarotVisionMarker): TarotVisionDecodedMark {
+  return decodeTarotVisionMark(readTarotVisionMarkerBits(marker));
+}
+
 export function findTarotVisionCardByDecodedMark(
   cards: TarotVisionCardMetadata[],
   decoded: TarotVisionDecodedMark
@@ -66,4 +102,11 @@ export function findTarotVisionCardByDecodedMark(
         card.checksum === decoded.checksum
     ) ?? null
   );
+}
+
+export function findTarotVisionCardBySlug(
+  cards: TarotVisionCardMetadata[],
+  cardSlug: string
+): TarotVisionCardMetadata | null {
+  return cards.find(card => card.slug === cardSlug) ?? null;
 }

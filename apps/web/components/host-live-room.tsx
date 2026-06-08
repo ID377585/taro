@@ -557,6 +557,8 @@ export function HostLiveRoom({
     });
   };
 
+  const showSessionTimeline = false;
+
   return (
     <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
       <div className="space-y-5">
@@ -714,28 +716,30 @@ export function HostLiveRoom({
           </div>
         </div>
 
-        <div className="glass-panel rounded-[28px] p-5">
-          <p className="text-xs uppercase tracking-[0.35em] text-amber-700">Timeline da sessão</p>
-          <div className="mt-4 space-y-3">
-            {timeline.length ? (
-              timeline.slice(0, 8).map(event => (
-                <div key={event.id} className="rounded-[20px] bg-stone-50 p-4">
-                  <strong className="text-sm text-stone-900">{event.eventType}</strong>
-                  <p className="mt-1 text-xs text-stone-500">
-                    {new Date(event.createdAt).toLocaleString("pt-BR")}
-                  </p>
-                  {event.payload ? (
-                    <pre className="mt-2 overflow-x-auto text-xs text-stone-600">
-                      {JSON.stringify(event.payload, null, 2)}
-                    </pre>
-                  ) : null}
-                </div>
-              ))
-            ) : (
-              <p className="text-sm text-stone-600">Sem eventos persistidos ainda.</p>
-            )}
+        {showSessionTimeline ? (
+          <div className="glass-panel rounded-[28px] p-5">
+            <p className="text-xs uppercase tracking-[0.35em] text-amber-700">Timeline da sessão</p>
+            <div className="mt-4 space-y-3">
+              {timeline.length ? (
+                timeline.slice(0, 8).map(event => (
+                  <div key={event.id} className="rounded-[20px] bg-stone-50 p-4">
+                    <strong className="text-sm text-stone-900">{event.eventType}</strong>
+                    <p className="mt-1 text-xs text-stone-500">
+                      {new Date(event.createdAt).toLocaleString("pt-BR")}
+                    </p>
+                    {event.payload ? (
+                      <pre className="mt-2 overflow-x-auto text-xs text-stone-600">
+                        {JSON.stringify(event.payload, null, 2)}
+                      </pre>
+                    ) : null}
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-stone-600">Sem eventos persistidos ainda.</p>
+              )}
+            </div>
           </div>
-        </div>
+        ) : null}
       </div>
     </div>
   );

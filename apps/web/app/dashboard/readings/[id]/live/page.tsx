@@ -16,15 +16,19 @@ export default async function ReadingLivePage({
 
   if (!reading) notFound();
 
+  const showLiveRoomHeader = false;
+
   return (
     <main className="space-y-6">
-      <Panel>
-        <SectionTitle
-          eyebrow="Ao vivo"
-          title="Host room privado"
-          description="Teleprompter, buffer de estabilidade e confirmação manual ficam apenas nesta sala."
-        />
-      </Panel>
+      {showLiveRoomHeader ? (
+        <Panel>
+          <SectionTitle
+            eyebrow="Ao vivo"
+            title="Host room privado"
+            description="Teleprompter, buffer de estabilidade e confirmação manual ficam apenas nesta sala."
+          />
+        </Panel>
+      ) : null}
 
       <HostLiveRoom
         cards={tarotCards.map(card => ({ slug: card.slug, name: card.name }))}

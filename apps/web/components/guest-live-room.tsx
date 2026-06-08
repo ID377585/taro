@@ -343,14 +343,18 @@ export function GuestLiveRoom({
       </div>
 
       <div className="glass-panel rounded-[28px] p-5">
-        <p className="text-xs uppercase tracking-[0.35em] text-amber-700">Sala do consulente</p>
-        <h3 className="mt-3 text-2xl font-semibold text-stone-950">{status}</h3>
-        <p className="mt-2 text-sm leading-6 text-stone-600">
-          {lastUpdate} Esta tela nunca recebe teleprompter, notas internas ou confiança da IA.
+        <p className="text-xs uppercase tracking-[0.35em] text-amber-700">
+          SALA DE LEITURA DE TARÔ - AO VIVO
         </p>
+        <h3 className="mt-3 text-2xl font-semibold text-stone-950">{status}</h3>
+        <p className="mt-2 text-sm leading-6 text-stone-600">{lastUpdate}</p>
         <div className="mt-5 flex flex-wrap items-center gap-3">
           <button
-            className="primary-button"
+            className={
+              hasJoinedLive
+                ? "primary-button"
+                : "rounded-full bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-red-600/30 transition hover:bg-red-700 animate-pulse"
+            }
             disabled={isStartingMedia || hasJoinedLive}
             onClick={startGuestMedia}
             type="button"

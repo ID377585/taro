@@ -1,0 +1,37 @@
+{
+  "name": "@taro/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.9.0",
+    "@taro/database": "workspace:*",
+    "@taro/tarot-core": "workspace:*",
+    "@taro/ui": "workspace:*",
+    "@taro/vision-core": "workspace:*",
+    "next": "16.2.7",
+    "next-auth": "beta",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "socket.io-client": "^4.8.1",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+      "@types/react-dom": "^19",
+      "eslint": "^9",
+      "eslint-config-next": "16.2.7",
+      "tailwindcss": "^4",
+      "typescript": "^5",
+      "vitest": "^4.1.8"
+  }
+}

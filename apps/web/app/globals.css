@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f6efe6;
+  --foreground: #1f1a17;
+  --surface: rgba(255, 252, 247, 0.78);
+  --surface-strong: #fffaf4;
+  --border: rgba(61, 39, 21, 0.12);
+  --accent: #9e5f2d;
+  --accent-strong: #6e3410;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-display);
+  --font-mono: var(--font-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background:
+    radial-gradient(circle at top, rgba(252, 211, 77, 0.28), transparent 35%),
+    linear-gradient(180deg, #fbf6ef 0%, #f2e6d7 45%, #efe1cf 100%);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-display), serif;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.grain-bg {
+  background:
+    linear-gradient(140deg, rgba(255, 255, 255, 0.6), rgba(255, 247, 237, 0.82)),
+    radial-gradient(circle at top right, rgba(158, 95, 45, 0.12), transparent 40%);
+}
+
+.glass-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 80px rgba(71, 43, 21, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+.field {
+  width: 100%;
+  border-radius: 18px;
+  border: 1px solid rgba(61, 39, 21, 0.15);
+  background: rgba(255, 251, 247, 0.96);
+  color: #1f1a17;
+  caret-color: #6e3410;
+  padding: 0.875rem 1rem;
+  pointer-events: auto;
+  user-select: text;
+}
+
+.field::placeholder {
+  color: rgba(61, 39, 21, 0.45);
+}
+
+.field:focus {
+  outline: 2px solid rgba(158, 95, 45, 0.22);
+  outline-offset: 2px;
+}
+
+.primary-button {
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: white;
+  padding: 0.85rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.secondary-button {
+  border-radius: 999px;
+  border: 1px solid rgba(61, 39, 21, 0.15);
+  background: rgba(255, 251, 247, 0.92);
+  color: var(--foreground);
+  padding: 0.85rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}

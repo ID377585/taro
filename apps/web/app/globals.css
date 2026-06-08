@@ -62,7 +62,15 @@ textarea {
   border-radius: 18px;
   border: 1px solid rgba(61, 39, 21, 0.15);
   background: rgba(255, 251, 247, 0.96);
+  color: #1f1a17;
+  caret-color: #6e3410;
   padding: 0.875rem 1rem;
+  pointer-events: auto;
+  user-select: text;
+}
+
+.field::placeholder {
+  color: rgba(61, 39, 21, 0.45);
 }
 
 .field:focus {

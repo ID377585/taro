@@ -66,7 +66,7 @@ export default async function NewReadingPage() {
         <form action={createReading} className="mt-8 grid gap-6 lg:grid-cols-2">
           <label className="space-y-2 text-sm text-stone-700 lg:col-span-2">
             Tipo de leitura
-            <select className="field" name="readingTypeId" required>
+            <select className="field cursor-pointer text-stone-900 caret-stone-900" name="readingTypeId" required>
               {readingTypes.map(readingType => (
                 <option key={readingType.id} value={readingType.id}>
                   {readingType.name}
@@ -77,21 +77,21 @@ export default async function NewReadingPage() {
 
           <fieldset className="space-y-4 rounded-[28px] border border-stone-200 bg-stone-50 p-5">
             <legend className="px-2 text-sm font-semibold text-stone-900">Consulente principal</legend>
-            <input className="field" name="primaryFullName" placeholder="Nome completo" required />
-            <input className="field" name="primaryBirthDate" type="date" />
-            <input className="field" name="primaryPhone" placeholder="Telefone" />
+            <input autoComplete="name" className="field text-stone-900 caret-stone-900" name="primaryFullName" placeholder="Nome completo" required type="text" />
+            <input autoComplete="bday" className="field text-stone-900 caret-stone-900" name="primaryBirthDate" type="date" />
+            <input autoComplete="tel" className="field text-stone-900 caret-stone-900" name="primaryPhone" placeholder="Telefone" type="tel" />
           </fieldset>
 
           <fieldset className="space-y-4 rounded-[28px] border border-stone-200 bg-stone-50 p-5">
             <legend className="px-2 text-sm font-semibold text-stone-900">Segunda pessoa opcional</legend>
-            <input className="field" name="secondaryFullName" placeholder="Nome completo" />
-            <input className="field" name="secondaryBirthDate" type="date" />
-            <input className="field" name="secondaryPhone" placeholder="Telefone" />
+            <input autoComplete="off" className="field text-stone-900 caret-stone-900" name="secondaryFullName" placeholder="Nome completo" type="text" />
+            <input autoComplete="off" className="field text-stone-900 caret-stone-900" name="secondaryBirthDate" type="date" />
+            <input autoComplete="off" className="field text-stone-900 caret-stone-900" name="secondaryPhone" placeholder="Telefone" type="tel" />
           </fieldset>
 
           <label className="space-y-2 text-sm text-stone-700 lg:col-span-2">
             Observações internas
-            <textarea className="field min-h-32" name="notes" placeholder="Anotações privadas do host" />
+            <textarea className="field min-h-32 text-stone-900 caret-stone-900" name="notes" placeholder="Anotações privadas do host" />
           </label>
 
           <div className="lg:col-span-2">
